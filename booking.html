@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Your Day — In The Green Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <a class="logo" href="index.html"><span class="logo-mark"></span> IN THE GREEN EVENTS</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="packages.html">Packages</a>
+      <a href="booking-info.html">Booking Info</a>
+      <a class="btn" href="#build">Build Your Day →</a>
+    </div>
+  </nav>
+</div>
+
+<div class="wrap page-hero">
+  <div class="eyebrow">Built around your day</div>
+  <h1>Build your dream day, see the price as you go.</h1>
+  <p class="lede">Pick your games, add mini golf and hosting, and tell us about your event. The price updates live, no waiting for a quote. If your combination matches one of our set packages, we'll apply that price automatically.</p>
+</div>
+
+<div class="wrap" id="build" style="padding-bottom:100px;">
+  <div class="builder-grid">
+
+    <div class="builder-col">
+
+      <div class="builder-step">
+        <div class="step-label">Included in every booking</div>
+        <h3>Your mini golf course</h3>
+        <p class="step-sub">Mini golf is the flagship of every hire, it's the reason we make the drive. Choose self-serve or hosted below.</p>
+        <div class="foundation-options two-col" id="foundationOptions">
+          <label class="opt-card selected" data-value="golf">
+            <input type="radio" name="foundation" value="golf" checked>
+            <div class="opt-name">Mini Golf</div>
+            <div class="opt-price">£450</div>
+            <div class="opt-desc">9-hole course, self-serve, fully kitted out.</div>
+          </label>
+          <label class="opt-card" data-value="golf">
+            <input type="radio" name="foundation" value="golf-hosted" data-forcehost="1">
+            <div class="opt-name">Mini Golf, hosted</div>
+            <div class="opt-price">£650</div>
+            <div class="opt-desc">The course, plus a host running your tournament.</div>
+          </label>
+        </div>
+      </div>
+
+      <div class="builder-step">
+        <div class="step-label">Optional</div>
+        <h3>Add giant games</h3>
+        <p class="step-sub">These are add-ons to your mini golf hire, not standalone bookings. Any 3: £140 · Any 5: £220 · All 7: £280, applied automatically as you add more.</p>
+        <div id="gamesList">
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Jenga" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Jenga</span></span><span class="g-price">£50</span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Connect 4" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Connect 4</span></span><span class="g-price">£50</span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Snakes & Ladders" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Snakes & Ladders</span></span><span class="g-price">£50</span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Noughts & Crosses" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Noughts & Crosses</span></span><span class="g-price">£50</span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Cornhole" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Cornhole</span></span><span class="g-price">£50</span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Dominoes" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Dominoes</span></span><span class="g-price">£50</span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Limbo" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Limbo</span></span><span class="g-price">£50</span></label>
+        </div>
+      </div>
+
+      <div class="builder-step">
+        <div class="step-label">Optional</div>
+        <h3>Hosting</h3>
+        <p class="step-sub">We run your day: tournament format, scorecards tallied, awards ceremony. Up to 8 hours on-site.</p>
+        <label class="toggle-row">
+          <input type="checkbox" id="hostingToggle">
+          <span class="t-left">
+            <h4>Add hosting — £200</h4>
+            <p>Equipment can stay with you longer than 8 hours at no extra charge, only the hosted time is capped.</p>
+          </span>
+          <span class="switch"></span>
+        </label>
+      </div>
+
+      <div class="builder-step">
+        <div class="step-label">Setup</div>
+        <h3>Indoors or outdoors?</h3>
+        <p class="step-sub">Mini golf sets up on grass or carpet. This is informational, it won't change your price.</p>
+        <div class="radio-pair" id="setupPair">
+          <label class="radio-opt selected" data-value="outdoor"><input type="radio" name="setup" value="outdoor" checked>Outdoors (grass)</label>
+          <label class="radio-opt" data-value="indoor"><input type="radio" name="setup" value="indoor">Indoors (carpet)</label>
+          <label class="radio-opt" data-value="unsure"><input type="radio" name="setup" value="unsure">Not sure yet</label>
+        </div>
+      </div>
+
+      <div class="builder-step">
+        <div class="step-label">Your event</div>
+        <h3>Tell us about the day</h3>
+        <p class="step-sub">This is what gets sent to us when you request your booking, add as much detail as you like.</p>
+        <div class="field-row">
+          <div class="field"><label>Your name</label><input type="text" id="fName" placeholder="Full name"></div>
+          <div class="field"><label>Email</label><input type="email" id="fEmail" placeholder="you@email.com"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Event date</label><input type="date" id="fDate"></div>
+          <div class="field"><label>Guest numbers</label><input type="text" id="fGuests" placeholder="e.g. 80"></div>
+        </div>
+        <div class="field"><label>Venue / address</label><input type="text" id="fVenue" placeholder="Venue name and postcode"></div>
+        <div class="field"><label>Anything else we should know?</label><textarea id="fNotes" rows="3" placeholder="Timings, awkward access, specific requests for your dream day..."></textarea></div>
+      </div>
+
+    </div>
+
+    <div class="builder-col summary-col" id="summaryCol">
+      <div class="summary-card" id="summaryCard">
+        <h3>Your day, so far</h3>
+        <div class="sub">Updates live as you build</div>
+
+        <div id="summaryLines"></div>
+
+        <div class="summary-total">
+          <span class="label">Estimated total</span>
+          <span class="amount" id="totalAmount">£0</span>
+        </div>
+        <div class="summary-badge" id="packageBadge"></div>
+
+        <a class="btn gold" href="#" id="submitBooking">Request this booking →</a>
+        <div class="summary-note">A 25% deposit secures your date once we confirm availability. Mileage beyond ~20 miles is charged at £0.50/mile, confirmed once we have your address. This isn't a live payment, submitting sends your full spec straight to us by email.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot-row">
+    <a class="logo" href="index.html"><span class="logo-mark"></span> IN THE GREEN EVENTS</a>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="packages.html">Packages</a>
+      <a href="booking-info.html">Booking Info</a>
+    </div>
+    <div class="foot-note">© In The Green Events. Serving weddings & events across the North West.</div>
+  </div>
+</footer>
+
+<script>
+  const games = Array.from(document.querySelectorAll('.game-cb'));
+  const foundationInputs = Array.from(document.querySelectorAll('input[name="foundation"]'));
+  const foundationCards = Array.from(document.querySelectorAll('#foundationOptions .opt-card'));
+  const hostingToggle = document.getElementById('hostingToggle');
+  const setupOpts = Array.from(document.querySelectorAll('#setupPair .radio-opt'));
+
+  function gamesPrice(n){
+    if(n<=0) return 0;
+    if(n>=7) return 280;
+    if(n>=5) return 220 + (n-5)*50;
+    if(n>=3) return 140 + (n-3)*50;
+    return n*50;
+  }
+
+  function updateCardStyles(){
+    foundationCards.forEach(c=>{
+      const input = c.querySelector('input');
+      c.classList.toggle('selected', input.checked);
+    });
+    setupOpts.forEach(c=>{
+      const input = c.querySelector('input');
+      c.classList.toggle('selected', input.checked);
+    });
+  }
+
+  function currentFoundation(){
+    const checked = foundationInputs.find(i=>i.checked);
+    return checked ? checked.value : 'golf';
+  }
+
+  function recalc(){
+    updateCardStyles();
+
+    const foundation = currentFoundation();
+    const forcedHost = foundation === 'golf-hosted';
+
+    if(forcedHost){ hostingToggle.checked = true; hostingToggle.disabled = true; }
+    else { hostingToggle.disabled = false; }
+
+    const hosting = hostingToggle.checked;
+    const selectedGames = games.filter(g=>g.checked);
+    const n = selectedGames.length;
+    let gPrice = gamesPrice(n);
+
+    let total = 450; // mini golf is included in every booking
+    let lines = [['9-Hole Mini Golf', 450]];
+    let badge = '';
+
+    const isChampionship = hosting && n === 7;
+
+    if(isChampionship){
+      total = 850;
+      lines = [
+        ['9-Hole Mini Golf', null],
+        ['All 7 giant games', null],
+        ['Hosting (up to 8 hours)', null]
+      ];
+      badge = 'Your build matches our Championship package — £850 applied automatically (saves £80 vs. adding these up separately).';
+    } else {
+      if(hosting){ total += 200; lines.push(['Hosting (up to 8 hours)', 200]); }
+      if(n > 0){ total += gPrice; lines.push([n + (n===1?' game':' games') + ' selected', gPrice]); }
+
+      if(hosting && n === 0){
+        badge = 'This is our Signature package — mini golf with hosting, £650.';
+      }
+    }
+
+    document.getElementById('totalAmount').textContent = '£' + total;
+
+    const summaryLines = document.getElementById('summaryLines');
+    if(lines.length === 0){
+      summaryLines.innerHTML = '<div class="summary-line muted">Nothing added yet, start with a foundation or a game above.</div>';
+    } else {
+      summaryLines.innerHTML = lines.map(l => {
+        const priceText = l[1] === null ? '' : ('£'+l[1]);
+        return `<div class="summary-line"><span>${l[0]}</span><span>${priceText}</span></div>`;
+      }).join('');
+    }
+
+    const badgeEl = document.getElementById('packageBadge');
+    if(badge){ badgeEl.textContent = badge; badgeEl.classList.add('show'); }
+    else { badgeEl.classList.remove('show'); }
+
+    window._bookingTotal = total;
+    window._bookingLines = lines;
+    window._bookingGames = selectedGames.map(g=>g.dataset.name);
+  }
+
+  foundationInputs.forEach(i => i.addEventListener('change', recalc));
+  games.forEach(g => g.addEventListener('change', recalc));
+  hostingToggle.addEventListener('change', recalc);
+  setupOpts.forEach(opt => opt.querySelector('input').addEventListener('change', recalc));
+
+  document.getElementById('submitBooking').addEventListener('click', function(e){
+    e.preventDefault();
+    const name = document.getElementById('fName').value || '(not given)';
+    const email = document.getElementById('fEmail').value || '(not given)';
+    const date = document.getElementById('fDate').value || '(not given)';
+    const guests = document.getElementById('fGuests').value || '(not given)';
+    const venue = document.getElementById('fVenue').value || '(not given)';
+    const notes = document.getElementById('fNotes').value || '(none)';
+    const setup = document.querySelector('input[name="setup"]:checked').value;
+
+    const gamesText = window._bookingGames.length ? window._bookingGames.join(', ') : 'None';
+    const body = [
+      'New booking request from the website builder',
+      '',
+      'Name: ' + name,
+      'Email: ' + email,
+      'Event date: ' + date,
+      'Guest numbers: ' + guests,
+      'Venue: ' + venue,
+      'Setup preference: ' + setup,
+      'Games selected: ' + gamesText,
+      'Estimated total: £' + window._bookingTotal,
+      '',
+      'Notes: ' + notes
+    ].join('\n');
+
+    const mailto = 'mailto:hello@inthegreenevents.co.uk?subject=' + encodeURIComponent('Booking request — ' + name) + '&body=' + encodeURIComponent(body);
+    window.location.href = mailto;
+  });
+
+  // preselect from packages page links, e.g. booking.html?package=championship
+  const params = new URLSearchParams(window.location.search);
+  const pkg = params.get('package');
+  if(pkg === 'championship'){
+    document.querySelector('input[value="golf-hosted"]').checked = true;
+    games.forEach(g=>g.checked = true);
+  } else if(pkg === 'signature'){
+    document.querySelector('input[value="golf-hosted"]').checked = true;
+  } else if(pkg === 'minigolf'){
+    document.querySelector('input[value="golf"]').checked = true;
+  }
+
+  recalc();
+
+  // Belt-and-braces scroll pinning for the price summary. CSS position:sticky
+  // above handles this on a normal page. This JS fallback keeps it working
+  // even if the page ends up embedded in a container that breaks sticky
+  // (a common issue when raw HTML is dropped into a page builder).
+  (function(){
+    const col = document.getElementById('summaryCol');
+    const card = document.getElementById('summaryCard');
+    const topGap = 24;
+    let cardWidth = 0;
+
+    function measure(){
+      cardWidth = col.getBoundingClientRect().width;
+    }
+
+    function onScroll(){
+      const colRect = col.getBoundingClientRect();
+      const cardHeight = card.offsetHeight;
+
+      if(colRect.top <= topGap && colRect.bottom > cardHeight + topGap){
+        card.classList.add('js-pinned');
+        card.classList.remove('js-bottomed');
+        card.style.width = cardWidth + 'px';
+        card.style.left = colRect.left + 'px';
+      } else if(colRect.bottom <= cardHeight + topGap){
+        card.classList.remove('js-pinned');
+        card.classList.add('js-bottomed');
+        card.style.width = '';
+        card.style.left = '';
+      } else {
+        card.classList.remove('js-pinned', 'js-bottomed');
+        card.style.width = '';
+        card.style.left = '';
+      }
+    }
+
+    // Only engage the JS fallback if native sticky isn't actually sticking
+    // (some embed contexts silently compute it as 'static').
+    const nativeSticky = getComputedStyle(card).position;
+    if(nativeSticky !== 'sticky' && nativeSticky !== '-webkit-sticky'){
+      measure();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', () => { measure(); onScroll(); });
+      onScroll();
+    }
+  })();
+</script>
+
+</body>
+</html>
