@@ -33,10 +33,42 @@
   .check-total .amount{ font-family:'Fraunces'; font-weight:600; font-size:20px; color:var(--green-deep); }
   .btn.loading{ opacity:0.7; pointer-events:none; }
   .btn:disabled, .btn.disabled{ opacity:0.45; pointer-events:none; }
-  .ask-list{ display:flex; gap:18px; flex-wrap:wrap; margin:18px 0 30px; }
-  .ask-list span{
-    font-size:12.5px; font-weight:600; color:var(--green-mid);
-    background:rgba(30,71,52,0.06); padding:7px 14px; border-radius:100px;
+  .cal-widget{
+    border:1.5px solid var(--green-line); border-radius:14px; padding:18px;
+  }
+  .cal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .cal-title{ font-family:'Fraunces'; font-weight:600; font-size:15px; color:var(--green-deep); }
+  .cal-nav{
+    background:none; border:1px solid var(--green-line); border-radius:8px;
+    width:30px; height:30px; font-size:16px; cursor:pointer; color:var(--green-deep);
+    display:flex; align-items:center; justify-content:center; transition:.15s;
+  }
+  .cal-nav:hover{ background:rgba(30,71,52,0.06); }
+  .cal-nav:disabled{ opacity:0.3; cursor:not-allowed; }
+  .cal-weekdays{ display:grid; grid-template-columns:repeat(7,1fr); text-align:center; font-size:11px; font-weight:700; color:rgba(27,42,32,0.45); letter-spacing:0.04em; margin-bottom:6px; }
+  .cal-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+  .cal-day{
+    aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:500; border-radius:8px; cursor:pointer;
+    background:none; border:1.5px solid transparent; color:var(--ink); transition:.12s;
+  }
+  .cal-day:hover:not(.cal-disabled):not(.cal-blocked){ background:rgba(30,71,52,0.08); }
+  .cal-day.cal-empty{ cursor:default; }
+  .cal-day.cal-today{ border-color:var(--green-mid); font-weight:700; }
+  .cal-day.cal-selected{ background:var(--green-deep); color:#fff; font-weight:700; }
+  .cal-day.cal-disabled{ color:rgba(27,42,32,0.25); cursor:not-allowed; }
+  .cal-day.cal-blocked{
+    color:rgba(217,122,87,0.85); cursor:not-allowed;
+    background:repeating-linear-gradient(135deg, rgba(217,122,87,0.08) 0 4px, transparent 4px 8px);
+    text-decoration:line-through;
+  }
+  .cal-legend{ display:flex; gap:16px; margin-top:14px; font-size:11.5px; color:rgba(27,42,32,0.55); }
+  .cal-legend .cal-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
+  .cal-dot-avail{ background:var(--green-mid); }
+  .cal-dot-blocked{ background:#D97A57; }
+  .cal-selected{
+    margin-top:14px; padding-top:14px; border-top:1px solid var(--green-line);
+    font-size:13.5px; font-weight:600; color:var(--green-deep);
   }
 </style>
 </head>
@@ -87,12 +119,6 @@
 <div class="wrap" style="padding-bottom:100px;">
   <div class="check-wrap">
 
-    <div class="ask-list">
-      <span>Venue name</span>
-      <span>Venue postcode</span>
-      <span>Wedding date</span>
-    </div>
-
     <div class="check-card">
       <div class="field">
         <label>Venue name</label>
@@ -105,7 +131,22 @@
       </div>
       <div class="field">
         <label>Wedding date</label>
-        <input type="date" id="cDate">
+        <div class="cal-widget" id="calWidget">
+          <div class="cal-head">
+            <button type="button" class="cal-nav" id="calPrev" aria-label="Previous month">‹</button>
+            <span class="cal-title" id="calTitle"></span>
+            <button type="button" class="cal-nav" id="calNext" aria-label="Next month">›</button>
+          </div>
+          <div class="cal-weekdays">
+            <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-legend">
+            <span><i class="cal-dot cal-dot-avail"></i> Available</span>
+            <span><i class="cal-dot cal-dot-blocked"></i> Booked</span>
+          </div>
+          <div class="cal-selected" id="calSelected">No date selected yet</div>
+        </div>
       </div>
 
       <div class="avail-result" id="availResult">
@@ -212,26 +253,157 @@
     pcDebounce = setTimeout(updateMileage, 600);
   });
 
-  // ---- Availability check ----
-  // STUB: there is no real calendar or backend behind this yet. This always
-  // returns "available" after a short simulated delay. Replace checkAvailability()
-  // with a real lookup (e.g. a Supabase query against confirmed bookings for
-  // this date) before relying on this in production.
-  function checkAvailability(dateStr){
-    return new Promise(resolve => {
-      setTimeout(() => resolve({ available: true }), 700);
-    });
+  // ---- Availability calendar, backed by Supabase ----
+  //
+  // TODO before this is live: fill in your real Supabase project URL and anon
+  // (public) key below. The anon key is safe to expose in browser code, it's
+  // designed for exactly this, read-only public queries. Never put your
+  // service_role key here, that one must stay server-side only.
+  //
+  // Expected table: a table (default name below) with one row per CONFIRMED
+  // booking, containing at minimum a date column (default name below) storing
+  // the event date as YYYY-MM-DD. Adjust SUPABASE_TABLE / SUPABASE_DATE_COLUMN
+  // to match your actual schema.
+  const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';   // TODO
+  const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLIC-KEY';               // TODO
+  const SUPABASE_TABLE = 'bookings';                              // TODO if different
+  const SUPABASE_DATE_COLUMN = 'event_date';                      // TODO if different
+
+  const SUPABASE_CONFIGURED = !SUPABASE_URL.includes('YOUR-PROJECT-REF');
+
+  // Demo-only blocked dates so the calendar visibly works before Supabase is
+  // wired up. This is ignored the moment SUPABASE_URL above is set for real.
+  const DEMO_BLOCKED_DATES = (() => {
+    const now = new Date();
+    const fmt = (y, m, day) => y + '-' + String(m+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const candidates = [
+      fmt(now.getFullYear(), now.getMonth(), 10),
+      fmt(now.getFullYear(), now.getMonth(), 20),
+      fmt(now.getFullYear(), now.getMonth() + 1, 5),
+      fmt(now.getFullYear(), now.getMonth() + 1, 15)
+    ];
+    // Only keep dates that haven't already passed, so this stays a believable demo
+    // regardless of what day of the month "today" happens to be.
+    return candidates.filter(dStr => new Date(dStr + 'T00:00:00') >= todayMidnight);
+  })();
+
+  let blockedDates = new Set();
+
+  async function fetchBlockedDates(){
+    if(!SUPABASE_CONFIGURED){
+      return new Set(DEMO_BLOCKED_DATES);
+    }
+    try{
+      const url = `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=${SUPABASE_DATE_COLUMN}`;
+      const res = await fetch(url, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+        }
+      });
+      const rows = await res.json();
+      return new Set(rows.map(r => r[SUPABASE_DATE_COLUMN]));
+    } catch(e){
+      console.warn('Could not reach Supabase, treating all dates as available for now.', e);
+      return new Set();
+    }
   }
+
+  // ---- Calendar rendering ----
+  const todayDate = new Date();
+  todayDate.setHours(0,0,0,0);
+  let viewYear = todayDate.getFullYear();
+  let viewMonth = todayDate.getMonth();
+  let selectedDate = null; // 'YYYY-MM-DD'
+
+  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+  function fmtDate(y, m, d){
+    return y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+  }
+
+  function renderCalendar(){
+    document.getElementById('calTitle').textContent = MONTH_NAMES[viewMonth] + ' ' + viewYear;
+
+    const firstOfMonth = new Date(viewYear, viewMonth, 1);
+    let startWeekday = firstOfMonth.getDay(); // 0=Sun
+    startWeekday = startWeekday === 0 ? 6 : startWeekday - 1; // convert to Mon-first
+
+    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+
+    for(let i = 0; i < startWeekday; i++){
+      const empty = document.createElement('div');
+      empty.className = 'cal-day cal-empty';
+      grid.appendChild(empty);
+    }
+
+    for(let day = 1; day <= daysInMonth; day++){
+      const dateStr = fmtDate(viewYear, viewMonth, day);
+      const cellDate = new Date(viewYear, viewMonth, day);
+      const cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'cal-day';
+      cell.textContent = day;
+
+      const isPast = cellDate < todayDate;
+      const isBlocked = blockedDates.has(dateStr);
+
+      if(cellDate.getTime() === todayDate.getTime()) cell.classList.add('cal-today');
+      if(dateStr === selectedDate) cell.classList.add('cal-selected');
+
+      if(isPast){
+        cell.classList.add('cal-disabled');
+        cell.disabled = true;
+      } else if(isBlocked){
+        cell.classList.add('cal-blocked');
+        cell.disabled = true;
+        cell.title = 'Already booked';
+      } else {
+        cell.addEventListener('click', () => {
+          selectedDate = dateStr;
+          renderCalendar();
+          const formatted = cellDate.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+          document.getElementById('calSelected').textContent = 'Selected: ' + formatted;
+        });
+      }
+
+      grid.appendChild(cell);
+    }
+
+    const prevBtn = document.getElementById('calPrev');
+    const isCurrentMonth = viewYear === todayDate.getFullYear() && viewMonth === todayDate.getMonth();
+    prevBtn.disabled = isCurrentMonth;
+  }
+
+  document.getElementById('calPrev').addEventListener('click', () => {
+    viewMonth--;
+    if(viewMonth < 0){ viewMonth = 11; viewYear--; }
+    renderCalendar();
+  });
+  document.getElementById('calNext').addEventListener('click', () => {
+    viewMonth++;
+    if(viewMonth > 11){ viewMonth = 0; viewYear++; }
+    renderCalendar();
+  });
+
+  (async function initCalendar(){
+    blockedDates = await fetchBlockedDates();
+    renderCalendar();
+  })();
 
   document.getElementById('checkBtn').addEventListener('click', async function(e){
     e.preventDefault();
     const venue = document.getElementById('cVenue').value.trim();
     const postcode = document.getElementById('cPostcode').value.trim();
-    const date = document.getElementById('cDate').value;
+    const date = selectedDate;
     const errorEl = document.getElementById('formError');
     const btn = this;
 
     if(!venue || !postcode || !date){
+      errorEl.textContent = 'Please fill in venue name, postcode, and pick a date on the calendar.';
       errorEl.style.display = 'block';
       return;
     }
@@ -244,7 +416,9 @@
       await updateMileage();
     }
 
-    const result = await checkAvailability(date);
+    // Final safety check against the same blocked-dates set the calendar
+    // uses, in case it changed since the calendar was first loaded.
+    const isAvailable = !blockedDates.has(date);
 
     btn.classList.remove('loading');
     btn.textContent = 'Check Date & Price →';
@@ -256,7 +430,7 @@
 
     resultEl.classList.add('show');
 
-    if(result.available){
+    if(isAvailable){
       resultEl.classList.remove('unavailable');
       resultEl.classList.add('available');
       titleEl.textContent = "You're in luck, we're free that day";
@@ -295,7 +469,14 @@
       const data = JSON.parse(saved);
       if(data.venueName) document.getElementById('cVenue').value = data.venueName;
       if(data.venuePostcode) document.getElementById('cPostcode').value = data.venuePostcode;
-      if(data.weddingDate) document.getElementById('cDate').value = data.weddingDate;
+      if(data.weddingDate){
+        selectedDate = data.weddingDate;
+        const [y, m] = data.weddingDate.split('-').map(Number);
+        viewYear = y;
+        viewMonth = m - 1;
+        const formatted = new Date(y, m - 1, Number(data.weddingDate.split('-')[2])).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+        document.getElementById('calSelected').textContent = 'Selected: ' + formatted;
+      }
       if(data.venuePostcode) updateMileage();
     } catch(e){}
   })();
