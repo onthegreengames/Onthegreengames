@@ -14,8 +14,32 @@
 <div class="wrap">
   <nav>
     <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
-    <div class="nav-links">
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" type="button">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="nav-links" id="navLinks">
       <a href="index.html">Home</a>
+
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" id="exploreTrigger" aria-expanded="false" type="button">Explore <span class="chev"></span></button>
+        <div class="mega-panel" id="explorePanel">
+          <a href="mini-golf.html" class="mega-item">
+            <div class="mega-item-title">Mini Golf</div>
+            <div class="mega-item-desc">The 9-hole course, delivered and set up for you.</div>
+          </a>
+          <a href="giant-games.html" class="mega-item">
+            <div class="mega-item-title">Giant Games</div>
+            <div class="mega-item-desc">Oversized lawn classics for every age.</div>
+          </a>
+          <a href="gallery.html" class="mega-item">
+            <div class="mega-item-title">Gallery</div>
+            <div class="mega-item-desc">Real weddings, real guests, real fun.</div>
+          </a>
+        </div>
+      </div>
+
       <a href="packages.html">Packages</a>
       <a href="booking-info.html" class="current">Booking Info</a>
       <a class="btn" href="booking.html">Check Availability →</a>
@@ -215,5 +239,6 @@
   </div>
 </footer>
 
+<script src="nav.js"></script>
 </body>
 </html>
