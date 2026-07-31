@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — On The Green Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .gallery-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .gallery-grid .photo-card{ min-height:230px; }
+  .gallery-grid .photo-card:nth-child(3n+1){ min-height:290px; }
+  @media (max-width:880px){ .gallery-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){ .gallery-grid{ grid-template-columns:1fr; } }
+  .gallery-note{ text-align:center; font-size:13px; color:rgba(27,42,32,0.5); margin-top:26px; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" type="button">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger current" id="exploreTrigger" aria-expanded="false" type="button">Explore <span class="chev"></span></button>
+        <div class="mega-panel" id="explorePanel">
+          <a href="mini-golf.html" class="mega-item">
+            <div class="mega-item-title">Mini Golf</div>
+            <div class="mega-item-desc">The 9-hole course, delivered and set up for you.</div>
+          </a>
+          <a href="giant-games.html" class="mega-item">
+            <div class="mega-item-title">Giant Games</div>
+            <div class="mega-item-desc">Oversized lawn classics for every age.</div>
+          </a>
+          <a href="gallery.html" class="mega-item current">
+            <div class="mega-item-title">Gallery</div>
+            <div class="mega-item-desc">Real weddings, real guests, real fun.</div>
+          </a>
+        </div>
+      </div>
+
+      <a href="packages.html">Packages</a>
+      <a href="booking-info.html">Booking Info</a>
+      <a class="btn" href="booking.html">Check Availability →</a>
+    </div>
+  </nav>
+</div>
+
+<div class="wrap page-hero">
+  <div class="eyebrow">See it in action</div>
+  <h1>Real Weddings, Real Guests, Real Fun</h1>
+  <p class="lede">Every photo here is from an actual booking, real couples, real venues, and the moments their guests spent putting, laughing and competing for bragging rights.</p>
+</div>
+
+<div class="wrap" style="padding-bottom:80px;">
+  <div class="gallery-grid">
+    <div class="photo-card a"><div class="scene"></div><div class="texture"></div></div>
+    <div class="photo-card b"><div class="scene"></div><div class="texture"></div></div>
+    <div class="photo-card c"><div class="scene"></div><div class="texture"></div></div>
+    <div class="photo-card b"><div class="scene"></div><div class="texture"></div></div>
+    <div class="photo-card c"><div class="scene"></div><div class="texture"></div></div>
+    <div class="photo-card a"><div class="scene"></div><div class="texture"></div></div>
+  </div>
+  <p class="gallery-note">Real photos from real weddings landing here soon, check back shortly.</p>
+</div>
+
+<div class="wrap final-cta" id="contact">
+  <h2>Ready to add <span class="italic">your own?</span></h2>
+  <p>Tell us your date, venue and guest numbers, we'll come back with a clear, tailored wedding hire plan.</p>
+  <a class="btn gold" href="booking.html">Get your date →</a>
+  <div class="foot">9-hole mini golf & giant games hire for weddings, celebrations & good times</div>
+</div>
+
+<footer>
+  <div class="wrap foot-row">
+    <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="packages.html">Packages</a>
+      <a href="booking-info.html">Booking Info</a>
+    </div>
+    <div class="foot-note">© On The Green Games. Serving weddings & events across the North West.</div>
+  </div>
+</footer>
+
+<script src="nav.js"></script>
+</body>
+</html>
