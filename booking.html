@@ -154,10 +154,7 @@
           <div class="field"><label>Your name</label><input type="text" id="fName" placeholder="Full name"></div>
           <div class="field"><label>Email</label><input type="email" id="fEmail" placeholder="you@email.com"></div>
         </div>
-        <div class="field-row">
-          <div class="field"><label>Event date</label><input type="date" id="fDate"></div>
-          <div class="field"><label>Guest numbers</label><input type="text" id="fGuests" placeholder="e.g. 80"></div>
-        </div>
+        <div class="field"><label>Event date</label><input type="date" id="fDate"></div>
         <div class="field-row">
           <div class="field"><label>Venue name</label><input type="text" id="fVenue" placeholder="Venue name"></div>
           <div class="field">
@@ -238,12 +235,19 @@
     });
   }
 
-  function updateGamesUI(requiredCount){
+  function updateGamesUI(requiredCount, allIncluded){
+    if(allIncluded){
+      games.forEach(g => { g.checked = true; g.disabled = true; });
+    } else {
+      games.forEach(g => { g.disabled = false; });
+    }
+
     const selected = games.filter(g => g.checked);
     const n = selected.length;
 
-    document.getElementById('gamesStepSub').textContent =
-      'Your package includes ' + requiredCount + (requiredCount === 1 ? ' giant garden game' : ' giant garden games') + ', choose which ones below.';
+    document.getElementById('gamesStepSub').textContent = allIncluded
+      ? 'All 7 giant garden games are included with this package, nothing to choose here.'
+      : 'Your package includes ' + requiredCount + (requiredCount === 1 ? ' giant garden game' : ' giant garden games') + ', choose which ones below.';
 
     const counter = document.getElementById('gamesCounter');
     counter.textContent = n + ' of ' + requiredCount + ' selected';
@@ -251,7 +255,7 @@
 
     games.forEach(g => {
       const row = g.closest('.game-row');
-      if(!g.checked && n >= requiredCount){
+      if(allIncluded || (!g.checked && n >= requiredCount)){
         row.classList.add('disabled');
       } else {
         row.classList.remove('disabled');
@@ -266,14 +270,16 @@
 
     const pkgKey = currentPackageKey();
     const pkg = PACKAGES[pkgKey];
+    const allIncluded = pkg.games === 7;
 
-    // trim excess games if the newly chosen package requires fewer
+    // trim excess games if the newly chosen package requires fewer (skip when all 7 are auto-included)
     let selected = games.filter(g => g.checked);
-    if(selected.length > pkg.games){
+    if(!allIncluded && selected.length > pkg.games){
       selected.slice(pkg.games).forEach(g => g.checked = false);
       selected = games.filter(g => g.checked);
     }
-    const n = updateGamesUI(pkg.games);
+    const n = updateGamesUI(pkg.games, allIncluded);
+    selected = games.filter(g => g.checked);
 
     // Event Host only available on mini-golf-inclusive packages
     if(!pkg.golf){
@@ -412,7 +418,6 @@
     const name = document.getElementById('fName').value || '(not given)';
     const email = document.getElementById('fEmail').value || '(not given)';
     const date = document.getElementById('fDate').value || '(not given)';
-    const guests = document.getElementById('fGuests').value || '(not given)';
     const venue = document.getElementById('fVenue').value || '(not given)';
     const postcode = document.getElementById('fPostcode').value || '(not given)';
     const notes = document.getElementById('fNotes').value || '(none)';
@@ -430,7 +435,6 @@
       'Name: ' + name,
       'Email: ' + email,
       'Event date: ' + date,
-      'Guest numbers: ' + guests,
       'Venue: ' + venue,
       'Venue postcode: ' + postcode,
       'Estimated distance: ' + mileageText,
