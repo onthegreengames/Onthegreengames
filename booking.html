@@ -3,30 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Build Your Day — In The Green Events</title>
+<title>Check Availability — On The Green Games</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>
+  .group-label{
+    font-size:12px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--green-mid); margin:22px 0 10px;
+  }
+  .group-label:first-child{ margin-top:0; }
+  .games-counter{
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:13.5px; font-weight:600; padding:10px 14px; border-radius:10px;
+    background:rgba(30,71,52,0.06); margin-bottom:14px;
+  }
+  .games-counter.complete{ background:rgba(192,145,60,0.15); color:var(--green-deep); }
+  .game-row.disabled{ opacity:0.4; cursor:not-allowed; pointer-events:none; }
+  .toggle-row.disabled{ opacity:0.4; pointer-events:none; }
+  .btn.disabled{ opacity:0.45; pointer-events:none; }
+  .opt-card .opt-tag{
+    font-size:10.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:6px;
+  }
+</style>
 </head>
 <body>
 
 <div class="wrap">
   <nav>
-    <a class="logo" href="index.html"><span class="logo-mark"></span> IN THE GREEN EVENTS</a>
+    <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="packages.html">Packages</a>
       <a href="booking-info.html">Booking Info</a>
-      <a class="btn" href="#build">Build Your Day →</a>
+      <a class="btn" href="#build">Check Availability →</a>
     </div>
   </nav>
 </div>
 
 <div class="wrap page-hero">
   <div class="eyebrow">Built around your day</div>
-  <h1>Build your dream day, see the price as you go.</h1>
-  <p class="lede">Pick your games, add mini golf and hosting, and tell us about your event. The price updates live, no waiting for a quote. If your combination matches one of our set packages, we'll apply that price automatically.</p>
+  <h1>Choose your package, see the price as you go.</h1>
+  <p class="lede">Pick Par, Birdie or Eagle for mini golf plus games, or games only if you'd rather skip the course. The price updates live, no waiting for a quote.</p>
 </div>
 
 <div class="wrap" id="build" style="padding-bottom:100px;">
@@ -35,49 +55,81 @@
     <div class="builder-col">
 
       <div class="builder-step">
-        <div class="step-label">Included in every booking</div>
-        <h3>Your mini golf course</h3>
-        <p class="step-sub">Mini golf is the flagship of every hire, it's the reason we make the drive. Choose self-serve or hosted below.</p>
-        <div class="foundation-options two-col" id="foundationOptions">
-          <label class="opt-card selected" data-value="golf">
-            <input type="radio" name="foundation" value="golf" checked>
-            <div class="opt-name">Mini Golf</div>
-            <div class="opt-price">£450</div>
-            <div class="opt-desc">9-hole course, self-serve, fully kitted out.</div>
+        <div class="step-label">Start here</div>
+        <h3>Choose your package</h3>
+        <p class="step-sub">Every package includes delivery, setup and collection, with no fixed hire window, choose your own drop-off and pick-up times, latest pickup 8pm.</p>
+
+        <div class="group-label">With mini golf</div>
+        <div class="foundation-options" id="golfPackages">
+          <label class="opt-card selected" data-value="par">
+            <input type="radio" name="package" value="par" checked>
+            <div class="opt-name">Par</div>
+            <div class="opt-price">£550</div>
+            <div class="opt-desc">Mini golf + 3 giant garden games.</div>
           </label>
-          <label class="opt-card" data-value="golf">
-            <input type="radio" name="foundation" value="golf-hosted" data-forcehost="1">
-            <div class="opt-name">Mini Golf, hosted</div>
+          <label class="opt-card" data-value="birdie">
+            <input type="radio" name="package" value="birdie">
+            <div class="opt-tag">Most popular</div>
+            <div class="opt-name">Birdie</div>
             <div class="opt-price">£650</div>
-            <div class="opt-desc">The course, plus a host running your tournament.</div>
+            <div class="opt-desc">Mini golf + 5 giant garden games.</div>
+          </label>
+          <label class="opt-card" data-value="eagle">
+            <input type="radio" name="package" value="eagle">
+            <div class="opt-name">Eagle</div>
+            <div class="opt-price">£750</div>
+            <div class="opt-desc">Mini golf + all 7 giant garden games.</div>
+          </label>
+        </div>
+
+        <div class="group-label">Games only, no mini golf</div>
+        <div class="foundation-options" id="gamesOnlyPackages">
+          <label class="opt-card" data-value="games3">
+            <input type="radio" name="package" value="games3">
+            <div class="opt-name">3 Games</div>
+            <div class="opt-price">£200</div>
+            <div class="opt-desc">Any 3 giant garden games.</div>
+          </label>
+          <label class="opt-card" data-value="games5">
+            <input type="radio" name="package" value="games5">
+            <div class="opt-name">5 Games</div>
+            <div class="opt-price">£325</div>
+            <div class="opt-desc">Any 5 giant garden games.</div>
+          </label>
+          <label class="opt-card" data-value="games7">
+            <input type="radio" name="package" value="games7">
+            <div class="opt-name">7 Games</div>
+            <div class="opt-price">£400</div>
+            <div class="opt-desc">All 7 giant garden games.</div>
           </label>
         </div>
       </div>
 
       <div class="builder-step">
-        <div class="step-label">Optional</div>
-        <h3>Add giant games</h3>
-        <p class="step-sub">These are add-ons to your mini golf hire, not standalone bookings. Any 3: £140 · Any 5: £220 · All 7: £280, applied automatically as you add more.</p>
+        <div class="step-label">Required</div>
+        <h3>Pick your games</h3>
+        <p class="step-sub" id="gamesStepSub">Your package includes 3 giant garden games, choose which ones below.</p>
+        <div class="games-counter" id="gamesCounter">0 of 3 selected</div>
         <div id="gamesList">
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Jenga" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Jenga</span></span><span class="g-price">£50</span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Connect 4" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Connect 4</span></span><span class="g-price">£50</span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Snakes & Ladders" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Snakes & Ladders</span></span><span class="g-price">£50</span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Noughts & Crosses" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Noughts & Crosses</span></span><span class="g-price">£50</span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Cornhole" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Cornhole</span></span><span class="g-price">£50</span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Dominoes" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Dominoes</span></span><span class="g-price">£50</span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Limbo" data-price="50"><span class="g-left"><span class="checkbox"></span><span class="g-name">Limbo</span></span><span class="g-price">£50</span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Jenga"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Jenga</span></span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Connect 4"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Connect 4</span></span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Snakes & Ladders"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Snakes & Ladders</span></span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Noughts & Crosses"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Noughts & Crosses</span></span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Cornhole"><span class="g-left"><span class="checkbox"></span><span class="g-name">Cornhole</span></span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Dominoes"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Dominoes</span></span></label>
+          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Limbo"><span class="g-left"><span class="checkbox"></span><span class="g-name">Limbo</span></span></label>
         </div>
       </div>
 
-      <div class="builder-step">
-        <div class="step-label">Optional</div>
-        <h3>Hosting</h3>
-        <p class="step-sub">We run your day: tournament format, scorecards tallied, awards ceremony. Up to 8 hours on-site.</p>
-        <label class="toggle-row">
-          <input type="checkbox" id="hostingToggle">
+      <div class="builder-step" id="eventHostStep">
+        <div class="step-label">Optional extra</div>
+        <h3>Event Host</h3>
+        <p class="step-sub">A dedicated host runs the mini golf course throughout your reception: keeping play moving, welcoming guests to the tee, and settling friendly scoring disputes.</p>
+        <label class="toggle-row" id="eventHostRow">
+          <input type="checkbox" id="hostToggle">
           <span class="t-left">
-            <h4>Add hosting — £200</h4>
-            <p>Equipment can stay with you longer than 8 hours at no extra charge, only the hosted time is capped.</p>
+            <h4>Add Event Host — £400</h4>
+            <p>Available with any mini golf package. Not available on games-only bookings, since there's no course to host.</p>
           </span>
           <span class="switch"></span>
         </label>
@@ -86,7 +138,7 @@
       <div class="builder-step">
         <div class="step-label">Setup</div>
         <h3>Indoors or outdoors?</h3>
-        <p class="step-sub">Mini golf sets up on grass or carpet. This is informational, it won't change your price.</p>
+        <p class="step-sub">Mini golf and games can be set up on grass or indoor carpet. This is informational, it won't change your price.</p>
         <div class="radio-pair" id="setupPair">
           <label class="radio-opt selected" data-value="outdoor"><input type="radio" name="setup" value="outdoor" checked>Outdoors (grass)</label>
           <label class="radio-opt" data-value="indoor"><input type="radio" name="setup" value="indoor">Indoors (carpet)</label>
@@ -106,7 +158,14 @@
           <div class="field"><label>Event date</label><input type="date" id="fDate"></div>
           <div class="field"><label>Guest numbers</label><input type="text" id="fGuests" placeholder="e.g. 80"></div>
         </div>
-        <div class="field"><label>Venue / address</label><input type="text" id="fVenue" placeholder="Venue name and postcode"></div>
+        <div class="field-row">
+          <div class="field"><label>Venue name</label><input type="text" id="fVenue" placeholder="Venue name"></div>
+          <div class="field">
+            <label>Venue postcode</label>
+            <input type="text" id="fPostcode" placeholder="e.g. M1 1AE">
+            <div id="postcodeStatus" style="font-size:12.5px; color:rgba(27,42,32,0.6); margin-top:6px; min-height:16px;"></div>
+          </div>
+        </div>
         <div class="field"><label>Anything else we should know?</label><textarea id="fNotes" rows="3" placeholder="Timings, awkward access, specific requests for your dream day..."></textarea></div>
       </div>
 
@@ -135,33 +194,41 @@
 
 <footer>
   <div class="wrap foot-row">
-    <a class="logo" href="index.html"><span class="logo-mark"></span> IN THE GREEN EVENTS</a>
+    <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
     <div class="foot-links">
       <a href="index.html">Home</a>
       <a href="packages.html">Packages</a>
       <a href="booking-info.html">Booking Info</a>
     </div>
-    <div class="foot-note">© In The Green Events. Serving weddings & events across the North West.</div>
+    <div class="foot-note">© On The Green Games. Serving weddings & events across the North West.</div>
   </div>
 </footer>
 
 <script>
-  const games = Array.from(document.querySelectorAll('.game-cb'));
-  const foundationInputs = Array.from(document.querySelectorAll('input[name="foundation"]'));
-  const foundationCards = Array.from(document.querySelectorAll('#foundationOptions .opt-card'));
-  const hostingToggle = document.getElementById('hostingToggle');
-  const setupOpts = Array.from(document.querySelectorAll('#setupPair .radio-opt'));
+  const PACKAGES = {
+    par:    { label:'Par',     price:550, games:3, golf:true  },
+    birdie: { label:'Birdie',  price:650, games:5, golf:true  },
+    eagle:  { label:'Eagle',   price:750, games:7, golf:true  },
+    games3: { label:'3 Games', price:200, games:3, golf:false },
+    games5: { label:'5 Games', price:325, games:5, golf:false },
+    games7: { label:'7 Games', price:400, games:7, golf:false }
+  };
 
-  function gamesPrice(n){
-    if(n<=0) return 0;
-    if(n>=7) return 280;
-    if(n>=5) return 220 + (n-5)*50;
-    if(n>=3) return 140 + (n-3)*50;
-    return n*50;
+  const games = Array.from(document.querySelectorAll('.game-cb'));
+  const packageInputs = Array.from(document.querySelectorAll('input[name="package"]'));
+  const packageCards = Array.from(document.querySelectorAll('#golfPackages .opt-card, #gamesOnlyPackages .opt-card'));
+  const hostToggle = document.getElementById('hostToggle');
+  const eventHostRow = document.getElementById('eventHostRow');
+  const setupOpts = Array.from(document.querySelectorAll('#setupPair .radio-opt'));
+  const submitBtn = document.getElementById('submitBooking');
+
+  function currentPackageKey(){
+    const checked = packageInputs.find(i => i.checked);
+    return checked ? checked.value : 'par';
   }
 
   function updateCardStyles(){
-    foundationCards.forEach(c=>{
+    packageCards.forEach(c=>{
       const input = c.querySelector('input');
       c.classList.toggle('selected', input.checked);
     });
@@ -171,93 +238,202 @@
     });
   }
 
-  function currentFoundation(){
-    const checked = foundationInputs.find(i=>i.checked);
-    return checked ? checked.value : 'golf';
+  function updateGamesUI(requiredCount){
+    const selected = games.filter(g => g.checked);
+    const n = selected.length;
+
+    document.getElementById('gamesStepSub').textContent =
+      'Your package includes ' + requiredCount + (requiredCount === 1 ? ' giant garden game' : ' giant garden games') + ', choose which ones below.';
+
+    const counter = document.getElementById('gamesCounter');
+    counter.textContent = n + ' of ' + requiredCount + ' selected';
+    counter.classList.toggle('complete', n === requiredCount);
+
+    games.forEach(g => {
+      const row = g.closest('.game-row');
+      if(!g.checked && n >= requiredCount){
+        row.classList.add('disabled');
+      } else {
+        row.classList.remove('disabled');
+      }
+    });
+
+    return n;
   }
 
   function recalc(){
     updateCardStyles();
 
-    const foundation = currentFoundation();
-    const forcedHost = foundation === 'golf-hosted';
+    const pkgKey = currentPackageKey();
+    const pkg = PACKAGES[pkgKey];
 
-    if(forcedHost){ hostingToggle.checked = true; hostingToggle.disabled = true; }
-    else { hostingToggle.disabled = false; }
+    // trim excess games if the newly chosen package requires fewer
+    let selected = games.filter(g => g.checked);
+    if(selected.length > pkg.games){
+      selected.slice(pkg.games).forEach(g => g.checked = false);
+      selected = games.filter(g => g.checked);
+    }
+    const n = updateGamesUI(pkg.games);
 
-    const hosting = hostingToggle.checked;
-    const selectedGames = games.filter(g=>g.checked);
-    const n = selectedGames.length;
-    let gPrice = gamesPrice(n);
-
-    let total = 450; // mini golf is included in every booking
-    let lines = [['9-Hole Mini Golf', 450]];
-    let badge = '';
-
-    const isChampionship = hosting && n === 7;
-
-    if(isChampionship){
-      total = 850;
-      lines = [
-        ['9-Hole Mini Golf', null],
-        ['All 7 giant games', null],
-        ['Hosting (up to 8 hours)', null]
-      ];
-      badge = 'Your build matches our Championship package — £850 applied automatically (saves £80 vs. adding these up separately).';
+    // Event Host only available on mini-golf-inclusive packages
+    if(!pkg.golf){
+      hostToggle.checked = false;
+      hostToggle.disabled = true;
+      eventHostRow.classList.add('disabled');
     } else {
-      if(hosting){ total += 200; lines.push(['Hosting (up to 8 hours)', 200]); }
-      if(n > 0){ total += gPrice; lines.push([n + (n===1?' game':' games') + ' selected', gPrice]); }
+      hostToggle.disabled = false;
+      eventHostRow.classList.remove('disabled');
+    }
 
-      if(hosting && n === 0){
-        badge = 'This is our Signature package — mini golf with hosting, £650.';
-      }
+    let total = pkg.price;
+    let lines = [[pkg.label + ' package', pkg.price]];
+
+    if(pkg.golf && hostToggle.checked){
+      total += 400;
+      lines.push(['Event Host', 400]);
+    }
+
+    if(mileageCharge > 0){
+      total += mileageCharge;
+      lines.push(['Mileage (approx. ' + mileageDistance + ' mi)', mileageCharge]);
     }
 
     document.getElementById('totalAmount').textContent = '£' + total;
 
     const summaryLines = document.getElementById('summaryLines');
-    if(lines.length === 0){
-      summaryLines.innerHTML = '<div class="summary-line muted">Nothing added yet, start with a foundation or a game above.</div>';
-    } else {
-      summaryLines.innerHTML = lines.map(l => {
-        const priceText = l[1] === null ? '' : ('£'+l[1]);
-        return `<div class="summary-line"><span>${l[0]}</span><span>${priceText}</span></div>`;
-      }).join('');
-    }
+    summaryLines.innerHTML = lines.map(l =>
+      `<div class="summary-line"><span>${l[0]}</span><span>£${l[1]}</span></div>`
+    ).join('');
 
     const badgeEl = document.getElementById('packageBadge');
-    if(badge){ badgeEl.textContent = badge; badgeEl.classList.add('show'); }
-    else { badgeEl.classList.remove('show'); }
+    if(n < pkg.games){
+      badgeEl.textContent = 'Pick ' + (pkg.games - n) + ' more game' + ((pkg.games - n) === 1 ? '' : 's') + ' to complete your package.';
+      badgeEl.classList.add('show');
+      submitBtn.classList.add('disabled');
+    } else {
+      badgeEl.textContent = '';
+      badgeEl.classList.remove('show');
+      submitBtn.classList.remove('disabled');
+    }
 
     window._bookingTotal = total;
-    window._bookingLines = lines;
-    window._bookingGames = selectedGames.map(g=>g.dataset.name);
+    window._bookingPackage = pkg.label;
+    window._bookingGames = selected.map(g => g.dataset.name);
+    window._bookingHost = pkg.golf && hostToggle.checked;
   }
 
-  foundationInputs.forEach(i => i.addEventListener('change', recalc));
+  packageInputs.forEach(i => i.addEventListener('change', recalc));
   games.forEach(g => g.addEventListener('change', recalc));
-  hostingToggle.addEventListener('change', recalc);
+  hostToggle.addEventListener('change', recalc);
   setupOpts.forEach(opt => opt.querySelector('input').addEventListener('change', recalc));
+
+  // ---- Mileage estimate via postcodes.io (free, no API key) ----
+  const BASE_POSTCODE = 'PR1 1AA';   // TODO: replace with your real base postcode
+  const FREE_RADIUS_MILES = 20;
+  const MILE_RATE = 0.5;
+  const ROUND_TRIP = false;          // set true if £0.50/mile should be charged there-and-back
+
+  let baseCoords = null;
+  let mileageCharge = 0;
+  let mileageDistance = null;
+
+  async function geocodePostcode(pc){
+    const clean = (pc || '').trim().replace(/\s+/g, '');
+    if(!clean) return null;
+    try{
+      const res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(clean));
+      const data = await res.json();
+      if(data.status === 200 && data.result){
+        return { lat: data.result.latitude, lon: data.result.longitude };
+      }
+    } catch(e){ /* offline, blocked, or invalid postcode — fail quietly */ }
+    return null;
+  }
+
+  function haversineMiles(a, b){
+    const R = 3958.8;
+    const toRad = d => d * Math.PI / 180;
+    const dLat = toRad(b.lat - a.lat);
+    const dLon = toRad(b.lon - a.lon);
+    const lat1 = toRad(a.lat), lat2 = toRad(b.lat);
+    const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1-h));
+  }
+
+  async function updateMileage(){
+    const pcInput = document.getElementById('fPostcode');
+    const statusEl = document.getElementById('postcodeStatus');
+    const pc = pcInput.value;
+
+    if(!pc){
+      mileageDistance = null; mileageCharge = 0;
+      statusEl.textContent = '';
+      recalc();
+      return;
+    }
+
+    statusEl.textContent = 'Checking distance…';
+
+    if(!baseCoords) baseCoords = await geocodePostcode(BASE_POSTCODE);
+    const custCoords = await geocodePostcode(pc);
+
+    if(!baseCoords || !custCoords){
+      statusEl.textContent = "Couldn't find that postcode — mileage will be confirmed manually.";
+      mileageDistance = null; mileageCharge = 0;
+      recalc();
+      return;
+    }
+
+    let miles = haversineMiles(baseCoords, custCoords);
+    if(ROUND_TRIP) miles *= 2;
+    mileageDistance = Math.round(miles);
+
+    const chargeableMiles = Math.max(0, mileageDistance - FREE_RADIUS_MILES);
+    mileageCharge = Math.round(chargeableMiles * MILE_RATE);
+
+    if(mileageCharge > 0){
+      statusEl.textContent = `Approx. ${mileageDistance} miles from us — estimated mileage £${mileageCharge} (straight-line estimate, confirmed exactly once we log the route).`;
+    } else {
+      statusEl.textContent = `Approx. ${mileageDistance} miles from us — within our free ${FREE_RADIUS_MILES}-mile radius.`;
+    }
+    recalc();
+  }
+
+  let pcDebounce;
+  document.getElementById('fPostcode').addEventListener('input', () => {
+    clearTimeout(pcDebounce);
+    pcDebounce = setTimeout(updateMileage, 600);
+  });
 
   document.getElementById('submitBooking').addEventListener('click', function(e){
     e.preventDefault();
+    if(submitBtn.classList.contains('disabled')) return;
+
     const name = document.getElementById('fName').value || '(not given)';
     const email = document.getElementById('fEmail').value || '(not given)';
     const date = document.getElementById('fDate').value || '(not given)';
     const guests = document.getElementById('fGuests').value || '(not given)';
     const venue = document.getElementById('fVenue').value || '(not given)';
+    const postcode = document.getElementById('fPostcode').value || '(not given)';
     const notes = document.getElementById('fNotes').value || '(none)';
     const setup = document.querySelector('input[name="setup"]:checked').value;
+    const mileageText = mileageDistance !== null
+      ? ('~' + mileageDistance + ' miles' + (mileageCharge > 0 ? (', est. mileage charge £' + mileageCharge) : ', within free radius'))
+      : 'not calculated';
 
     const gamesText = window._bookingGames.length ? window._bookingGames.join(', ') : 'None';
     const body = [
       'New booking request from the website builder',
       '',
+      'Package: ' + window._bookingPackage,
+      'Event Host: ' + (window._bookingHost ? 'Yes (£400)' : 'No'),
       'Name: ' + name,
       'Email: ' + email,
       'Event date: ' + date,
       'Guest numbers: ' + guests,
       'Venue: ' + venue,
+      'Venue postcode: ' + postcode,
+      'Estimated distance: ' + mileageText,
       'Setup preference: ' + setup,
       'Games selected: ' + gamesText,
       'Estimated total: £' + window._bookingTotal,
@@ -265,20 +441,16 @@
       'Notes: ' + notes
     ].join('\n');
 
-    const mailto = 'mailto:hello@inthegreenevents.co.uk?subject=' + encodeURIComponent('Booking request — ' + name) + '&body=' + encodeURIComponent(body);
+    const mailto = 'mailto:hello@onthegreengames.co.uk?subject=' + encodeURIComponent('Booking request — ' + name) + '&body=' + encodeURIComponent(body);
     window.location.href = mailto;
   });
 
-  // preselect from packages page links, e.g. booking.html?package=championship
+  // preselect from packages page links, e.g. booking.html?package=birdie
   const params = new URLSearchParams(window.location.search);
-  const pkg = params.get('package');
-  if(pkg === 'championship'){
-    document.querySelector('input[value="golf-hosted"]').checked = true;
-    games.forEach(g=>g.checked = true);
-  } else if(pkg === 'signature'){
-    document.querySelector('input[value="golf-hosted"]').checked = true;
-  } else if(pkg === 'minigolf'){
-    document.querySelector('input[value="golf"]').checked = true;
+  const pkgParam = params.get('package');
+  if(pkgParam && PACKAGES[pkgParam]){
+    const input = document.querySelector('input[name="package"][value="' + pkgParam + '"]');
+    if(input) input.checked = true;
   }
 
   recalc();
@@ -318,8 +490,6 @@
       }
     }
 
-    // Only engage the JS fallback if native sticky isn't actually sticking
-    // (some embed contexts silently compute it as 'static').
     const nativeSticky = getComputedStyle(card).position;
     if(nativeSticky !== 'sticky' && nativeSticky !== '-webkit-sticky'){
       measure();
