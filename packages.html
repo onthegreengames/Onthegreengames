@@ -3,113 +3,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Packages & Pricing — In The Green Events</title>
+<title>Packages & Pricing — On The Green Games</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>
+  .mini-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  .mini-card{
+    background:var(--cream-card); border:1px solid var(--green-line); border-radius:18px;
+    padding:26px; text-align:center;
+  }
+  .mini-card .mc-name{ font-family:'Fraunces'; font-weight:600; font-size:17px; margin-bottom:6px; }
+  .mini-card .mc-price{ font-family:'Fraunces'; font-weight:600; font-size:26px; color:var(--green-deep); margin-bottom:8px; }
+  .mini-card .mc-desc{ font-size:13.5px; color:rgba(27,42,32,0.6); line-height:1.5; }
+  @media (max-width:880px){ .mini-grid{ grid-template-columns:1fr; } }
+</style>
 </head>
 <body>
 
 <div class="wrap">
   <nav>
-    <a class="logo" href="index.html"><span class="logo-mark"></span> IN THE GREEN EVENTS</a>
+    <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
     <div class="nav-links">
       <a href="index.html">Home</a>
       <a href="packages.html" class="current">Packages</a>
       <a href="booking-info.html">Booking Info</a>
-      <a class="btn" href="booking.html">Build Your Day →</a>
+      <a class="btn" href="booking.html">Check Availability →</a>
     </div>
   </nav>
 </div>
 
 <div class="wrap page-hero">
   <div class="eyebrow">Clear pricing, no bespoke quotes</div>
-  <h1>Every price, every package, right here.</h1>
-  <p class="lede">Mini golf is the flagship attraction. Add the full games line-up and hosting to build a package that fits your day, from an intimate reception to a full wedding tournament.</p>
+  <h1>Wedding Packages, Built Around Mini Golf</h1>
+  <p class="lede">Every package below includes full delivery, setup and collection, there's nothing extra to add before the total you see at checkout. There's no fixed hire window either: you choose your own drop-off and pick-up times, with a latest pick-up of 8pm, so the kit is there for exactly as long as you want it.</p>
 </div>
 
 <div class="wrap">
   <div class="pkg-grid">
     <div class="pkg-card">
-      <div class="pkg-tag">Mini Golf · Self-serve</div>
-      <div class="pkg-price"><sup>From</sup>£450</div>
-      <div class="pkg-desc">The 9-hole course, fully kitted out. Guests play at their own pace. Ideal for smaller receptions.</div>
+      <div class="pkg-tag">Par</div>
+      <div class="pkg-price">£550</div>
+      <div class="pkg-desc">Mini golf plus 3 giant garden games, delivered, set up and collected around your day.</div>
       <ul class="pkg-features">
-        <li>9-hole course, delivered & collected</li>
-        <li>Clubs, balls & scorecards included</li>
-        <li>Medals & trophy included</li>
-        <li>Grass or indoor carpet setup</li>
+        <li>9-hole mini golf course</li>
+        <li>Any 3 giant garden games</li>
+        <li>Delivery, setup & collection</li>
+        <li>No fixed hire window, latest pickup 8pm</li>
       </ul>
-      <a class="btn" href="booking.html?package=minigolf">Build this package →</a>
-    </div>
-
-    <div class="pkg-card">
-      <div class="pkg-tag">Signature · Hosted</div>
-      <div class="pkg-price"><sup>From</sup>£650</div>
-      <div class="pkg-desc">Mini golf, hosted by us: tournament format, scorecards tallied, medals and trophy presented.</div>
-      <ul class="pkg-features">
-        <li>9-hole course, delivered & collected</li>
-        <li>Hosted, up to 8 hours on-site</li>
-        <li>Tournament format & awards ceremony</li>
-        <li>Grass or indoor carpet setup</li>
-      </ul>
-      <a class="btn" href="booking.html?package=signature">Build this package →</a>
+      <a class="btn" href="booking.html">Choose your package →</a>
     </div>
 
     <div class="pkg-card featured">
-      <div class="pkg-tag">Championship · Hosted</div>
-      <div class="pkg-price"><sup>From</sup>£850</div>
-      <div class="pkg-desc">Mini golf plus every giant game we own, hosted as one full event. The whole day is the entertainment.</div>
+      <div class="pkg-tag">Birdie · Most Popular</div>
+      <div class="pkg-price">£650</div>
+      <div class="pkg-desc">Mini golf plus 5 giant garden games, the combination most couples book.</div>
       <ul class="pkg-features">
-        <li>9-hole course + all 7 giant games</li>
-        <li>Hosted, up to 8 hours on-site</li>
-        <li>Tournament format & awards ceremony</li>
-        <li>£150 saving vs. adding it up separately</li>
+        <li>9-hole mini golf course</li>
+        <li>Any 5 giant garden games</li>
+        <li>Delivery, setup & collection</li>
+        <li>No fixed hire window, latest pickup 8pm</li>
       </ul>
-      <a class="btn gold" href="booking.html?package=championship">Build this package →</a>
+      <a class="btn gold" href="booking.html">Choose your package →</a>
+    </div>
+
+    <div class="pkg-card">
+      <div class="pkg-tag">Eagle</div>
+      <div class="pkg-price">£750</div>
+      <div class="pkg-desc">Mini golf plus all 7 giant garden games, the complete day of entertainment.</div>
+      <ul class="pkg-features">
+        <li>9-hole mini golf course</li>
+        <li>All 7 giant garden games</li>
+        <li>Delivery, setup & collection</li>
+        <li>No fixed hire window, latest pickup 8pm</li>
+      </ul>
+      <a class="btn" href="booking.html">Choose your package →</a>
     </div>
   </div>
-  <p class="pkg-note">Every package includes the 9-hole mini golf course as standard. Prices shown are starting points, hosting and extra games change your total, see it update live in our booking builder.</p>
+  <p class="pkg-note">Every package above includes the 9-hole mini golf course as standard, delivery, setup and collection are always included, and pricing is worked out before you ever get in touch.</p>
 </div>
 
 <section>
   <div class="wrap">
     <div class="section-head">
-      <div class="eyebrow">Add to any package</div>
-      <h2>Extra games, layered onto your mini golf hire.</h2>
-      <p class="lede">Games are an add-on to a mini golf package, not a standalone hire, mini golf is included in every booking. Pick any of the seven below, the more you add, the less each one costs.</p>
+      <div class="eyebrow">Prefer games only?</div>
+      <h2>Giant garden games, without the course.</h2>
+      <p class="lede">Prefer just the giant garden games without mini golf? The more you add, the better the per-game value works out.</p>
     </div>
-    <div class="games-strip">
-      <div>
-        <h3 style="font-size:16px; margin-bottom:16px;">The seven games</h3>
-        <ul class="games-list plain">
-          <li>Giant Jenga</li>
-          <li>Giant Connect 4</li>
-          <li>Giant Snakes & Ladders</li>
-          <li>Giant Noughts & Crosses</li>
-          <li>Cornhole</li>
-          <li>Giant Dominoes</li>
-          <li>Limbo</li>
-        </ul>
+    <div class="mini-grid">
+      <div class="mini-card">
+        <div class="mc-name">3 Games</div>
+        <div class="mc-price">£200</div>
+        <div class="mc-desc">Any 3 giant garden games, delivered, set up and collected.</div>
       </div>
+      <div class="mini-card">
+        <div class="mc-name">5 Games</div>
+        <div class="mc-price">£325</div>
+        <div class="mc-desc">Any 5 giant garden games, delivered, set up and collected.</div>
+      </div>
+      <div class="mini-card">
+        <div class="mc-name">7 Games</div>
+        <div class="mc-price">£400</div>
+        <div class="mc-desc">All 7 giant garden games, delivered, set up and collected.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="course-block" style="grid-template-columns:1.2fr 0.8fr;">
       <div>
-        <h3 style="font-size:16px; margin-bottom:16px;">What they cost, added together</h3>
-        <table class="bundle-table">
-          <thead>
-            <tr><th>Games added</th><th>Total</th><th>You save</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>1 game</td><td class="price">£50</td><td class="save">—</td></tr>
-            <tr><td>2 games</td><td class="price">£100</td><td class="save">—</td></tr>
-            <tr><td>3 games</td><td class="price">£140</td><td class="save">£10</td></tr>
-            <tr><td>4 games</td><td class="price">£190</td><td class="save">£10</td></tr>
-            <tr><td>5 games</td><td class="price">£220</td><td class="save">£30</td></tr>
-            <tr><td>6 games</td><td class="price">£270</td><td class="save">£30</td></tr>
-            <tr><td>All 7 games</td><td class="price">£280</td><td class="save">£70</td></tr>
-          </tbody>
-        </table>
-        <p style="font-size:12.5px; color:rgba(27,42,32,0.5); margin-top:12px;">"You save" compares against paying £50 per game individually. This is exactly what our booking builder calculates for you, live.</p>
+        <div class="eyebrow on-dark">Optional extra</div>
+        <h2>Never referee your own wedding.</h2>
+        <p class="lede">A dedicated host runs the mini golf course throughout your reception: keeping play moving, welcoming guests to the tee, and settling friendly scoring disputes, so you're never the one in charge of it.</p>
+      </div>
+      <div class="stat-card">
+        <div class="top-line"><span>Event Host</span><span class="par">£400</span></div>
+        <div class="stat-row"><span class="check"></span> Runs the course throughout your reception</div>
+        <div class="stat-row"><span class="check"></span> Welcomes guests to the tee</div>
+        <div class="stat-row"><span class="check"></span> Keeps play moving & settles disputes</div>
+        <div class="stat-row"><span class="check"></span> Add to any package</div>
       </div>
     </div>
   </div>
@@ -117,20 +132,20 @@
 
 <div class="wrap final-cta" id="contact">
   <h2>Ready to see it <span class="italic">on your green?</span></h2>
-  <p>Build your exact combination and watch the price update live, deposits, hosting and extra games all worked out for you.</p>
-  <a class="btn gold" href="booking.html">Start building →</a>
+  <p>Choose your package, pick your date, and see your total clearly before you pay a thing.</p>
+  <a class="btn gold" href="booking.html">Choose your package →</a>
   <div class="foot">9-hole mini golf & giant games hire for weddings, celebrations & good times</div>
 </div>
 
 <footer>
   <div class="wrap foot-row">
-    <a class="logo" href="index.html"><span class="logo-mark"></span> IN THE GREEN EVENTS</a>
+    <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
     <div class="foot-links">
       <a href="index.html">Home</a>
       <a href="packages.html">Packages</a>
       <a href="booking-info.html">Booking Info</a>
     </div>
-    <div class="foot-note">© In The Green Events. Serving weddings & events across the North West.</div>
+    <div class="foot-note">© On The Green Games. Serving weddings & events across the North West.</div>
   </div>
 </footer>
 
