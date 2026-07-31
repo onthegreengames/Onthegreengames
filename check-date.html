@@ -31,6 +31,12 @@
   .check-total{ display:flex; justify-content:space-between; align-items:baseline; margin-top:16px; }
   .check-total .label{ font-size:13.5px; color:rgba(27,42,32,0.6); }
   .check-total .amount{ font-family:'Fraunces'; font-weight:600; font-size:20px; color:var(--green-deep); }
+  .field-error{
+    font-size:12.5px; color:#B3492F; margin-top:6px; display:none; font-weight:600;
+  }
+  .field-error.show{ display:block; }
+  .field.has-error input{ border-color:#B3492F; }
+  .field.is-valid input{ border-color:var(--green-mid); }
   .btn.loading{ opacity:0.7; pointer-events:none; }
   .btn:disabled, .btn.disabled{ opacity:0.45; pointer-events:none; }
   .cal-widget{
@@ -124,10 +130,11 @@
         <label>Venue name</label>
         <input type="text" id="cVenue" placeholder="Venue name">
       </div>
-      <div class="field">
+      <div class="field" id="postcodeField">
         <label>Venue postcode</label>
         <input type="text" id="cPostcode" placeholder="e.g. M1 1AE">
         <div class="mileage-line empty" id="mileageLine"></div>
+        <div class="field-error" id="postcodeError"></div>
       </div>
       <div class="field">
         <label>Wedding date</label>
@@ -179,27 +186,72 @@
 
 <script src="nav.js"></script>
 <script>
-  // ---- Mileage estimate via postcodes.io (free, no API key) ----
-  const BASE_POSTCODE = 'PR1 1AA';   // TODO: replace with your real base postcode
+  // ---- Postcode validation + mileage, backed by a Supabase postcode-district table ----
+  //
+  // TODO before this is live: fill in your real Supabase project URL and anon
+  // (public) key below, plus the base district you're pricing mileage from.
+  // The anon key is safe to expose in browser code, it's designed for
+  // exactly this, read-only public queries. Never put your service_role key here.
+  //
+  // Expected table: one row per POSTCODE DISTRICT (the outward code, e.g. "M1",
+  // "SW1A", "PR1", not the full unit postcode), with latitude/longitude columns.
+  // Districts are the right grain for this, ~2,900 UK-wide vs 1.7m full
+  // postcodes, small enough to import easily and plenty accurate for mileage
+  // pricing. Adjust table/column names below to match your actual import.
+  const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';   // TODO
+  const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLIC-KEY';               // TODO
+  const DISTRICTS_TABLE = 'postcode_districts';                   // TODO if different
+  const DISTRICT_COLUMN = 'district';                             // TODO if different
+  const LAT_COLUMN = 'latitude';                                  // TODO if different
+  const LON_COLUMN = 'longitude';                                 // TODO if different
+  const BASE_DISTRICT = 'PR1';                                    // TODO: your real base district
+
+  const SUPABASE_CONFIGURED = !SUPABASE_URL.includes('YOUR-PROJECT-REF');
   const FREE_RADIUS_MILES = 20;      // TODO: confirm your actual standard-area radius
   const MILE_RATE = 0.5;
   const ROUND_TRIP = false;
 
-  let baseCoords = null;
+  // Demo-only district coordinates so this is testable before Supabase is wired
+  // up. Ignored automatically the moment SUPABASE_URL above is set for real.
+  const DEMO_DISTRICTS = {
+    'PR1':  { lat: 53.7632, lon: -2.7031 },
+    'M1':   { lat: 53.4794, lon: -2.2453 },
+    'M2':   { lat: 53.4808, lon: -2.2475 },
+    'L1':   { lat: 53.4058, lon: -2.9860 },
+    'LS1':  { lat: 53.7975, lon: -1.5488 },
+    'CH1':  { lat: 53.1908, lon: -2.8916 },
+    'SW1A': { lat: 51.5010, lon: -0.1416 }
+  };
+
+  // Full UK postcode format: outward code (district) + inward code, e.g. "M1 1AE"
+  const POSTCODE_REGEX = /^([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})$/i;
+
+  let baseCoords = SUPABASE_CONFIGURED ? null : DEMO_DISTRICTS[BASE_DISTRICT];
   let mileageCharge = 0;
   let mileageDistance = null;
   let mileageReady = false;
+  let postcodeValid = false;
 
-  async function geocodePostcode(pc){
-    const clean = (pc || '').trim().replace(/\s+/g, '');
-    if(!clean) return null;
+  function extractDistrict(pc){
+    const clean = (pc || '').trim().toUpperCase();
+    const match = clean.match(POSTCODE_REGEX);
+    return match ? match[1] : null;
+  }
+
+  async function lookupDistrict(district){
+    if(!SUPABASE_CONFIGURED){
+      return DEMO_DISTRICTS[district] || null;
+    }
     try{
-      const res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(clean));
-      const data = await res.json();
-      if(data.status === 200 && data.result){
-        return { lat: data.result.latitude, lon: data.result.longitude };
+      const url = `${SUPABASE_URL}/rest/v1/${DISTRICTS_TABLE}?${DISTRICT_COLUMN}=eq.${encodeURIComponent(district)}&select=${LAT_COLUMN},${LON_COLUMN}`;
+      const res = await fetch(url, {
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+      });
+      const rows = await res.json();
+      if(rows.length){
+        return { lat: rows[0][LAT_COLUMN], lon: rows[0][LON_COLUMN] };
       }
-    } catch(e){ /* fail quietly */ }
+    } catch(e){ console.warn('Supabase district lookup failed', e); }
     return null;
   }
 
@@ -213,27 +265,63 @@
     return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1-h));
   }
 
+  function setPostcodeError(msg){
+    const fieldEl = document.getElementById('postcodeField');
+    const errEl = document.getElementById('postcodeError');
+    fieldEl.classList.add('has-error');
+    fieldEl.classList.remove('is-valid');
+    errEl.textContent = msg;
+    errEl.classList.add('show');
+    document.getElementById('mileageLine').classList.add('empty');
+  }
+
+  function clearPostcodeError(){
+    const fieldEl = document.getElementById('postcodeField');
+    document.getElementById('postcodeError').classList.remove('show');
+    fieldEl.classList.remove('has-error');
+  }
+
   async function updateMileage(){
     const pc = document.getElementById('cPostcode').value;
     const lineEl = document.getElementById('mileageLine');
+    const fieldEl = document.getElementById('postcodeField');
 
-    if(!pc){
-      mileageReady = false; mileageDistance = null; mileageCharge = 0;
+    postcodeValid = false;
+    mileageReady = false;
+    mileageDistance = null;
+    mileageCharge = 0;
+    fieldEl.classList.remove('is-valid');
+
+    if(!pc.trim()){
+      clearPostcodeError();
       lineEl.classList.add('empty');
       return;
     }
 
-    lineEl.classList.remove('empty');
-    lineEl.textContent = 'Checking distance…';
-
-    if(!baseCoords) baseCoords = await geocodePostcode(BASE_POSTCODE);
-    const custCoords = await geocodePostcode(pc);
-
-    if(!baseCoords || !custCoords){
-      lineEl.textContent = "Couldn't find that postcode, mileage will be confirmed manually.";
-      mileageReady = false; mileageDistance = null; mileageCharge = 0;
+    const district = extractDistrict(pc);
+    if(!district){
+      setPostcodeError("That doesn't look like a valid UK postcode. Double check and try again.");
       return;
     }
+
+    lineEl.classList.remove('empty');
+    lineEl.textContent = 'Checking postcode…';
+
+    if(!baseCoords) baseCoords = await lookupDistrict(BASE_DISTRICT);
+    const custCoords = await lookupDistrict(district);
+
+    if(!custCoords){
+      setPostcodeError("We don't have coverage data for that postcode yet. Get in touch and we'll confirm your price manually.");
+      return;
+    }
+    if(!baseCoords){
+      lineEl.textContent = "Couldn't calculate mileage right now, we'll confirm it manually.";
+      return;
+    }
+
+    clearPostcodeError();
+    fieldEl.classList.add('is-valid');
+    postcodeValid = true;
 
     let miles = haversineMiles(baseCoords, custCoords);
     if(ROUND_TRIP) miles *= 2;
@@ -255,21 +343,14 @@
 
   // ---- Availability calendar, backed by Supabase ----
   //
-  // TODO before this is live: fill in your real Supabase project URL and anon
-  // (public) key below. The anon key is safe to expose in browser code, it's
-  // designed for exactly this, read-only public queries. Never put your
-  // service_role key here, that one must stay server-side only.
+  // Reuses SUPABASE_URL / SUPABASE_ANON_KEY / SUPABASE_CONFIGURED defined above.
   //
   // Expected table: a table (default name below) with one row per CONFIRMED
   // booking, containing at minimum a date column (default name below) storing
-  // the event date as YYYY-MM-DD. Adjust SUPABASE_TABLE / SUPABASE_DATE_COLUMN
+  // the event date as YYYY-MM-DD. Adjust BOOKINGS_TABLE / BOOKING_DATE_COLUMN
   // to match your actual schema.
-  const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';   // TODO
-  const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLIC-KEY';               // TODO
-  const SUPABASE_TABLE = 'bookings';                              // TODO if different
-  const SUPABASE_DATE_COLUMN = 'event_date';                      // TODO if different
-
-  const SUPABASE_CONFIGURED = !SUPABASE_URL.includes('YOUR-PROJECT-REF');
+  const BOOKINGS_TABLE = 'bookings';                              // TODO if different
+  const BOOKING_DATE_COLUMN = 'event_date';                       // TODO if different
 
   // Demo-only blocked dates so the calendar visibly works before Supabase is
   // wired up. This is ignored the moment SUPABASE_URL above is set for real.
@@ -295,7 +376,7 @@
       return new Set(DEMO_BLOCKED_DATES);
     }
     try{
-      const url = `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?select=${SUPABASE_DATE_COLUMN}`;
+      const url = `${SUPABASE_URL}/rest/v1/${BOOKINGS_TABLE}?select=${BOOKING_DATE_COLUMN}`;
       const res = await fetch(url, {
         headers: {
           apikey: SUPABASE_ANON_KEY,
@@ -303,7 +384,7 @@
         }
       });
       const rows = await res.json();
-      return new Set(rows.map(r => r[SUPABASE_DATE_COLUMN]));
+      return new Set(rows.map(r => r[BOOKING_DATE_COLUMN]));
     } catch(e){
       console.warn('Could not reach Supabase, treating all dates as available for now.', e);
       return new Set();
@@ -416,12 +497,20 @@
       await updateMileage();
     }
 
+    btn.classList.remove('loading');
+    btn.textContent = 'Check Date & Price →';
+
+    if(!postcodeValid){
+      // updateMileage() already set the specific inline error under the
+      // postcode field (invalid format vs. not in our coverage data), so we
+      // just stop here rather than continuing with an unpriced booking.
+      document.getElementById('postcodeField').scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+
     // Final safety check against the same blocked-dates set the calendar
     // uses, in case it changed since the calendar was first loaded.
     const isAvailable = !blockedDates.has(date);
-
-    btn.classList.remove('loading');
-    btn.textContent = 'Check Date & Price →';
 
     const resultEl = document.getElementById('availResult');
     const titleEl = document.getElementById('availTitle');
