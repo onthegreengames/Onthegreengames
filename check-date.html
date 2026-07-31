@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check Your Date — On The Green Games</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .check-wrap{ max-width:620px; margin:0 auto; }
+  .check-card{
+    background:var(--cream-card); border:1px solid var(--green-line); border-radius:22px;
+    padding:40px; box-shadow:0 24px 50px -34px rgba(27,42,32,0.25);
+  }
+  .mileage-line{
+    display:flex; justify-content:space-between; align-items:center;
+    background:rgba(30,71,52,0.06); border-radius:12px; padding:14px 18px;
+    font-size:14px; font-weight:600; margin-top:6px; min-height:20px;
+  }
+  .mileage-line.empty{ display:none; }
+  .avail-result{
+    margin-top:22px; padding:20px; border-radius:14px; display:none;
+  }
+  .avail-result.show{ display:block; }
+  .avail-result.available{ background:rgba(192,145,60,0.12); border:1px solid rgba(192,145,60,0.35); }
+  .avail-result.unavailable{ background:rgba(217,122,87,0.12); border:1px solid rgba(217,122,87,0.35); }
+  .avail-result h4{ font-family:'Fraunces'; font-weight:600; font-size:17px; margin-bottom:6px; }
+  .avail-result p{ font-size:13.5px; color:rgba(27,42,32,0.7); margin:0; }
+  .check-total{ display:flex; justify-content:space-between; align-items:baseline; margin-top:16px; }
+  .check-total .label{ font-size:13.5px; color:rgba(27,42,32,0.6); }
+  .check-total .amount{ font-family:'Fraunces'; font-weight:600; font-size:20px; color:var(--green-deep); }
+  .btn.loading{ opacity:0.7; pointer-events:none; }
+  .btn:disabled, .btn.disabled{ opacity:0.45; pointer-events:none; }
+  .ask-list{ display:flex; gap:18px; flex-wrap:wrap; margin:18px 0 30px; }
+  .ask-list span{
+    font-size:12.5px; font-weight:600; color:var(--green-mid);
+    background:rgba(30,71,52,0.06); padding:7px 14px; border-radius:100px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" type="button">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+
+      <div class="nav-dropdown">
+        <button class="nav-dropdown-trigger" id="exploreTrigger" aria-expanded="false" type="button">Explore <span class="chev"></span></button>
+        <div class="mega-panel" id="explorePanel">
+          <a href="mini-golf.html" class="mega-item">
+            <div class="mega-item-title">Mini Golf</div>
+            <div class="mega-item-desc">The 9-hole course, delivered and set up for you.</div>
+          </a>
+          <a href="giant-games.html" class="mega-item">
+            <div class="mega-item-title">Giant Games</div>
+            <div class="mega-item-desc">Oversized lawn classics for every age.</div>
+          </a>
+          <a href="gallery.html" class="mega-item">
+            <div class="mega-item-title">Gallery</div>
+            <div class="mega-item-desc">Real weddings, real guests, real fun.</div>
+          </a>
+        </div>
+      </div>
+
+      <a href="packages.html">Packages</a>
+      <a href="booking-info.html">Booking Info</a>
+      <a class="btn" href="check-date.html">Check Availability →</a>
+    </div>
+  </nav>
+</div>
+
+<div class="wrap page-hero">
+  <div class="eyebrow">Step 1 of 3</div>
+  <h1>Let's Check Your Date</h1>
+  <p class="lede">Tell us where and when, and we'll do the maths for you. Venues outside our standard area are simply charged at 50p per mile, added automatically. Nothing is booked at this point, this step just confirms availability and your final price before you go on to pay.</p>
+</div>
+
+<div class="wrap" style="padding-bottom:100px;">
+  <div class="check-wrap">
+
+    <div class="ask-list">
+      <span>Venue name</span>
+      <span>Venue postcode</span>
+      <span>Wedding date</span>
+    </div>
+
+    <div class="check-card">
+      <div class="field">
+        <label>Venue name</label>
+        <input type="text" id="cVenue" placeholder="Venue name">
+      </div>
+      <div class="field">
+        <label>Venue postcode</label>
+        <input type="text" id="cPostcode" placeholder="e.g. M1 1AE">
+        <div class="mileage-line empty" id="mileageLine"></div>
+      </div>
+      <div class="field">
+        <label>Wedding date</label>
+        <input type="date" id="cDate">
+      </div>
+
+      <div class="avail-result" id="availResult">
+        <h4 id="availTitle"></h4>
+        <p id="availBody"></p>
+        <div class="check-total" id="checkTotal" style="display:none;">
+          <span class="label">Mileage to add to your package</span>
+          <span class="amount" id="checkMileageAmount">£0</span>
+        </div>
+      </div>
+
+      <a class="btn gold" href="#" id="checkBtn" style="width:100%; justify-content:center; margin-top:24px;">Check Date & Price →</a>
+      <p id="formError" style="color:#B3492F; font-size:13px; margin-top:12px; display:none;">Please fill in venue name, postcode and your wedding date first.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot-row">
+    <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
+    <div class="foot-links">
+      <a href="index.html">Home</a>
+      <a href="packages.html">Packages</a>
+      <a href="booking-info.html">Booking Info</a>
+    </div>
+    <div class="foot-note">© On The Green Games. Serving weddings & events across the North West.</div>
+  </div>
+</footer>
+
+<script src="nav.js"></script>
+<script>
+  // ---- Mileage estimate via postcodes.io (free, no API key) ----
+  const BASE_POSTCODE = 'PR1 1AA';   // TODO: replace with your real base postcode
+  const FREE_RADIUS_MILES = 20;      // TODO: confirm your actual standard-area radius
+  const MILE_RATE = 0.5;
+  const ROUND_TRIP = false;
+
+  let baseCoords = null;
+  let mileageCharge = 0;
+  let mileageDistance = null;
+  let mileageReady = false;
+
+  async function geocodePostcode(pc){
+    const clean = (pc || '').trim().replace(/\s+/g, '');
+    if(!clean) return null;
+    try{
+      const res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(clean));
+      const data = await res.json();
+      if(data.status === 200 && data.result){
+        return { lat: data.result.latitude, lon: data.result.longitude };
+      }
+    } catch(e){ /* fail quietly */ }
+    return null;
+  }
+
+  function haversineMiles(a, b){
+    const R = 3958.8;
+    const toRad = d => d * Math.PI / 180;
+    const dLat = toRad(b.lat - a.lat);
+    const dLon = toRad(b.lon - a.lon);
+    const lat1 = toRad(a.lat), lat2 = toRad(b.lat);
+    const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1-h));
+  }
+
+  async function updateMileage(){
+    const pc = document.getElementById('cPostcode').value;
+    const lineEl = document.getElementById('mileageLine');
+
+    if(!pc){
+      mileageReady = false; mileageDistance = null; mileageCharge = 0;
+      lineEl.classList.add('empty');
+      return;
+    }
+
+    lineEl.classList.remove('empty');
+    lineEl.textContent = 'Checking distance…';
+
+    if(!baseCoords) baseCoords = await geocodePostcode(BASE_POSTCODE);
+    const custCoords = await geocodePostcode(pc);
+
+    if(!baseCoords || !custCoords){
+      lineEl.textContent = "Couldn't find that postcode, mileage will be confirmed manually.";
+      mileageReady = false; mileageDistance = null; mileageCharge = 0;
+      return;
+    }
+
+    let miles = haversineMiles(baseCoords, custCoords);
+    if(ROUND_TRIP) miles *= 2;
+    mileageDistance = Math.round(miles);
+    const chargeableMiles = Math.max(0, mileageDistance - FREE_RADIUS_MILES);
+    mileageCharge = Math.round(chargeableMiles * MILE_RATE);
+    mileageReady = true;
+
+    lineEl.textContent = mileageCharge > 0
+      ? `Approx. ${mileageDistance} miles away, estimated mileage £${mileageCharge}`
+      : `Approx. ${mileageDistance} miles away, within our standard area, no extra charge`;
+  }
+
+  let pcDebounce;
+  document.getElementById('cPostcode').addEventListener('input', () => {
+    clearTimeout(pcDebounce);
+    pcDebounce = setTimeout(updateMileage, 600);
+  });
+
+  // ---- Availability check ----
+  // STUB: there is no real calendar or backend behind this yet. This always
+  // returns "available" after a short simulated delay. Replace checkAvailability()
+  // with a real lookup (e.g. a Supabase query against confirmed bookings for
+  // this date) before relying on this in production.
+  function checkAvailability(dateStr){
+    return new Promise(resolve => {
+      setTimeout(() => resolve({ available: true }), 700);
+    });
+  }
+
+  document.getElementById('checkBtn').addEventListener('click', async function(e){
+    e.preventDefault();
+    const venue = document.getElementById('cVenue').value.trim();
+    const postcode = document.getElementById('cPostcode').value.trim();
+    const date = document.getElementById('cDate').value;
+    const errorEl = document.getElementById('formError');
+    const btn = this;
+
+    if(!venue || !postcode || !date){
+      errorEl.style.display = 'block';
+      return;
+    }
+    errorEl.style.display = 'none';
+
+    btn.classList.add('loading');
+    btn.textContent = 'Checking…';
+
+    if(!mileageReady){
+      await updateMileage();
+    }
+
+    const result = await checkAvailability(date);
+
+    btn.classList.remove('loading');
+    btn.textContent = 'Check Date & Price →';
+
+    const resultEl = document.getElementById('availResult');
+    const titleEl = document.getElementById('availTitle');
+    const bodyEl = document.getElementById('availBody');
+    const totalRow = document.getElementById('checkTotal');
+
+    resultEl.classList.add('show');
+
+    if(result.available){
+      resultEl.classList.remove('unavailable');
+      resultEl.classList.add('available');
+      titleEl.textContent = "You're in luck, we're free that day";
+      bodyEl.textContent = 'Continue through to build your package, your venue and mileage are already saved.';
+      totalRow.style.display = 'flex';
+      document.getElementById('checkMileageAmount').textContent = '£' + mileageCharge;
+
+      sessionStorage.setItem('oggBooking', JSON.stringify({
+        venueName: venue,
+        venuePostcode: postcode,
+        weddingDate: date,
+        mileageDistance: mileageDistance,
+        mileageCharge: mileageCharge
+      }));
+
+      const params = new URLSearchParams(window.location.search);
+      const pkg = params.get('package');
+
+      setTimeout(() => {
+        window.location.href = pkg ? ('booking.html?package=' + encodeURIComponent(pkg)) : 'booking.html';
+      }, 900);
+    } else {
+      resultEl.classList.remove('available');
+      resultEl.classList.add('unavailable');
+      titleEl.textContent = "That date's taken";
+      bodyEl.textContent = "Get in touch and we'll check the nearest available dates for you.";
+      totalRow.style.display = 'none';
+    }
+  });
+
+  // Pre-fill from a previous visit, if any
+  (function(){
+    const saved = sessionStorage.getItem('oggBooking');
+    if(!saved) return;
+    try{
+      const data = JSON.parse(saved);
+      if(data.venueName) document.getElementById('cVenue').value = data.venueName;
+      if(data.venuePostcode) document.getElementById('cPostcode').value = data.venuePostcode;
+      if(data.weddingDate) document.getElementById('cDate').value = data.weddingDate;
+      if(data.venuePostcode) updateMileage();
+    } catch(e){}
+  })();
+</script>
+
+</body>
+</html>

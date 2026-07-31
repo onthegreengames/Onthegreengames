@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Check Availability — On The Green Games</title>
+<title>Build Your Package — On The Green Games</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -62,13 +62,13 @@
 
       <a href="packages.html">Packages</a>
       <a href="booking-info.html">Booking Info</a>
-      <a class="btn" href="#build">Check Availability →</a>
+      <a class="btn" href="check-date.html">Check Availability →</a>
     </div>
   </nav>
 </div>
 
 <div class="wrap page-hero">
-  <div class="eyebrow">Built around your day</div>
+  <div class="eyebrow">Step 2 of 3</div>
   <h1>Choose your package, see the price as you go.</h1>
   <p class="lede">Pick Par, Birdie or Eagle for mini golf plus games, or games only if you'd rather skip the course. The price updates live, no waiting for a quote.</p>
 </div>
@@ -170,22 +170,27 @@
         </div>
       </div>
 
+      <div class="builder-step" id="dateRecapStep" style="display:none;">
+        <div class="step-label">Confirmed</div>
+        <h3>Your date & venue</h3>
+        <div id="dateRecapBody" style="font-size:14.5px; color:rgba(27,42,32,0.75); line-height:1.7;"></div>
+        <a href="check-date.html" style="font-size:13px; font-weight:600; color:var(--green-deep);">Change venue or date →</a>
+      </div>
+
+      <div class="builder-step" id="noDateStep">
+        <div class="step-label">Heads up</div>
+        <h3>Haven't checked your date yet?</h3>
+        <p class="step-sub">We use your venue and date to confirm availability and calculate mileage before you build your package.</p>
+        <a class="btn" href="check-date.html">Check your date first →</a>
+      </div>
+
       <div class="builder-step">
-        <div class="step-label">Your event</div>
-        <h3>Tell us about the day</h3>
-        <p class="step-sub">This is what gets sent to us when you request your booking, add as much detail as you like.</p>
+        <div class="step-label">Your details</div>
+        <h3>Tell us about you</h3>
+        <p class="step-sub">This is what gets sent to us when you request your booking.</p>
         <div class="field-row">
           <div class="field"><label>Your name</label><input type="text" id="fName" placeholder="Full name"></div>
           <div class="field"><label>Email</label><input type="email" id="fEmail" placeholder="you@email.com"></div>
-        </div>
-        <div class="field"><label>Event date</label><input type="date" id="fDate"></div>
-        <div class="field-row">
-          <div class="field"><label>Venue name</label><input type="text" id="fVenue" placeholder="Venue name"></div>
-          <div class="field">
-            <label>Venue postcode</label>
-            <input type="text" id="fPostcode" placeholder="e.g. M1 1AE">
-            <div id="postcodeStatus" style="font-size:12.5px; color:rgba(27,42,32,0.6); margin-top:6px; min-height:16px;"></div>
-          </div>
         </div>
         <div class="field"><label>Anything else we should know?</label><textarea id="fNotes" rows="3" placeholder="Timings, awkward access, specific requests for your dream day..."></textarea></div>
       </div>
@@ -358,83 +363,43 @@
   hostToggle.addEventListener('change', recalc);
   setupOpts.forEach(opt => opt.querySelector('input').addEventListener('change', recalc));
 
-  // ---- Mileage estimate via postcodes.io (free, no API key) ----
-  const BASE_POSTCODE = 'PR1 1AA';   // TODO: replace with your real base postcode
-  const FREE_RADIUS_MILES = 20;
-  const MILE_RATE = 0.5;
-  const ROUND_TRIP = false;          // set true if £0.50/mile should be charged there-and-back
-
-  let baseCoords = null;
+  // ---- Venue, date & mileage now come from the Check Your Date step ----
   let mileageCharge = 0;
   let mileageDistance = null;
+  let bookingContext = null; // { venueName, venuePostcode, weddingDate, mileageDistance, mileageCharge }
 
-  async function geocodePostcode(pc){
-    const clean = (pc || '').trim().replace(/\s+/g, '');
-    if(!clean) return null;
+  (function loadBookingContext(){
+    const saved = sessionStorage.getItem('oggBooking');
+    const recapStep = document.getElementById('dateRecapStep');
+    const noDateStep = document.getElementById('noDateStep');
+
+    if(!saved){
+      noDateStep.style.display = 'block';
+      recapStep.style.display = 'none';
+      return;
+    }
+
     try{
-      const res = await fetch('https://api.postcodes.io/postcodes/' + encodeURIComponent(clean));
-      const data = await res.json();
-      if(data.status === 200 && data.result){
-        return { lat: data.result.latitude, lon: data.result.longitude };
-      }
-    } catch(e){ /* offline, blocked, or invalid postcode — fail quietly */ }
-    return null;
-  }
+      bookingContext = JSON.parse(saved);
+      mileageDistance = bookingContext.mileageDistance ?? null;
+      mileageCharge = bookingContext.mileageCharge ?? 0;
 
-  function haversineMiles(a, b){
-    const R = 3958.8;
-    const toRad = d => d * Math.PI / 180;
-    const dLat = toRad(b.lat - a.lat);
-    const dLon = toRad(b.lon - a.lon);
-    const lat1 = toRad(a.lat), lat2 = toRad(b.lat);
-    const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1-h));
-  }
+      noDateStep.style.display = 'none';
+      recapStep.style.display = 'block';
 
-  async function updateMileage(){
-    const pcInput = document.getElementById('fPostcode');
-    const statusEl = document.getElementById('postcodeStatus');
-    const pc = pcInput.value;
+      const dateFormatted = bookingContext.weddingDate
+        ? new Date(bookingContext.weddingDate + 'T00:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })
+        : '';
 
-    if(!pc){
-      mileageDistance = null; mileageCharge = 0;
-      statusEl.textContent = '';
-      recalc();
-      return;
+      document.getElementById('dateRecapBody').innerHTML =
+        '<strong>' + bookingContext.venueName + '</strong> (' + bookingContext.venuePostcode + ')<br>' +
+        dateFormatted +
+        (mileageCharge > 0 ? '<br>Estimated mileage: £' + mileageCharge : '');
+    } catch(e){
+      noDateStep.style.display = 'block';
+      recapStep.style.display = 'none';
     }
-
-    statusEl.textContent = 'Checking distance…';
-
-    if(!baseCoords) baseCoords = await geocodePostcode(BASE_POSTCODE);
-    const custCoords = await geocodePostcode(pc);
-
-    if(!baseCoords || !custCoords){
-      statusEl.textContent = "Couldn't find that postcode — mileage will be confirmed manually.";
-      mileageDistance = null; mileageCharge = 0;
-      recalc();
-      return;
-    }
-
-    let miles = haversineMiles(baseCoords, custCoords);
-    if(ROUND_TRIP) miles *= 2;
-    mileageDistance = Math.round(miles);
-
-    const chargeableMiles = Math.max(0, mileageDistance - FREE_RADIUS_MILES);
-    mileageCharge = Math.round(chargeableMiles * MILE_RATE);
-
-    if(mileageCharge > 0){
-      statusEl.textContent = `Approx. ${mileageDistance} miles from us — estimated mileage £${mileageCharge} (straight-line estimate, confirmed exactly once we log the route).`;
-    } else {
-      statusEl.textContent = `Approx. ${mileageDistance} miles from us — within our free ${FREE_RADIUS_MILES}-mile radius.`;
-    }
-    recalc();
-  }
-
-  let pcDebounce;
-  document.getElementById('fPostcode').addEventListener('input', () => {
-    clearTimeout(pcDebounce);
-    pcDebounce = setTimeout(updateMileage, 600);
-  });
+  })();
 
   document.getElementById('submitBooking').addEventListener('click', function(e){
     e.preventDefault();
@@ -442,14 +407,15 @@
 
     const name = document.getElementById('fName').value || '(not given)';
     const email = document.getElementById('fEmail').value || '(not given)';
-    const date = document.getElementById('fDate').value || '(not given)';
-    const venue = document.getElementById('fVenue').value || '(not given)';
-    const postcode = document.getElementById('fPostcode').value || '(not given)';
     const notes = document.getElementById('fNotes').value || '(none)';
     const setup = document.querySelector('input[name="setup"]:checked').value;
+
+    const date = bookingContext ? bookingContext.weddingDate : '(not checked)';
+    const venue = bookingContext ? bookingContext.venueName : '(not checked)';
+    const postcode = bookingContext ? bookingContext.venuePostcode : '(not checked)';
     const mileageText = mileageDistance !== null
       ? ('~' + mileageDistance + ' miles' + (mileageCharge > 0 ? (', est. mileage charge £' + mileageCharge) : ', within free radius'))
-      : 'not calculated';
+      : 'not calculated (customer skipped the date check step)';
 
     const gamesText = window._bookingGames.length ? window._bookingGames.join(', ') : 'None';
     const body = [
