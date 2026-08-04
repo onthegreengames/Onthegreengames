@@ -72,7 +72,7 @@
   .cal-legend .cal-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
   .cal-dot-avail{ background:var(--green-mid); }
   .cal-dot-blocked{ background:#D97A57; }
-  .cal-selected{
+  .cal-selected-label{
     margin-top:14px; padding-top:14px; border-top:1px solid var(--green-line);
     font-size:13.5px; font-weight:600; color:var(--green-deep);
   }
@@ -119,7 +119,7 @@
 <div class="wrap page-hero">
   <div class="eyebrow">Step 1 of 3</div>
   <h1>Let's Check Your Date</h1>
-  <p class="lede">Tell us where and when, and we'll do the maths for you. Venues outside our standard area are simply charged at 50p per mile, added automatically. Nothing is booked at this point, this step just confirms availability and your final price before you go on to pay.</p>
+  <p class="lede">Tell us where and when, and we'll do the maths for you. Some postcode areas carry a small travel fee, which is added automatically if it applies to you. Nothing is booked at this point, this step just confirms availability and your final price before you go on to pay.</p>
 </div>
 
 <div class="wrap" style="padding-bottom:100px;">
@@ -152,7 +152,7 @@
             <span><i class="cal-dot cal-dot-avail"></i> Available</span>
             <span><i class="cal-dot cal-dot-blocked"></i> Booked</span>
           </div>
-          <div class="cal-selected" id="calSelected">No date selected yet</div>
+          <div class="cal-selected-label" id="calSelected">No date selected yet</div>
         </div>
       </div>
 
@@ -160,7 +160,7 @@
         <h4 id="availTitle"></h4>
         <p id="availBody"></p>
         <div class="check-total" id="checkTotal" style="display:none;">
-          <span class="label">Mileage to add to your package</span>
+          <span class="label">Travel fee for this area</span>
           <span class="amount" id="checkMileageAmount">£0</span>
         </div>
       </div>
@@ -186,50 +186,57 @@
 
 <script src="nav.js"></script>
 <script>
-  // ---- Postcode validation + mileage, backed by a Supabase postcode-district table ----
+  // ---- Postcode validation + flat area fee, backed by a Supabase postcode-district table ----
   //
   // TODO before this is live: fill in your real Supabase project URL and anon
-  // (public) key below, plus the base district you're pricing mileage from.
-  // The anon key is safe to expose in browser code, it's designed for
-  // exactly this, read-only public queries. Never put your service_role key here.
+  // (public) key below. The anon key is safe to expose in browser code, it's
+  // designed for exactly this, read-only public queries. Never put your
+  // service_role key here.
   //
   // Expected table: one row per POSTCODE DISTRICT (the outward code, e.g. "M1",
-  // "SW1A", "PR1", not the full unit postcode), with latitude/longitude columns.
-  // Districts are the right grain for this, ~2,900 UK-wide vs 1.7m full
-  // postcodes, small enough to import easily and plenty accurate for mileage
-  // pricing. Adjust table/column names below to match your actual import.
+  // "SW1A", "PR1", not the full unit postcode), with a column holding the flat
+  // FEE IN POUNDS you want to charge for that area (0 for your standard local
+  // area, a higher flat number for further-out areas — whatever you decide
+  // per district, no calculation involved). Districts are the right grain for
+  // this, ~2,900 UK-wide vs 1.7m full postcodes, small enough to import
+  // easily. Adjust table/column names below to match your actual import.
+  //
+  // IMPORTANT — if lookups return nothing even though the row exists:
+  // Supabase tables have Row Level Security (RLS) switched ON by default,
+  // which blocks ALL access, including plain reads, until you explicitly add
+  // a policy. This is almost always why a table "isn't working" from the
+  // browser even though the URL/key are correct. Fix: in the Supabase
+  // dashboard go to Authentication > Policies > [table] > New Policy, and add
+  // a SELECT policy for the "anon" role (e.g. "Enable read access for all
+  // users"). You'll need this on BOTH postcode_districts and bookings below.
+  // Also double check DISTRICT_COLUMN / FEE_COLUMN / BOOKING_DATE_COLUMN
+  // actually match your real column names, and that dates in the bookings
+  // table are stored as plain YYYY-MM-DD (a "date" column, not a timestamp).
   const SUPABASE_URL = 'https://untytznzbngourawgbqx.supabase.co';   // TODO
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVudHl0em56Ym5nb3VyYXdnYnF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMjg0NzQsImV4cCI6MjEwMDkwNDQ3NH0.SMdbMdWeM2JWJE7C0FHTngceBUXnoEimwygAlPR0fhM';               // TODO
   const DISTRICTS_TABLE = 'postcode_districts';                   // TODO if different
   const DISTRICT_COLUMN = 'district';                             // TODO if different
-  const LAT_COLUMN = 'latitude';                                  // TODO if different
-  const LON_COLUMN = 'longitude';                                 // TODO if different
-  const BASE_DISTRICT = 'PR1';                                    // TODO: your real base district
+  const FEE_COLUMN = 'fee';                                       // TODO if different
 
   const SUPABASE_CONFIGURED = !SUPABASE_URL.includes('YOUR-PROJECT-REF');
-  const FREE_RADIUS_MILES = 20;      // TODO: confirm your actual standard-area radius
-  const MILE_RATE = 0.5;
-  const ROUND_TRIP = false;
 
-  // Demo-only district coordinates so this is testable before Supabase is wired
-  // up. Ignored automatically the moment SUPABASE_URL above is set for real.
+  // Demo-only district fees so this is testable before Supabase is wired up.
+  // Ignored automatically the moment SUPABASE_URL above is set for real.
   const DEMO_DISTRICTS = {
-    'PR1':  { lat: 53.7632, lon: -2.7031 },
-    'M1':   { lat: 53.4794, lon: -2.2453 },
-    'M2':   { lat: 53.4808, lon: -2.2475 },
-    'L1':   { lat: 53.4058, lon: -2.9860 },
-    'LS1':  { lat: 53.7975, lon: -1.5488 },
-    'CH1':  { lat: 53.1908, lon: -2.8916 },
-    'SW1A': { lat: 51.5010, lon: -0.1416 }
+    'PR1':  0,
+    'M1':   25,
+    'M2':   25,
+    'L1':   35,
+    'LS1':  45,
+    'CH1':  30,
+    'SW1A': 120
   };
 
   // Full UK postcode format: outward code (district) + inward code, e.g. "M1 1AE"
   const POSTCODE_REGEX = /^([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})$/i;
 
-  let baseCoords = SUPABASE_CONFIGURED ? null : DEMO_DISTRICTS[BASE_DISTRICT];
-  let mileageCharge = 0;
-  let mileageDistance = null;
-  let mileageReady = false;
+  let travelFee = 0;
+  let feeReady = false;
   let postcodeValid = false;
 
   function extractDistrict(pc){
@@ -238,31 +245,21 @@
     return match ? match[1] : null;
   }
 
-  async function lookupDistrict(district){
+  async function lookupDistrictFee(district){
     if(!SUPABASE_CONFIGURED){
-      return DEMO_DISTRICTS[district] || null;
+      return Object.prototype.hasOwnProperty.call(DEMO_DISTRICTS, district) ? DEMO_DISTRICTS[district] : null;
     }
     try{
-      const url = `${SUPABASE_URL}/rest/v1/${DISTRICTS_TABLE}?${DISTRICT_COLUMN}=eq.${encodeURIComponent(district)}&select=${LAT_COLUMN},${LON_COLUMN}`;
+      const url = `${SUPABASE_URL}/rest/v1/${DISTRICTS_TABLE}?${DISTRICT_COLUMN}=eq.${encodeURIComponent(district)}&select=${FEE_COLUMN}`;
       const res = await fetch(url, {
         headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
       });
       const rows = await res.json();
       if(rows.length){
-        return { lat: rows[0][LAT_COLUMN], lon: rows[0][LON_COLUMN] };
+        return rows[0][FEE_COLUMN];
       }
     } catch(e){ console.warn('Supabase district lookup failed', e); }
     return null;
-  }
-
-  function haversineMiles(a, b){
-    const R = 3958.8;
-    const toRad = d => d * Math.PI / 180;
-    const dLat = toRad(b.lat - a.lat);
-    const dLon = toRad(b.lon - a.lon);
-    const lat1 = toRad(a.lat), lat2 = toRad(b.lat);
-    const h = Math.sin(dLat/2)**2 + Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2;
-    return R * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1-h));
   }
 
   function setPostcodeError(msg){
@@ -281,15 +278,14 @@
     fieldEl.classList.remove('has-error');
   }
 
-  async function updateMileage(){
+  async function updateAreaFee(){
     const pc = document.getElementById('cPostcode').value;
     const lineEl = document.getElementById('mileageLine');
     const fieldEl = document.getElementById('postcodeField');
 
     postcodeValid = false;
-    mileageReady = false;
-    mileageDistance = null;
-    mileageCharge = 0;
+    feeReady = false;
+    travelFee = 0;
     fieldEl.classList.remove('is-valid');
 
     if(!pc.trim()){
@@ -307,15 +303,10 @@
     lineEl.classList.remove('empty');
     lineEl.textContent = 'Checking postcode…';
 
-    if(!baseCoords) baseCoords = await lookupDistrict(BASE_DISTRICT);
-    const custCoords = await lookupDistrict(district);
+    const fee = await lookupDistrictFee(district);
 
-    if(!custCoords){
+    if(fee === null || fee === undefined){
       setPostcodeError("We don't have coverage data for that postcode yet. Get in touch and we'll confirm your price manually.");
-      return;
-    }
-    if(!baseCoords){
-      lineEl.textContent = "Couldn't calculate mileage right now, we'll confirm it manually.";
       return;
     }
 
@@ -323,22 +314,18 @@
     fieldEl.classList.add('is-valid');
     postcodeValid = true;
 
-    let miles = haversineMiles(baseCoords, custCoords);
-    if(ROUND_TRIP) miles *= 2;
-    mileageDistance = Math.round(miles);
-    const chargeableMiles = Math.max(0, mileageDistance - FREE_RADIUS_MILES);
-    mileageCharge = Math.round(chargeableMiles * MILE_RATE);
-    mileageReady = true;
+    travelFee = Math.round(fee);
+    feeReady = true;
 
-    lineEl.textContent = mileageCharge > 0
-      ? `Approx. ${mileageDistance} miles away, estimated mileage £${mileageCharge}`
-      : `Approx. ${mileageDistance} miles away, within our standard area, no extra charge`;
+    lineEl.textContent = travelFee > 0
+      ? `Travel fee for this area: £${travelFee}`
+      : `Within our standard area, no extra travel fee`;
   }
 
   let pcDebounce;
   document.getElementById('cPostcode').addEventListener('input', () => {
     clearTimeout(pcDebounce);
-    pcDebounce = setTimeout(updateMileage, 600);
+    pcDebounce = setTimeout(updateAreaFee, 600);
   });
 
   // ---- Availability calendar, backed by Supabase ----
@@ -348,7 +335,8 @@
   // Expected table: a table (default name below) with one row per CONFIRMED
   // booking, containing at minimum a date column (default name below) storing
   // the event date as YYYY-MM-DD. Adjust BOOKINGS_TABLE / BOOKING_DATE_COLUMN
-  // to match your actual schema.
+  // to match your actual schema. See the big comment above SUPABASE_URL for
+  // the RLS gotcha if a real booking still doesn't show as blocked.
   const BOOKINGS_TABLE = 'bookings';                              // TODO if different
   const BOOKING_DATE_COLUMN = 'event_date';                       // TODO if different
 
@@ -493,17 +481,18 @@
     btn.classList.add('loading');
     btn.textContent = 'Checking…';
 
-    if(!mileageReady){
-      await updateMileage();
+    if(!feeReady){
+      await updateAreaFee();
     }
 
     btn.classList.remove('loading');
     btn.textContent = 'Check Date & Price →';
 
     if(!postcodeValid){
-      // updateMileage() already set the specific inline error under the
-      // postcode field (invalid format vs. not in our coverage data), so we
-      // just stop here rather than continuing with an unpriced booking.
+      // updateAreaFee() already set the specific inline error under the
+      // postcode field (invalid format, out of coverage, or not in our
+      // data), so we just stop here rather than continuing with an unpriced
+      // booking.
       document.getElementById('postcodeField').scrollIntoView({ behavior:'smooth', block:'center' });
       return;
     }
@@ -523,16 +512,15 @@
       resultEl.classList.remove('unavailable');
       resultEl.classList.add('available');
       titleEl.textContent = "You're in luck, we're free that day";
-      bodyEl.textContent = 'Continue through to build your package, your venue and mileage are already saved.';
+      bodyEl.textContent = 'Continue through to build your package, your venue and travel fee are already saved.';
       totalRow.style.display = 'flex';
-      document.getElementById('checkMileageAmount').textContent = '£' + mileageCharge;
+      document.getElementById('checkMileageAmount').textContent = '£' + travelFee;
 
       sessionStorage.setItem('oggBooking', JSON.stringify({
         venueName: venue,
         venuePostcode: postcode,
         weddingDate: date,
-        mileageDistance: mileageDistance,
-        mileageCharge: mileageCharge
+        travelFee: travelFee
       }));
 
       const params = new URLSearchParams(window.location.search);
@@ -566,7 +554,7 @@
         const formatted = new Date(y, m - 1, Number(data.weddingDate.split('-')[2])).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
         document.getElementById('calSelected').textContent = 'Selected: ' + formatted;
       }
-      if(data.venuePostcode) updateMileage();
+      if(data.venuePostcode) updateAreaFee();
     } catch(e){}
   })();
 </script>
