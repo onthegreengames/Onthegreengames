@@ -27,6 +27,33 @@
     font-size:10.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
     color:var(--gold); margin-bottom:6px;
   }
+  .build-own-link{
+    display:inline-flex; margin-top:16px; padding:0; border:0; background:none;
+    color:var(--green-deep); font:600 13.5px 'Inter',sans-serif; cursor:pointer;
+    text-decoration:underline; text-underline-offset:3px;
+  }
+  .package-incentive{
+    display:none; align-items:center; justify-content:space-between; gap:14px;
+    margin:0 0 14px; padding:12px 14px; border-radius:11px;
+    background:rgba(30,71,52,0.1); border:1px solid rgba(30,71,52,0.2);
+    color:var(--green-deep); font-size:13px; font-weight:650;
+  }
+  .package-incentive.show{ display:flex; }
+  .package-incentive button{
+    flex:none; border:0; border-radius:8px; padding:7px 10px; cursor:pointer;
+    background:var(--green-deep); color:#fff; font:700 11.5px 'Inter',sans-serif;
+  }
+  .game-price{ margin-left:auto; font-size:13px; font-weight:700; color:var(--green-deep); }
+  .summary-error{
+    display:none; margin-top:12px; padding:10px 12px; border-radius:9px;
+    background:rgba(179,73,47,0.1); color:#8f321f; font-size:12.5px; font-weight:600;
+  }
+  .summary-error.show{ display:block; }
+  .summary-success{
+    display:none; margin-top:12px; padding:10px 12px; border-radius:9px;
+    background:rgba(30,71,52,0.1); color:var(--green-deep); font-size:12.5px; font-weight:600;
+  }
+  .summary-success.show{ display:block; }
 </style>
 </head>
 <body>
@@ -69,8 +96,8 @@
 
 <div class="wrap page-hero">
   <div class="eyebrow">Step 2 of 3</div>
-  <h1>Choose your package, see the price as you go.</h1>
-  <p class="lede">Pick Par, Birdie or Eagle for mini golf plus games, or games only if you'd rather skip the course. The price updates live, no waiting for a quote.</p>
+  <h1>Choose a package or build your own.</h1>
+  <p class="lede">Choose one of our money-saving packages or build your day item by item. Your package, extras and travel fee update live, with no waiting for a quote.</p>
 </div>
 
 <div class="wrap" id="build" style="padding-bottom:100px;">
@@ -85,8 +112,8 @@
 
         <div class="group-label">With mini golf</div>
         <div class="foundation-options" id="golfPackages">
-          <label class="opt-card selected" data-value="par">
-            <input type="radio" name="package" value="par" checked>
+          <label class="opt-card" data-value="par">
+            <input type="radio" name="package" value="par">
             <div class="opt-name">Par</div>
             <div class="opt-price">£550</div>
             <div class="opt-desc">Mini golf + 3 giant garden games.</div>
@@ -127,21 +154,54 @@
             <div class="opt-desc">All 7 giant garden games.</div>
           </label>
         </div>
+
+        <button type="button" class="build-own-link" id="buildOwnBtn">Build your own instead →</button>
       </div>
 
-      <div class="builder-step">
+      <div class="builder-step" id="packageGamesStep" style="display:none;">
         <div class="step-label">Required</div>
         <h3>Pick your games</h3>
-        <p class="step-sub" id="gamesStepSub">Your package includes 3 giant garden games, choose which ones below.</p>
-        <div class="games-counter" id="gamesCounter">0 of 3 selected</div>
+        <p class="step-sub" id="gamesStepSub"></p>
+        <div class="games-counter" id="gamesCounter"></div>
         <div id="gamesList">
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Jenga"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Jenga</span></span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Connect 4"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Connect 4</span></span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Snakes & Ladders"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Snakes & Ladders</span></span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Noughts & Crosses"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Noughts & Crosses</span></span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Cornhole"><span class="g-left"><span class="checkbox"></span><span class="g-name">Cornhole</span></span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Giant Dominoes"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Dominoes</span></span></label>
-          <label class="game-row"><input type="checkbox" class="game-cb" data-name="Limbo"><span class="g-left"><span class="checkbox"></span><span class="g-name">Limbo</span></span></label>
+          <label class="game-row"><input type="checkbox" class="package-game-cb" data-name="Giant Jenga"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Jenga</span></span></label>
+          <label class="game-row"><input type="checkbox" class="package-game-cb" data-name="Giant Connect 4"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Connect 4</span></span></label>
+          <label class="game-row"><input type="checkbox" class="package-game-cb" data-name="Giant Snakes & Ladders"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Snakes & Ladders</span></span></label>
+          <label class="game-row"><input type="checkbox" class="package-game-cb" data-name="Giant Noughts & Crosses"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Noughts & Crosses</span></span></label>
+          <label class="game-row"><input type="checkbox" class="package-game-cb" data-name="Cornhole"><span class="g-left"><span class="checkbox"></span><span class="g-name">Cornhole</span></span></label>
+          <label class="game-row"><input type="checkbox" class="package-game-cb" data-name="Giant Dominoes"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Dominoes</span></span></label>
+          <label class="game-row"><input type="checkbox" class="package-game-cb" data-name="Limbo"><span class="g-left"><span class="checkbox"></span><span class="g-name">Limbo</span></span></label>
+        </div>
+      </div>
+
+      <div class="builder-step" id="buildOwnStep">
+        <div class="step-label">Build Your Own</div>
+        <h3>Choose exactly what you want</h3>
+        <p class="step-sub">Add mini golf for £400 and any of our seven giant games for £70 each. Package savings will appear as you build.</p>
+
+        <div class="package-incentive" id="packageIncentive">
+          <span id="packageIncentiveText"></span>
+          <button type="button" id="packageIncentiveButton"></button>
+        </div>
+
+        <label class="toggle-row" id="customGolfRow">
+          <input type="checkbox" id="customGolfToggle">
+          <span class="t-left">
+            <h4>Add 9-hole mini golf — £400</h4>
+            <p>Includes delivery, full setup, scorecards, pencils, putters and balls.</p>
+          </span>
+          <span class="switch"></span>
+        </label>
+
+        <div class="games-counter" id="customGamesCounter">0 games selected — £0</div>
+        <div id="customGamesList">
+          <label class="game-row"><input type="checkbox" class="custom-game-cb" data-name="Giant Jenga" data-price="70"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Jenga</span></span><span class="game-price">£70</span></label>
+          <label class="game-row"><input type="checkbox" class="custom-game-cb" data-name="Giant Connect 4" data-price="70"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Connect 4</span></span><span class="game-price">£70</span></label>
+          <label class="game-row"><input type="checkbox" class="custom-game-cb" data-name="Giant Snakes & Ladders" data-price="70"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Snakes & Ladders</span></span><span class="game-price">£70</span></label>
+          <label class="game-row"><input type="checkbox" class="custom-game-cb" data-name="Giant Noughts & Crosses" data-price="70"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Noughts & Crosses</span></span><span class="game-price">£70</span></label>
+          <label class="game-row"><input type="checkbox" class="custom-game-cb" data-name="Cornhole" data-price="70"><span class="g-left"><span class="checkbox"></span><span class="g-name">Cornhole</span></span><span class="game-price">£70</span></label>
+          <label class="game-row"><input type="checkbox" class="custom-game-cb" data-name="Giant Dominoes" data-price="70"><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Dominoes</span></span><span class="game-price">£70</span></label>
+          <label class="game-row"><input type="checkbox" class="custom-game-cb" data-name="Limbo" data-price="70"><span class="g-left"><span class="checkbox"></span><span class="g-name">Limbo</span></span><span class="game-price">£70</span></label>
         </div>
       </div>
 
@@ -153,7 +213,7 @@
           <input type="checkbox" id="hostToggle">
           <span class="t-left">
             <h4>Add Event Host — £400</h4>
-            <p>Available with any mini golf package. Not available on games-only bookings, since there's no course to host.</p>
+            <p>Available whenever mini golf is included. Not available on games-only bookings, since there's no course to host.</p>
           </span>
           <span class="switch"></span>
         </label>
@@ -180,14 +240,14 @@
       <div class="builder-step" id="noDateStep">
         <div class="step-label">Heads up</div>
         <h3>Haven't checked your date yet?</h3>
-        <p class="step-sub">We use your venue and date to confirm availability and calculate mileage before you build your package.</p>
+        <p class="step-sub">We use your venue and date to confirm availability and calculate the travel fee before you build your booking.</p>
         <a class="btn" href="check-date.html">Check your date first →</a>
       </div>
 
       <div class="builder-step">
         <div class="step-label">Your details</div>
         <h3>Tell us about you</h3>
-        <p class="step-sub">This is what gets sent to us when you request your booking.</p>
+        <p class="step-sub">These details will be saved securely when you book.</p>
         <div class="field-row">
           <div class="field"><label>Your name</label><input type="text" id="fName" placeholder="Full name"></div>
           <div class="field"><label>Email</label><input type="email" id="fEmail" placeholder="you@email.com"></div>
@@ -210,8 +270,10 @@
         </div>
         <div class="summary-badge" id="packageBadge"></div>
 
-        <a class="btn gold" href="#" id="submitBooking">Request this booking →</a>
-        <div class="summary-note">A 25% deposit secures your date once we confirm availability. Mileage beyond ~20 miles is charged at £0.50/mile, confirmed once we have your address. This isn't a live payment, submitting sends your full spec straight to us by email.</div>
+        <a class="btn gold" href="#" id="submitBooking">Book Now →</a>
+        <div class="summary-note">A 25% deposit secures your date.</div>
+        <div class="summary-error" id="summaryError"></div>
+        <div class="summary-success" id="summarySuccess"></div>
       </div>
     </div>
 
@@ -241,78 +303,164 @@
     games7: { label:'7 Games', price:400, games:7, golf:false }
   };
 
-  const games = Array.from(document.querySelectorAll('.game-cb'));
+  const CUSTOM_GOLF_PRICE = 400;
+  const CUSTOM_GAME_PRICE = 70;
+  const EVENT_HOST_PRICE = 400;
+
+  // The Netlify Function rechecks package prices, travel fee and date availability
+  // before writing anything to Supabase. This prevents browser-side price tampering.
+  const BOOKING_FUNCTION_URL = '/.netlify/functions/create-booking';
+
+  const packageGames = Array.from(document.querySelectorAll('.package-game-cb'));
+  const customGames = Array.from(document.querySelectorAll('.custom-game-cb'));
   const packageInputs = Array.from(document.querySelectorAll('input[name="package"]'));
   const packageCards = Array.from(document.querySelectorAll('#golfPackages .opt-card, #gamesOnlyPackages .opt-card'));
   const hostToggle = document.getElementById('hostToggle');
   const eventHostRow = document.getElementById('eventHostRow');
+  const customGolfToggle = document.getElementById('customGolfToggle');
   const setupOpts = Array.from(document.querySelectorAll('#setupPair .radio-opt'));
   const submitBtn = document.getElementById('submitBooking');
+  const packageGamesStep = document.getElementById('packageGamesStep');
+  const buildOwnStep = document.getElementById('buildOwnStep');
+  const buildOwnBtn = document.getElementById('buildOwnBtn');
+  const incentiveEl = document.getElementById('packageIncentive');
+  const incentiveText = document.getElementById('packageIncentiveText');
+  const incentiveButton = document.getElementById('packageIncentiveButton');
+  const summaryError = document.getElementById('summaryError');
+  const summarySuccess = document.getElementById('summarySuccess');
+
+  let travelFee = 0;
+  let bookingContext = null; // { venueName, venuePostcode, weddingDate, travelFee }
 
   function currentPackageKey(){
-    const checked = packageInputs.find(i => i.checked);
-    return checked ? checked.value : 'par';
+    const checked = packageInputs.find(input => input.checked);
+    return checked ? checked.value : null;
+  }
+
+  function money(value){
+    return '£' + Number(value).toLocaleString('en-GB', {
+      minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+      maximumFractionDigits: 2
+    });
   }
 
   function updateCardStyles(){
-    packageCards.forEach(c=>{
-      const input = c.querySelector('input');
-      c.classList.toggle('selected', input.checked);
+    packageCards.forEach(card => {
+      const input = card.querySelector('input');
+      card.classList.toggle('selected', input.checked);
     });
-    setupOpts.forEach(c=>{
-      const input = c.querySelector('input');
-      c.classList.toggle('selected', input.checked);
+    setupOpts.forEach(card => {
+      const input = card.querySelector('input');
+      card.classList.toggle('selected', input.checked);
     });
   }
 
-  function updateGamesUI(requiredCount, allIncluded){
+  function choosePackage(packageKey){
+    const input = document.querySelector(`input[name="package"][value="${packageKey}"]`);
+    if(!input) return;
+    input.checked = true;
+    recalc();
+    document.querySelector('.builder-step').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function switchToBuildOwn(){
+    packageInputs.forEach(input => { input.checked = false; });
+    recalc();
+    buildOwnStep.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  function updatePackageGamesUI(pkg){
+    const allIncluded = pkg.games === 7;
+    let selected = packageGames.filter(game => game.checked);
+
     if(allIncluded){
-      games.forEach(g => { g.checked = true; g.disabled = true; });
+      packageGames.forEach(game => {
+        game.checked = true;
+        game.disabled = true;
+      });
     } else {
-      games.forEach(g => { g.disabled = false; });
+      packageGames.forEach(game => { game.disabled = false; });
+      if(selected.length > pkg.games){
+        selected.slice(pkg.games).forEach(game => { game.checked = false; });
+      }
     }
 
-    const selected = games.filter(g => g.checked);
-    const n = selected.length;
+    selected = packageGames.filter(game => game.checked);
+    const selectedCount = selected.length;
 
     document.getElementById('gamesStepSub').textContent = allIncluded
-      ? 'All 7 giant garden games are included with this package, nothing to choose here.'
-      : 'Your package includes ' + requiredCount + (requiredCount === 1 ? ' giant garden game' : ' giant garden games') + ', choose which ones below.';
+      ? 'All 7 giant garden games are included with this package, so there is nothing else to choose.'
+      : `Your package includes ${pkg.games} giant garden game${pkg.games === 1 ? '' : 's'}, choose which ones below.`;
 
     const counter = document.getElementById('gamesCounter');
-    counter.textContent = n + ' of ' + requiredCount + ' selected';
-    counter.classList.toggle('complete', n === requiredCount);
+    counter.textContent = `${selectedCount} of ${pkg.games} selected`;
+    counter.classList.toggle('complete', selectedCount === pkg.games);
 
-    games.forEach(g => {
-      const row = g.closest('.game-row');
-      if(allIncluded || (!g.checked && n >= requiredCount)){
-        row.classList.add('disabled');
-      } else {
-        row.classList.remove('disabled');
-      }
+    packageGames.forEach(game => {
+      const row = game.closest('.game-row');
+      const shouldDisable = allIncluded || (!game.checked && selectedCount >= pkg.games);
+      row.classList.toggle('disabled', shouldDisable);
     });
 
-    return n;
+    return selected;
   }
 
-  function recalc(){
-    updateCardStyles();
+  function getCustomRecommendation(includesGolf, gameCount){
+    if(!includesGolf && gameCount === 0) return null;
 
-    const pkgKey = currentPackageKey();
-    const pkg = PACKAGES[pkgKey];
-    const allIncluded = pkg.games === 7;
+    const tiers = includesGolf
+      ? [
+          { games:3, key:'par', save:60 },
+          { games:5, key:'birdie', save:100 },
+          { games:7, key:'eagle', save:140 }
+        ]
+      : [
+          { games:3, key:'games3', save:10 },
+          { games:5, key:'games5', save:25 },
+          { games:7, key:'games7', save:90 }
+        ];
 
-    // trim excess games if the newly chosen package requires fewer (skip when all 7 are auto-included)
-    let selected = games.filter(g => g.checked);
-    if(!allIncluded && selected.length > pkg.games){
-      selected.slice(pkg.games).forEach(g => g.checked = false);
-      selected = games.filter(g => g.checked);
+    const exact = tiers.find(tier => tier.games === gameCount);
+    if(exact){
+      return {
+        key: exact.key,
+        text: `Switch to the ${PACKAGES[exact.key].label} package and save ${money(exact.save)}.`
+      };
     }
-    const n = updateGamesUI(pkg.games, allIncluded);
-    selected = games.filter(g => g.checked);
 
-    // Event Host only available on mini-golf-inclusive packages
-    if(!pkg.golf){
+    const next = tiers.find(tier => tier.games > gameCount);
+    if(!next) return null;
+
+    const more = next.games - gameCount;
+    return {
+      key: next.key,
+      text: `Add ${more} more game${more === 1 ? '' : 's'} and choose the ${PACKAGES[next.key].label} package to save ${money(next.save)}.`
+    };
+  }
+
+  function updateCustomUI(){
+    const selected = customGames.filter(game => game.checked);
+    const gamesTotal = selected.length * CUSTOM_GAME_PRICE;
+    const counter = document.getElementById('customGamesCounter');
+    counter.textContent = `${selected.length} game${selected.length === 1 ? '' : 's'} selected — ${money(gamesTotal)}`;
+    counter.classList.toggle('complete', selected.length > 0);
+
+    const recommendation = getCustomRecommendation(customGolfToggle.checked, selected.length);
+    if(recommendation){
+      incentiveText.textContent = recommendation.text;
+      incentiveButton.textContent = `Choose ${PACKAGES[recommendation.key].label}`;
+      incentiveButton.dataset.package = recommendation.key;
+      incentiveEl.classList.add('show');
+    } else {
+      incentiveEl.classList.remove('show');
+      incentiveButton.dataset.package = '';
+    }
+
+    return selected;
+  }
+
+  function updateHostAvailability(includesMiniGolf){
+    if(!includesMiniGolf){
       hostToggle.checked = false;
       hostToggle.disabled = true;
       eventHostRow.classList.add('disabled');
@@ -320,54 +468,113 @@
       hostToggle.disabled = false;
       eventHostRow.classList.remove('disabled');
     }
+  }
 
-    let total = pkg.price;
-    let lines = [[pkg.label + ' package', pkg.price]];
+  function recalc(){
+    updateCardStyles();
+    summaryError.classList.remove('show');
+    summarySuccess.classList.remove('show');
 
-    if(pkg.golf && hostToggle.checked){
-      total += 400;
-      lines.push(['Event Host', 400]);
+    const packageKey = currentPackageKey();
+    const pkg = packageKey ? PACKAGES[packageKey] : null;
+    const packageMode = Boolean(pkg);
+
+    packageGamesStep.style.display = packageMode ? 'block' : 'none';
+    buildOwnStep.style.display = packageMode ? 'none' : 'block';
+    buildOwnBtn.style.display = packageMode ? 'inline-flex' : 'none';
+
+    let selectedGames = [];
+    let includesMiniGolf = false;
+    let subtotal = 0;
+    let lines = [];
+    let selectionComplete = false;
+
+    if(packageMode){
+      selectedGames = updatePackageGamesUI(pkg);
+      includesMiniGolf = pkg.golf;
+      subtotal = pkg.price;
+      lines.push([`${pkg.label} package`, pkg.price]);
+      selectionComplete = selectedGames.length === pkg.games;
+    } else {
+      selectedGames = updateCustomUI();
+      includesMiniGolf = customGolfToggle.checked;
+
+      if(includesMiniGolf){
+        subtotal += CUSTOM_GOLF_PRICE;
+        lines.push(['9-hole mini golf', CUSTOM_GOLF_PRICE]);
+      }
+      if(selectedGames.length){
+        const gamesPrice = selectedGames.length * CUSTOM_GAME_PRICE;
+        subtotal += gamesPrice;
+        lines.push([`${selectedGames.length} giant game${selectedGames.length === 1 ? '' : 's'}`, gamesPrice]);
+      }
+      selectionComplete = includesMiniGolf || selectedGames.length > 0;
     }
 
-    if(mileageCharge > 0){
-      total += mileageCharge;
-      lines.push(['Mileage (approx. ' + mileageDistance + ' mi)', mileageCharge]);
+    updateHostAvailability(includesMiniGolf);
+
+    if(includesMiniGolf && hostToggle.checked){
+      subtotal += EVENT_HOST_PRICE;
+      lines.push(['Event Host', EVENT_HOST_PRICE]);
     }
 
-    document.getElementById('totalAmount').textContent = '£' + total;
+    let total = subtotal;
+    if(bookingContext){
+      total += travelFee;
+      lines.push(['Travel fee', travelFee]);
+    }
 
-    const summaryLines = document.getElementById('summaryLines');
-    summaryLines.innerHTML = lines.map(l =>
-      `<div class="summary-line"><span>${l[0]}</span><span>£${l[1]}</span></div>`
+    document.getElementById('totalAmount').textContent = money(total);
+    document.getElementById('summaryLines').innerHTML = lines.map(line =>
+      `<div class="summary-line"><span>${line[0]}</span><span>${money(line[1])}</span></div>`
     ).join('');
 
     const badgeEl = document.getElementById('packageBadge');
-    if(n < pkg.games){
-      badgeEl.textContent = 'Pick ' + (pkg.games - n) + ' more game' + ((pkg.games - n) === 1 ? '' : 's') + ' to complete your package.';
+    if(packageMode && !selectionComplete){
+      const remaining = pkg.games - selectedGames.length;
+      badgeEl.textContent = `Pick ${remaining} more game${remaining === 1 ? '' : 's'} to complete your package.`;
       badgeEl.classList.add('show');
-      submitBtn.classList.add('disabled');
+    } else if(!packageMode && !selectionComplete){
+      badgeEl.textContent = 'Choose a package, mini golf or at least one giant game to continue.';
+      badgeEl.classList.add('show');
+    } else if(!bookingContext){
+      badgeEl.textContent = 'Check your date and venue before booking.';
+      badgeEl.classList.add('show');
     } else {
       badgeEl.textContent = '';
       badgeEl.classList.remove('show');
-      submitBtn.classList.remove('disabled');
     }
 
-    window._bookingTotal = total;
-    window._bookingPackage = pkg.label;
-    window._bookingGames = selected.map(g => g.dataset.name);
-    window._bookingHost = pkg.golf && hostToggle.checked;
+    submitBtn.classList.toggle('disabled', !selectionComplete || !bookingContext);
+
+    const setup = document.querySelector('input[name="setup"]:checked')?.value || 'unsure';
+    window._bookingData = {
+      selectionType: packageMode ? 'package' : 'build_your_own',
+      packageCode: packageKey,
+      packageName: pkg ? pkg.label : null,
+      includesMiniGolf,
+      selectedGames: selectedGames.map(game => game.dataset.name),
+      eventHost: includesMiniGolf && hostToggle.checked,
+      setup,
+      subtotal,
+      travelFee,
+      total,
+      depositDue: Math.round(total * 25) / 100
+    };
   }
 
-  packageInputs.forEach(i => i.addEventListener('change', recalc));
-  games.forEach(g => g.addEventListener('change', recalc));
+  packageInputs.forEach(input => input.addEventListener('change', recalc));
+  packageGames.forEach(game => game.addEventListener('change', recalc));
+  customGames.forEach(game => game.addEventListener('change', recalc));
+  customGolfToggle.addEventListener('change', recalc);
   hostToggle.addEventListener('change', recalc);
   setupOpts.forEach(opt => opt.querySelector('input').addEventListener('change', recalc));
+  buildOwnBtn.addEventListener('click', switchToBuildOwn);
+  incentiveButton.addEventListener('click', () => {
+    if(incentiveButton.dataset.package) choosePackage(incentiveButton.dataset.package);
+  });
 
-  // ---- Venue, date & mileage now come from the Check Your Date step ----
-  let mileageCharge = 0;
-  let mileageDistance = null;
-  let bookingContext = null; // { venueName, venuePostcode, weddingDate, mileageDistance, mileageCharge }
-
+  // ---- Venue, date and flat travel fee from check-date.html ----
   (function loadBookingContext(){
     const saved = sessionStorage.getItem('oggBooking');
     const recapStep = document.getElementById('dateRecapStep');
@@ -381,89 +588,137 @@
 
     try{
       bookingContext = JSON.parse(saved);
-      mileageDistance = bookingContext.mileageDistance ?? null;
-      mileageCharge = bookingContext.mileageCharge ?? 0;
+      // travelFee is the current field name. mileageCharge is accepted so any
+      // older saved session still works after this update is deployed.
+      travelFee = Number(bookingContext.travelFee ?? bookingContext.mileageCharge ?? 0);
 
       noDateStep.style.display = 'none';
       recapStep.style.display = 'block';
 
       const dateFormatted = bookingContext.weddingDate
-        ? new Date(bookingContext.weddingDate + 'T00:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' })
+        ? new Date(bookingContext.weddingDate + 'T00:00:00').toLocaleDateString('en-GB', {
+            day:'numeric', month:'long', year:'numeric'
+          })
         : '';
 
       document.getElementById('dateRecapBody').innerHTML =
-        '<strong>' + bookingContext.venueName + '</strong> (' + bookingContext.venuePostcode + ')<br>' +
-        dateFormatted +
-        (mileageCharge > 0 ? '<br>Estimated mileage: £' + mileageCharge : '');
-    } catch(e){
+        `<strong>${escapeHtml(bookingContext.venueName || '')}</strong> (${escapeHtml(bookingContext.venuePostcode || '')})<br>` +
+        `${escapeHtml(dateFormatted)}<br>` +
+        `Travel fee: <strong>${money(travelFee)}</strong>`;
+    } catch(error){
+      bookingContext = null;
+      travelFee = 0;
       noDateStep.style.display = 'block';
       recapStep.style.display = 'none';
     }
   })();
 
-  document.getElementById('submitBooking').addEventListener('click', function(e){
-    e.preventDefault();
+  function escapeHtml(value){
+    return String(value).replace(/[&<>'"]/g, char => ({
+      '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;'
+    })[char]);
+  }
+
+  async function saveBooking(formData){
+    const bookingData = window._bookingData;
+    const response = await fetch(BOOKING_FUNCTION_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({
+        customer:{
+          name:formData.name,
+          email:formData.email
+        },
+        venue:{
+          name:bookingContext.venueName,
+          postcode:bookingContext.venuePostcode,
+          eventDate:bookingContext.weddingDate
+        },
+        booking:{
+          selectionType:bookingData.selectionType,
+          packageCode:bookingData.packageCode,
+          includesMiniGolf:bookingData.includesMiniGolf,
+          selectedGames:bookingData.selectedGames,
+          eventHost:bookingData.eventHost,
+          setup:bookingData.setup,
+          notes:formData.notes || null
+        }
+      })
+    });
+
+    let result = {};
+    try{ result = await response.json(); } catch(error){}
+    if(!response.ok){
+      throw new Error(result.error || 'We could not save the booking. Please try again.');
+    }
+    return result;
+  }
+
+  submitBtn.addEventListener('click', async function(event){
+    event.preventDefault();
     if(submitBtn.classList.contains('disabled')) return;
 
-    const name = document.getElementById('fName').value || '(not given)';
-    const email = document.getElementById('fEmail').value || '(not given)';
-    const notes = document.getElementById('fNotes').value || '(none)';
-    const setup = document.querySelector('input[name="setup"]:checked').value;
+    summaryError.classList.remove('show');
+    summarySuccess.classList.remove('show');
 
-    const date = bookingContext ? bookingContext.weddingDate : '(not checked)';
-    const venue = bookingContext ? bookingContext.venueName : '(not checked)';
-    const postcode = bookingContext ? bookingContext.venuePostcode : '(not checked)';
-    const mileageText = mileageDistance !== null
-      ? ('~' + mileageDistance + ' miles' + (mileageCharge > 0 ? (', est. mileage charge £' + mileageCharge) : ', within free radius'))
-      : 'not calculated (customer skipped the date check step)';
+    const name = document.getElementById('fName').value.trim();
+    const email = document.getElementById('fEmail').value.trim();
+    const notes = document.getElementById('fNotes').value.trim();
 
-    const gamesText = window._bookingGames.length ? window._bookingGames.join(', ') : 'None';
-    const body = [
-      'New booking request from the website builder',
-      '',
-      'Package: ' + window._bookingPackage,
-      'Event Host: ' + (window._bookingHost ? 'Yes (£400)' : 'No'),
-      'Name: ' + name,
-      'Email: ' + email,
-      'Event date: ' + date,
-      'Venue: ' + venue,
-      'Venue postcode: ' + postcode,
-      'Estimated distance: ' + mileageText,
-      'Setup preference: ' + setup,
-      'Games selected: ' + gamesText,
-      'Estimated total: £' + window._bookingTotal,
-      '',
-      'Notes: ' + notes
-    ].join('\n');
+    if(!name || !email){
+      summaryError.textContent = 'Please enter your name and email address.';
+      summaryError.classList.add('show');
+      return;
+    }
+    if(!/^\S+@\S+\.\S+$/.test(email)){
+      summaryError.textContent = 'Please enter a valid email address.';
+      summaryError.classList.add('show');
+      return;
+    }
+    if(!bookingContext){
+      summaryError.textContent = 'Please check your date and venue before booking.';
+      summaryError.classList.add('show');
+      return;
+    }
 
-    const mailto = 'mailto:hello@onthegreengames.co.uk?subject=' + encodeURIComponent('Booking request — ' + name) + '&body=' + encodeURIComponent(body);
-    window.location.href = mailto;
+    submitBtn.classList.add('disabled');
+    submitBtn.textContent = 'Saving booking…';
+
+    try{
+      const result = await saveBooking({ name, email, notes });
+      const bookingId = result.bookingId;
+      sessionStorage.setItem('oggPendingBookingId', String(bookingId));
+      summarySuccess.textContent = `Booking saved. Your reference is ${bookingId}. The 25% deposit due is ${money(result.depositDue)}.`;
+      summarySuccess.classList.add('show');
+      submitBtn.textContent = 'Booking Saved ✓';
+    } catch(error){
+      console.error(error);
+      summaryError.textContent = error.message || 'We could not save the booking. Please try again.';
+      summaryError.classList.add('show');
+      submitBtn.classList.remove('disabled');
+      submitBtn.textContent = 'Book Now →';
+    }
   });
 
-  // preselect from packages page links, e.g. booking.html?package=birdie
+  // Preselect from package links, e.g. booking.html?package=birdie.
+  // With no package query parameter, Build Your Own is shown initially.
   const params = new URLSearchParams(window.location.search);
   const pkgParam = params.get('package');
   if(pkgParam && PACKAGES[pkgParam]){
-    const input = document.querySelector('input[name="package"][value="' + pkgParam + '"]');
+    const input = document.querySelector(`input[name="package"][value="${pkgParam}"]`);
     if(input) input.checked = true;
   }
 
   recalc();
 
-  // Belt-and-braces scroll pinning for the price summary. CSS position:sticky
-  // above handles this on a normal page. This JS fallback keeps it working
-  // even if the page ends up embedded in a container that breaks sticky
-  // (a common issue when raw HTML is dropped into a page builder).
+  // Sticky summary fallback for page builders that break CSS position:sticky.
   (function(){
     const col = document.getElementById('summaryCol');
     const card = document.getElementById('summaryCard');
     const topGap = 24;
     let cardWidth = 0;
 
-    function measure(){
-      cardWidth = col.getBoundingClientRect().width;
-    }
-
+    function measure(){ cardWidth = col.getBoundingClientRect().width; }
     function onScroll(){
       const colRect = col.getBoundingClientRect();
       const cardHeight = card.offsetHeight;
@@ -488,7 +743,7 @@
     const nativeSticky = getComputedStyle(card).position;
     if(nativeSticky !== 'sticky' && nativeSticky !== '-webkit-sticky'){
       measure();
-      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('scroll', onScroll, { passive:true });
       window.addEventListener('resize', () => { measure(); onScroll(); });
       onScroll();
     }
