@@ -521,6 +521,7 @@
       sessionStorage.setItem('oggBooking', JSON.stringify({
         venueName: venue,
         venuePostcode: postcode,
+        postcodeDistrict: extractDistrict(postcode),
         weddingDate: date,
         travelFee: travelFee
       }));
