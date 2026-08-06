@@ -167,7 +167,7 @@
         </div>
       </div>
 
-      <a class="btn gold" href="#" id="checkBtn" style="width:100%; justify-content:center; margin-top:24px;">Check Date & Price →</a>
+      <a class="btn gold" href="#" id="checkBtn" style="width:100%; justify-content:center; margin-top:24px;">Create Your Package →</a>
       <p id="formError" style="color:#B3492F; font-size:13px; margin-top:12px; display:none;">Please fill in venue name, postcode and your wedding date first.</p>
     </div>
 
@@ -280,6 +280,29 @@
     fieldEl.classList.remove('has-error');
   }
 
+  // ---- Live summary box ----
+  // Shows once we have a valid, priced postcode AND a date picked on the
+  // calendar (the calendar already prevents picking a booked date, so by
+  // the time both are set there is nothing left to "check" - this is just
+  // a running summary of what will be carried through to the package builder).
+  function updateSummary(){
+    const resultEl = document.getElementById('availResult');
+    const titleEl = document.getElementById('availTitle');
+    const bodyEl = document.getElementById('availBody');
+    const totalRow = document.getElementById('checkTotal');
+
+    if(postcodeValid && selectedDate){
+      resultEl.classList.remove('unavailable');
+      resultEl.classList.add('available', 'show');
+      titleEl.textContent = "You're all set";
+      bodyEl.textContent = 'That date is free at your venue. Continue to build your package, your venue, date and travel fee are already saved.';
+      totalRow.style.display = 'flex';
+      document.getElementById('checkMileageAmount').textContent = '£' + travelFee;
+    } else {
+      resultEl.classList.remove('show', 'available', 'unavailable');
+    }
+  }
+
   async function updateAreaFee(){
     const pc = document.getElementById('cPostcode').value;
     const lineEl = document.getElementById('mileageLine');
@@ -293,12 +316,14 @@
     if(!pc.trim()){
       clearPostcodeError();
       lineEl.classList.add('empty');
+      updateSummary();
       return;
     }
 
     const district = extractDistrict(pc);
     if(!district){
       setPostcodeError("That doesn't look like a valid UK postcode. Double check and try again.");
+      updateSummary();
       return;
     }
 
@@ -309,6 +334,7 @@
 
     if(fee === null || fee === undefined){
       setPostcodeError("We don't have coverage data for that postcode yet. Get in touch and we'll confirm your price manually.");
+      updateSummary();
       return;
     }
 
@@ -322,6 +348,8 @@
     lineEl.textContent = travelFee > 0
       ? `Travel fee for this area: £${travelFee}`
       : `Within our standard area, no extra travel fee`;
+
+    updateSummary();
   }
 
   let pcDebounce;
@@ -438,6 +466,7 @@
           renderCalendar();
           const formatted = cellDate.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
           document.getElementById('calSelected').textContent = 'Selected: ' + formatted;
+          updateSummary();
         });
       }
 
@@ -480,15 +509,14 @@
     }
     errorEl.style.display = 'none';
 
-    btn.classList.add('loading');
-    btn.textContent = 'Checking…';
-
+    // Postcode fee is normally already resolved live as the person types
+    // (see the debounced listener above). This is just a safety net for
+    // the rare case someone clicks before that debounce has fired.
     if(!feeReady){
+      btn.classList.add('loading');
       await updateAreaFee();
+      btn.classList.remove('loading');
     }
-
-    btn.classList.remove('loading');
-    btn.textContent = 'Check Date & Price →';
 
     if(!postcodeValid){
       // updateAreaFee() already set the specific inline error under the
@@ -499,46 +527,20 @@
       return;
     }
 
-    // Final safety check against the same blocked-dates set the calendar
-    // uses, in case it changed since the calendar was first loaded.
-    const isAvailable = !blockedDates.has(date);
+    // The calendar already prevents selecting a booked date, so there's
+    // nothing left to check, just carry everything through to the package
+    // builder.
+    sessionStorage.setItem('oggBooking', JSON.stringify({
+      venueName: venue,
+      venuePostcode: postcode,
+      postcodeDistrict: extractDistrict(postcode),
+      weddingDate: date,
+      travelFee: travelFee
+    }));
 
-    const resultEl = document.getElementById('availResult');
-    const titleEl = document.getElementById('availTitle');
-    const bodyEl = document.getElementById('availBody');
-    const totalRow = document.getElementById('checkTotal');
-
-    resultEl.classList.add('show');
-
-    if(isAvailable){
-      resultEl.classList.remove('unavailable');
-      resultEl.classList.add('available');
-      titleEl.textContent = "You're in luck, we're free that day";
-      bodyEl.textContent = 'Continue through to build your package, your venue and travel fee are already saved.';
-      totalRow.style.display = 'flex';
-      document.getElementById('checkMileageAmount').textContent = '£' + travelFee;
-
-      sessionStorage.setItem('oggBooking', JSON.stringify({
-        venueName: venue,
-        venuePostcode: postcode,
-        postcodeDistrict: extractDistrict(postcode),
-        weddingDate: date,
-        travelFee: travelFee
-      }));
-
-      const params = new URLSearchParams(window.location.search);
-      const pkg = params.get('package');
-
-      setTimeout(() => {
-        window.location.href = pkg ? ('booking.html?package=' + encodeURIComponent(pkg)) : 'booking.html';
-      }, 900);
-    } else {
-      resultEl.classList.remove('available');
-      resultEl.classList.add('unavailable');
-      titleEl.textContent = "That date's taken";
-      bodyEl.textContent = "Get in touch and we'll check the nearest available dates for you.";
-      totalRow.style.display = 'none';
-    }
+    const params = new URLSearchParams(window.location.search);
+    const pkg = params.get('package');
+    window.location.href = pkg ? ('booking.html?package=' + encodeURIComponent(pkg)) : 'booking.html';
   });
 
   // Pre-fill from a previous visit, if any
@@ -558,6 +560,7 @@
         document.getElementById('calSelected').textContent = 'Selected: ' + formatted;
       }
       if(data.venuePostcode) updateAreaFee();
+      updateSummary();
     } catch(e){}
   })();
 </script>
