@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://onthegreengames.co.uk/sitemap.xml
