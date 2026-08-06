@@ -480,3 +480,11 @@ details.faq-item p{ font-size:14.5px; line-height:1.65; color:rgba(27,42,32,0.72
   .games-list{ grid-template-columns:1fr; }
   details.faq-item p{ padding-right:0; }
 }
+
+.logo-image {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
