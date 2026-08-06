@@ -306,6 +306,9 @@
   const CUSTOM_GOLF_PRICE = 400;
   const CUSTOM_GAME_PRICE = 70;
   const EVENT_HOST_PRICE = 400;
+  // Minimum spend to book, excluding the travel fee. Every fixed package is
+  // already priced at or above this, so it only ever bites in Build Your Own.
+  const MIN_SPEND = 200;
 
   // The Netlify Function rechecks package prices, travel fee and date availability
   // before writing anything to Supabase. This prevents browser-side price tampering.
@@ -518,6 +521,10 @@
       lines.push(['Event Host', EVENT_HOST_PRICE]);
     }
 
+    // Packages are always priced at or above the minimum, so this only ever
+    // constrains Build Your Own. Travel fee is deliberately excluded.
+    const meetsMinimum = packageMode || subtotal >= MIN_SPEND;
+
     let total = subtotal;
     if(bookingContext){
       total += travelFee;
@@ -535,7 +542,11 @@
       badgeEl.textContent = `Pick ${remaining} more game${remaining === 1 ? '' : 's'} to complete your package.`;
       badgeEl.classList.add('show');
     } else if(!packageMode && !selectionComplete){
-      badgeEl.textContent = 'Choose a package, mini golf or at least one giant game to continue.';
+      badgeEl.textContent = 'Choose a package or build your own to continue.';
+      badgeEl.classList.add('show');
+    } else if(!packageMode && selectionComplete && !meetsMinimum){
+      const remaining = MIN_SPEND - subtotal;
+      badgeEl.textContent = `Minimum spend is £200 (excluding travel fee) — add ${money(remaining)} more to continue.`;
       badgeEl.classList.add('show');
     } else if(!bookingContext){
       badgeEl.textContent = 'Check your date and venue before booking.';
@@ -545,7 +556,7 @@
       badgeEl.classList.remove('show');
     }
 
-    submitBtn.classList.toggle('disabled', !selectionComplete || !bookingContext);
+    submitBtn.classList.toggle('disabled', !selectionComplete || !meetsMinimum || !bookingContext);
 
     const setup = document.querySelector('input[name="setup"]:checked')?.value || 'unsure';
     window._bookingData = {
