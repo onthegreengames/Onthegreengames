@@ -8,20 +8,73 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<style>
+  /* ---- Placeholder image tiles ----
+     Drop real photography in later by swapping these .img-ph blocks for
+     <img> tags (or a background-image on the same element) — the caption
+     inside each one says exactly what shot belongs there. */
+  .img-ph{
+    position:relative; width:100%; aspect-ratio:4/3; border-radius:16px;
+    background:repeating-linear-gradient(135deg, rgba(30,71,52,0.07) 0 12px, rgba(30,71,52,0.03) 12px 24px);
+    border:1.5px dashed rgba(30,71,52,0.28);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; gap:8px; color:rgba(27,42,32,0.55); overflow:hidden; box-sizing:border-box;
+  }
+  .img-ph .ph-icon{ font-size:26px; opacity:0.55; }
+  .img-ph .ph-label{ font-size:12px; font-weight:700; padding:0 18px; line-height:1.45; letter-spacing:0.01em; }
+  .img-ph.wide{ aspect-ratio:21/9; border-radius:22px; }
+
+  .ph-badge{
+    position:absolute; top:14px; left:14px; z-index:2;
+    background:rgba(27,42,32,0.78); color:#fff; font-size:10px; font-weight:700;
+    letter-spacing:0.04em; text-transform:uppercase; padding:5px 10px; border-radius:20px;
+  }
+
+  /* ---- Why giant games work: two supporting cards ---- */
+  .why-grid{ display:grid; grid-template-columns:repeat(2, 1fr); gap:24px; margin-top:8px; }
+  .why-card{ background:var(--cream-card); border:1px solid var(--green-line); border-radius:20px; overflow:hidden; }
+  .why-card .card-body{ padding:22px 24px 26px; }
+  .why-card h3{ font-family:'Fraunces'; font-weight:600; font-size:18px; color:var(--green-deep); margin:14px 0 8px; }
+  .why-card p{ font-size:13.5px; line-height:1.6; color:rgba(27,42,32,0.72); margin:0; }
+  .why-tag{ font-size:10.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold); }
+
+  /* ---- Individual game cards ---- */
+  .game-card-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:22px; margin-top:30px; }
+  .game-card{ background:var(--cream-card); border:1px solid var(--green-line); border-radius:18px; overflow:hidden; display:flex; flex-direction:column; }
+  .game-card .img-ph{ border-radius:0; border-width:0 0 1.5px; aspect-ratio:4/3; }
+  .game-card-body{ padding:18px 20px 22px; }
+  .game-card-body h4{ font-family:'Fraunces'; font-weight:600; font-size:16.5px; margin-bottom:6px; color:var(--green-deep); }
+  .game-card-body p{ font-size:13px; line-height:1.55; color:rgba(27,42,32,0.7); margin:0; }
+
+  /* ---- Numbered USP strip, pulled from the homepage ---- */
+  .usp-strip{ display:grid; grid-template-columns:repeat(3, 1fr); gap:22px; margin-top:8px; }
+  .usp-card{ background:var(--cream-card); border:1px solid var(--green-line); border-radius:16px; padding:26px 24px; }
+  .usp-num{ font-family:'Fraunces'; font-weight:600; font-size:13px; color:var(--gold); margin-bottom:10px; }
+  .usp-eyebrow{ font-size:11.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--green-mid); margin-bottom:6px; }
+  .usp-card h4{ font-family:'Fraunces'; font-weight:600; font-size:17.5px; color:var(--green-deep); margin:0 0 8px; }
+  .usp-card p{ font-size:13.5px; line-height:1.6; color:rgba(27,42,32,0.72); margin:0 0 12px; }
+  .usp-card a{ font-size:12.5px; font-weight:700; color:var(--green-deep); }
+
+  .section-head{ max-width:640px; margin-bottom:6px; }
+  .section-head .eyebrow{ margin-bottom:8px; }
+  .section-head h2{ margin-bottom:10px; }
+  .section-head p{ font-size:14.5px; color:rgba(27,42,32,0.68); line-height:1.6; }
+
+  @media (max-width:860px){
+    .why-grid{ grid-template-columns:1fr; }
+    .usp-strip{ grid-template-columns:1fr; }
+  }
+</style>
 </head>
 <body>
-
 <div class="wrap">
   <nav>
     <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
-
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" type="button">
       <span></span><span></span><span></span>
     </button>
-
     <div class="nav-links" id="navLinks">
       <a href="index.html">Home</a>
-
       <div class="nav-dropdown">
         <button class="nav-dropdown-trigger current" id="exploreTrigger" aria-expanded="false" type="button">Explore <span class="chev"></span></button>
         <div class="mega-panel" id="explorePanel">
@@ -39,7 +92,6 @@
           </a>
         </div>
       </div>
-
       <a href="packages.html">Packages</a>
       <a href="booking-info.html">Booking Info</a>
       <a class="btn" href="check-date.html">Check Availability →</a>
@@ -50,31 +102,205 @@
 <div class="wrap page-hero">
   <div class="eyebrow">Fills the quiet stretches</div>
   <h1>Giant Garden Games to Fill the Gaps Between Mini Golf</h1>
-  <p class="lede">Add a few oversized lawn classics alongside your mini golf course and you've got entertainment that keeps guests of every age occupied through the quieter stretches of the day, no supervision or instructions required. And just like the course, they're yours on your own schedule, not a fixed time slot.</p>
+  <p class="lede">Add a few oversized lawn classics alongside your mini golf course and you've got entertainment that keeps guests of every age occupied through the quieter stretches of the day, no supervision or instructions required. They're games most people already know how to play, so grandparents and kids can join the same round. And just like the course, they're yours on your own schedule, not a fixed time slot.</p>
 </div>
 
 <section style="padding-top:0;">
   <div class="wrap">
-    <div class="games-strip" style="grid-template-columns:1fr;">
-      <div>
-        <h3 style="font-size:16px; margin-bottom:16px;">The seven games</h3>
-        <ul class="games-list plain" style="columns:2; gap:24px;">
-          <li>Giant Jenga</li>
-          <li>Giant Connect 4</li>
-          <li>Giant Snakes & Ladders</li>
-          <li>Giant Noughts & Crosses</li>
-          <li>Cornhole</li>
-          <li>Giant Dominoes</li>
-          <li>Limbo</li>
-        </ul>
+    <div class="img-ph wide" role="img" aria-label="Placeholder for photo of giant games set out on the lawn at a wedding">
+      <span class="ph-icon">🖼</span>
+      <span class="ph-label">Photo placeholder — giant games laid out on the lawn, guests playing in the background</span>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Why they work so well</div>
+      <h2>Entertainment that looks after itself.</h2>
+      <p>You've got enough to think about on the day. These games are built to run without anyone from your side of the room having to explain the rules, referee a match, or keep an eye on the time.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="img-ph" role="img" aria-label="Placeholder for photo of mixed-age guests playing giant Jenga together">
+          <span class="ph-icon">🖼</span>
+          <span class="ph-label">Photo placeholder — mixed-age group playing together</span>
+        </div>
+        <div class="card-body">
+          <div class="why-tag">Games everyone already knows</div>
+          <h3>No instructions required</h3>
+          <p>Jenga, Connect 4, Snakes & Ladders, noughts & crosses, all games your guests learned decades ago, just bigger. Nobody needs a rulebook or a demonstration, they can walk up and start playing straight away.</p>
+        </div>
+      </div>
+      <div class="why-card">
+        <div class="img-ph" role="img" aria-label="Placeholder for photo of games arranged around a lawn at a venue">
+          <span class="ph-icon">🖼</span>
+          <span class="ph-label">Photo placeholder — games spread across the lawn or terrace</span>
+        </div>
+        <div class="card-body">
+          <div class="why-tag">Built for the in-between moments</div>
+          <h3>Fills the natural lulls</h3>
+          <p>Between the ceremony and the wedding breakfast, or while photos are being taken elsewhere, guests are often left standing around. A few games scattered across the lawn gives them somewhere to go and something to do.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">The line-up</div>
+      <h2>Seven giant games to choose from.</h2>
+      <p>Pick any 3, 5 or all 7 as part of a package, or bundle them alongside mini golf, whatever suits your day and your budget.</p>
+    </div>
+    <div class="game-card-grid">
+
+      <div class="game-card">
+        <div class="img-ph" role="img" aria-label="Placeholder for photo of Giant Jenga">
+          <span class="ph-icon">🖼</span>
+          <span class="ph-label">Photo: Giant Jenga</span>
+        </div>
+        <div class="game-card-body">
+          <h4>Giant Jenga</h4>
+          <p>The classic tumbling tower, scaled up. A brilliant icebreaker once the tension builds and the drinks start flowing, especially between courses.</p>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="img-ph" role="img" aria-label="Placeholder for photo of Giant Connect 4">
+          <span class="ph-icon">🖼</span>
+          <span class="ph-label">Photo: Giant Connect 4</span>
+        </div>
+        <div class="game-card-body">
+          <h4>Giant Connect 4</h4>
+          <p>Quick, head-to-head rounds that guests can dip in and out of. Easy to play with a drink in hand, easy to stop mid-chat and pick back up.</p>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="img-ph" role="img" aria-label="Placeholder for photo of Giant Snakes and Ladders">
+          <span class="ph-icon">🖼</span>
+          <span class="ph-label">Photo: Giant Snakes & Ladders</span>
+        </div>
+        <div class="game-card-body">
+          <h4>Giant Snakes & Ladders</h4>
+          <p>A genuine nostalgia hit that pulls in every generation at once. Pure luck of the dice, so grandparents beat grandkids just as often as the other way round.</p>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="img-ph" role="img" aria-label="Placeholder for photo of Giant Noughts and Crosses">
+          <span class="ph-icon">🖼</span>
+          <span class="ph-label">Photo: Giant Noughts & Crosses</span>
+        </div>
+        <div class="game-card-body">
+          <h4>Giant Noughts & Crosses</h4>
+          <p>A 30-second game guests can play on their way past, ideal for filling the smallest gaps in the day without asking for much of anyone's time.</p>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="img-ph" role="img" aria-label="Placeholder for photo of Cornhole">
+          <span class="ph-icon">🖼</span>
+          <span class="ph-label">Photo: Cornhole</span>
+        </div>
+        <div class="game-card-body">
+          <h4>Cornhole</h4>
+          <p>Bean bags, boards, and a satisfying bit of competition. Works brilliantly as background entertainment while the wedding party is off having photos taken.</p>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="img-ph" role="img" aria-label="Placeholder for photo of Giant Dominoes">
+          <span class="ph-icon">🖼</span>
+          <span class="ph-label">Photo: Giant Dominoes</span>
+        </div>
+        <div class="game-card-body">
+          <h4>Giant Dominoes</h4>
+          <p>Chunky, tactile, and just as fun to stack and topple as it is to actually play. A relaxed, low-pressure option for a quieter corner of the garden.</p>
+        </div>
+      </div>
+
+      <div class="game-card">
+        <div class="img-ph" role="img" aria-label="Placeholder for photo of guests playing Limbo">
+          <span class="ph-icon">🖼</span>
+          <span class="ph-label">Photo: Limbo</span>
+        </div>
+        <div class="game-card-body">
+          <h4>Limbo</h4>
+          <p>Gets people up, moving, and laughing. A great energiser for the daytime drinks reception, and reliably one of the best photo and video moments of the day.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Why book with us</div>
+      <h2>The same three promises, whichever games you pick.</h2>
+    </div>
+    <div class="usp-strip">
+      <div class="usp-card">
+        <div class="usp-num">1</div>
+        <div class="usp-eyebrow">Clear pricing from the start</div>
+        <h4>No surprise extras in the wings</h4>
+        <p>Pre-book with a published price, not a bespoke quote. Everything you'll pay for your games is on the website before you get in touch.</p>
+        <a href="packages.html">See our pricing →</a>
+      </div>
+      <div class="usp-card">
+        <div class="usp-num">2</div>
+        <div class="usp-eyebrow">Plans change — you're covered</div>
+        <h4>Full refund up to 7 days out</h4>
+        <p>Amend your booking any time. Swap which games you've picked, add mini golf, shift timings, whatever your plans need along the way.</p>
+        <a href="booking-info.html">Read our policies →</a>
+      </div>
+      <div class="usp-card">
+        <div class="usp-num">3</div>
+        <div class="usp-eyebrow">Built around your day</div>
+        <h4>No fixed hire window, your call</h4>
+        <p>Choose your own drop-off and pick-up times, with a latest pick-up of 8pm. We tailor delivery, setup and collection to your venue, indoors or out.</p>
+        <a href="booking-info.html">Read Booking Info & FAQs →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Packages & pricing</div>
+      <h2>Games only, or bundled in with mini golf.</h2>
+      <p>Every price below is published, all-in, and includes delivery, setup and collection, no bespoke quote needed. Choose games on their own, or see the packages below for the bigger saving when you add mini golf too.</p>
+    </div>
+    <div class="foundation-options">
+      <div class="opt-card">
+        <div class="opt-name">3 Games</div>
+        <div class="opt-price">£200</div>
+        <div class="opt-desc">Any 3 giant garden games.</div>
+      </div>
+      <div class="opt-card">
+        <div class="opt-name">5 Games</div>
+        <div class="opt-price">£325</div>
+        <div class="opt-desc">Any 5 giant garden games.</div>
+      </div>
+      <div class="opt-card">
+        <div class="opt-name">7 Games</div>
+        <div class="opt-price">£400</div>
+        <div class="opt-desc">All 7 giant garden games.</div>
+      </div>
+    </div>
+    <p style="font-size:13.5px; margin-top:16px; color:rgba(27,42,32,0.65);">Add mini golf and save: the same games bundled into <a href="mini-golf.html" style="color:var(--green-deep); font-weight:600;">Par, Birdie or Eagle</a> start from £550 for the pair.</p>
+  </div>
+</section>
+
 <div class="wrap final-cta" id="contact">
   <h2>Pick your <span class="italic">line-up.</span></h2>
-  <p>Bundled into Par, Birdie and Eagle, or as a standalone Games Only package, see how they fit your day.</p>
+  <p>Bundled into Par, Birdie and Eagle alongside mini golf, or as a standalone 3, 5 or 7 Games package on their own, see how they fit your day.</p>
   <a class="btn gold" href="packages.html">View packages →</a>
   <div class="foot">Giant garden games hire for weddings, celebrations & good times</div>
 </div>
@@ -90,7 +316,6 @@
     <div class="foot-note">© On The Green Games. Serving weddings & events across the North West.</div>
   </div>
 </footer>
-
 <script src="nav.js"></script>
 </body>
 </html>
