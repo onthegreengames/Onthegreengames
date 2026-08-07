@@ -653,9 +653,10 @@
       headers:{ 'Content-Type':'application/json' },
       body:JSON.stringify({
         customer:{
-          name:formData.name,
-          email:formData.email
-        },
+  first_name: formData.firstName,
+  last_name: formData.lastName,
+  email: formData.email
+},
         venue:{
           name:bookingContext.venueName,
           postcode:bookingContext.venuePostcode,
@@ -688,15 +689,17 @@
     summaryError.classList.remove('show');
     summarySuccess.classList.remove('show');
 
-    const name = document.getElementById('fName').value.trim();
-    const email = document.getElementById('fEmail').value.trim();
-    const notes = document.getElementById('fNotes').value.trim();
+    const firstName = document.getElementById('fFirstName').value.trim();
+const lastName = document.getElementById('fLastName').value.trim();
+const email = document.getElementById('fEmail').value.trim();
+const notes = document.getElementById('fNotes').value.trim();
 
-    if(!name || !email){
-      summaryError.textContent = 'Please enter your name and email address.';
-      summaryError.classList.add('show');
-      return;
-    }
+if(!firstName || !lastName || !email){
+  summaryError.textContent =
+    'Please enter your first name, last name and email address.';
+  summaryError.classList.add('show');
+  return;
+}
     if(!/^\S+@\S+\.\S+$/.test(email)){
       summaryError.textContent = 'Please enter a valid email address.';
       summaryError.classList.add('show');
@@ -712,7 +715,12 @@
     submitBtn.textContent = 'Saving booking…';
 
     try{
-      const result = await saveBooking({ name, email, notes });
+      const result = await saveBooking({
+  firstName,
+  lastName,
+  email,
+  notes
+});
       const bookingId = result.bookingId;
       sessionStorage.setItem('oggPendingBookingId', String(bookingId));
       summarySuccess.textContent = `Booking saved. Your reference is ${bookingId}. The 25% deposit due is ${money(result.depositDue)}.`;
