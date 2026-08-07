@@ -558,7 +558,7 @@
 
     const params = new URLSearchParams(window.location.search);
     const pkg = params.get('package');
-    window.location.href = pkg ? ('booking.html?package=' + encodeURIComponent(pkg)) : 'booking.html';
+    window.location.href = pkg ? ('booking?package=' + encodeURIComponent(pkg)) : 'booking';
   });
 
   // Pre-fill from a previous visit, if any
