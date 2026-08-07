@@ -238,10 +238,45 @@
 <h3>Tell us about you</h3>
 <p class="step-sub">These details will be saved securely when you book.</p>
 <div class="field-row">
-<div class="field"><label>Your name</label><input id="fName" placeholder="Full name" type="text"/></div>
-<div class="field"><label>Email</label><input id="fEmail" placeholder="you@email.com" type="email"/></div>
+  <div class="field">
+    <label>First name</label>
+    <input
+      id="fFirstName"
+      type="text"
+      placeholder="First name"
+      autocomplete="given-name"
+    />
+  </div>
+
+  <div class="field">
+    <label>Last name</label>
+    <input
+      id="fLastName"
+      type="text"
+      placeholder="Last name"
+      autocomplete="family-name"
+    />
+  </div>
 </div>
-<div class="field"><label>Anything else we should know?</label><textarea id="fNotes" placeholder="Timings, awkward access, specific requests for your dream day..." rows="3"></textarea></div>
+
+<div class="field">
+  <label>Email</label>
+  <input
+    id="fEmail"
+    type="email"
+    placeholder="you@email.com"
+    autocomplete="email"
+  />
+</div>
+
+<div class="field">
+  <label>Anything else we should know?</label>
+  <textarea
+    id="fNotes"
+    placeholder="Timings, awkward access, specific requests for your dream day..."
+    rows="3"
+  ></textarea>
+</div>
 </div>
 </div>
 <div class="builder-col summary-col" id="summaryCol">
