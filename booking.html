@@ -13,7 +13,6 @@
 </script>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="Build an all-day wedding mini golf and giant garden games package online, choose your games and see the package price and travel fee clearly." name="description"/><meta content="noindex,follow" name="robots"/><link href="https://onthegreengames.co.uk/booking.html" rel="canonical"/><meta content="website" property="og:type"/><meta content="On The Green Games" property="og:site_name"/><meta content="Build Your Wedding Games Package | On The Green Games" property="og:title"/><meta content="Build an all-day wedding mini golf and giant garden games package online, choose your games and see the package price and travel fee clearly." property="og:description"/><meta content="https://onthegreengames.co.uk/booking.html" property="og:url"/><meta content="summary" name="twitter:card"/><meta content="Build Your Wedding Games Package | On The Green Games" name="twitter:title"/><meta content="Build an all-day wedding mini golf and giant garden games package online, choose your games and see the package price and travel fee clearly." name="twitter:description"/>
-<link rel="icon" type="image/png" href="/favicon.png">
 <title>Build Your Wedding Games Package | On The Green Games</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -65,12 +64,117 @@
     background:rgba(30,71,52,0.1); color:var(--green-deep); font-size:12.5px; font-weight:600;
   }
   .summary-success.show{ display:block; }
+
+  .details-toggle{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    margin-top:18px;
+    padding:16px 18px;
+    border:1px solid rgba(30,71,52,0.16);
+    border-radius:12px;
+    background:rgba(30,71,52,0.045);
+    color:var(--green-deep);
+    text-align:left;
+    cursor:pointer;
+    transition:background 0.2s ease,border-color 0.2s ease;
+  }
+  .details-toggle:hover{
+    background:rgba(30,71,52,0.075);
+    border-color:rgba(30,71,52,0.28);
+  }
+  .details-toggle-copy{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+  }
+  .details-toggle-copy strong{
+    font-size:14px;
+    font-weight:700;
+  }
+  .details-toggle-copy small{
+    display:block;
+    max-width:600px;
+    font-size:12.5px;
+    line-height:1.5;
+    font-weight:400;
+    color:rgba(27,42,32,0.65);
+  }
+  .details-chevron{
+    flex:none;
+    font-size:24px;
+    line-height:1;
+    transition:transform 0.2s ease;
+  }
+  .details-toggle[aria-expanded="true"] .details-chevron{
+    transform:rotate(180deg);
+  }
+  .details-panel{
+    margin-top:18px;
+    padding-top:4px;
+  }
+  .details-panel[hidden]{
+    display:none;
+  }
+  .details-help{
+    margin:-3px 0 14px;
+    font-size:12.5px;
+    line-height:1.55;
+    color:rgba(27,42,32,0.62);
+  }
+  .details-intro{
+    margin:0 0 20px;
+    padding:14px 16px;
+    border-radius:11px;
+    background:rgba(192,145,60,0.10);
+    border:1px solid rgba(192,145,60,0.24);
+    color:rgba(27,42,32,0.76);
+    font-size:12.8px;
+    line-height:1.6;
+  }
+  .details-intro strong{
+    color:var(--green-deep);
+  }
+  .field-help{
+    margin:7px 0 0;
+    font-size:12px;
+    line-height:1.55;
+    color:rgba(27,42,32,0.62);
+  }
+  .details-panel .field select{
+    width:100%;
+    box-sizing:border-box;
+    padding:12px 13px;
+    border:1px solid var(--green-line);
+    border-radius:10px;
+    background:#fff;
+    color:var(--ink);
+    font:inherit;
+  }
+  .marketing-option{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    font-size:12.5px;
+    line-height:1.5;
+    color:rgba(27,42,32,0.72);
+    cursor:pointer;
+  }
+  .marketing-option input{
+    width:17px;
+    height:17px;
+    margin-top:1px;
+    flex:none;
+  }
+
 </style>
 </head>
 <body>
 <div class="wrap">
 <nav>
-<a class="logo" href="index.html"><img src="/favicon.png" alt="logo" class="logo-image"></span> ON THE GREEN GAMES</a>
+<a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
 <button aria-expanded="false" aria-label="Toggle menu" class="nav-toggle" id="navToggle" type="button">
 <span></span><span></span><span></span>
 </button>
@@ -236,46 +340,160 @@
 <div class="builder-step">
 <div class="step-label">Your details</div>
 <h3>Tell us about you</h3>
-<p class="step-sub">These details will be saved securely when you book.</p>
+<p class="step-sub">Just your name and email are needed to book.</p>
+
 <div class="field-row">
-  <div class="field">
-    <label>First name</label>
-    <input
-      id="fFirstName"
-      type="text"
-      placeholder="First name"
-      autocomplete="given-name"
-    />
-  </div>
-
-  <div class="field">
-    <label>Last name</label>
-    <input
-      id="fLastName"
-      type="text"
-      placeholder="Last name"
-      autocomplete="family-name"
-    />
-  </div>
+<div class="field">
+<label>First name</label>
+<input autocomplete="given-name" id="fFirstName" placeholder="First name" type="text"/>
+</div>
+<div class="field">
+<label>Last name</label>
+<input autocomplete="family-name" id="fLastName" placeholder="Last name" type="text"/>
+</div>
 </div>
 
 <div class="field">
-  <label>Email</label>
-  <input
-    id="fEmail"
-    type="email"
-    placeholder="you@email.com"
-    autocomplete="email"
-  />
+<label>Email</label>
+<input autocomplete="email" id="fEmail" placeholder="you@email.com" type="email"/>
+</div>
+
+<button aria-controls="fullDetailsPanel" aria-expanded="false" class="details-toggle" id="fullDetailsToggle" type="button">
+<span class="details-toggle-copy">
+<strong>Fill out all your wedding details now</strong>
+<small>If you know all the details of your wedding now you can let us know. If not, don't worry — just your name and email are enough to book.</small>
+</span>
+<span aria-hidden="true" class="details-chevron">⌄</span>
+</button>
+
+<div class="details-panel" hidden id="fullDetailsPanel">
+
+<div class="details-intro">
+<strong>Only fill in what you know.</strong>
+You can add as much or as little information as you have now. Everything in this section is optional, and any remaining details can be confirmed with us at any time before your wedding.
+</div>
+
+<div class="group-label">Your contact details</div>
+
+<div class="field">
+<label>Phone number</label>
+<input autocomplete="tel" id="fPhone" placeholder="07..." type="tel"/>
 </div>
 
 <div class="field">
-  <label>Anything else we should know?</label>
-  <textarea
-    id="fNotes"
-    placeholder="Timings, awkward access, specific requests for your dream day..."
-    rows="3"
-  ></textarea>
+<label>Preferred way for us to contact you</label>
+<select id="fPreferredContactMethod">
+<option value="">No preference</option>
+<option value="email">Email</option>
+<option value="phone">Phone</option>
+</select>
+</div>
+
+<div class="group-label">Your address</div>
+<p class="details-help">Optional — add your home or billing address if you'd like us to keep it on your customer record, for example for invoices.</p>
+
+<div class="field">
+<label>Address line 1</label>
+<input autocomplete="address-line1" id="fCustomerAddress1" placeholder="Address line 1" type="text"/>
+</div>
+
+<div class="field">
+<label>Address line 2</label>
+<input autocomplete="address-line2" id="fCustomerAddress2" placeholder="Address line 2 (optional)" type="text"/>
+</div>
+
+<div class="field-row">
+<div class="field">
+<label>Town / city</label>
+<input autocomplete="address-level2" id="fCustomerTown" placeholder="Town or city" type="text"/>
+</div>
+<div class="field">
+<label>County</label>
+<input autocomplete="address-level1" id="fCustomerCounty" placeholder="County" type="text"/>
+</div>
+</div>
+
+<div class="field">
+<label>Postcode</label>
+<input autocomplete="postal-code" id="fCustomerPostcode" placeholder="e.g. CH1 2AB" type="text"/>
+</div>
+
+<div class="group-label">Wedding details</div>
+
+<div class="field-row">
+<div class="field">
+<label>Estimated number of guests</label>
+<input id="fGuestCount" min="0" placeholder="e.g. 100" step="1" type="number"/>
+</div>
+<div class="field">
+<label>Preferred delivery / setup time</label>
+<input id="fDeliveryTime" type="time"/>
+</div>
+</div>
+
+<div class="field">
+<label>Preferred collection time</label>
+<input id="fCollectionTime" type="time"/>
+</div>
+
+<div class="group-label">Venue details</div>
+<p class="details-help">Your venue name and postcode have already been confirmed. Add the full address and venue contact if you know them.</p>
+
+<div class="field">
+<label>Venue address</label>
+<input autocomplete="off" id="fVenueAddress1" placeholder="Address line 1" type="text"/>
+</div>
+
+<div class="field">
+<label>Address line 2</label>
+<input autocomplete="off" id="fVenueAddress2" placeholder="Address line 2 (optional)" type="text"/>
+</div>
+
+<div class="field-row">
+<div class="field">
+<label>Town / city</label>
+<input autocomplete="off" id="fVenueTown" placeholder="Town or city" type="text"/>
+</div>
+<div class="field">
+<label>County</label>
+<input autocomplete="off" id="fVenueCounty" placeholder="County" type="text"/>
+</div>
+</div>
+
+<div class="field">
+<label>Venue contact name</label>
+<input id="fVenueContact" placeholder="Wedding coordinator / venue contact" type="text"/>
+</div>
+
+<div class="group-label">Practical details</div>
+
+<div class="field">
+<label>Anything else we should know?</label>
+<textarea id="fCustomerNotes" placeholder="Any general information you'd like us to know..." rows="3"></textarea>
+</div>
+
+<div class="field">
+<label>Setup &amp; access notes</label>
+<textarea id="fSetupNotes" placeholder="Parking, access restrictions, stairs, setup location, venue instructions..." rows="3"></textarea>
+</div>
+
+<div class="field">
+<label>Wet weather / backup plan</label>
+<textarea id="fWeatherContingency" placeholder="If you're planning an outdoor setup, let us know if your venue has an indoor backup space or any other wet weather arrangements..." rows="3"></textarea>
+<p class="field-help">Where mini golf is included, an Event Host means we can move the course indoors during the day if the weather changes, provided your venue has a suitable indoor space. With a non-hosted booking, the setup location is agreed at the start of the day and remains there for the full hire, so please make sure the chosen location works for the expected weather.</p>
+</div>
+
+<div class="field">
+<label>Special requests</label>
+<textarea id="fSpecialRequests" placeholder="Anything specific you'd like us to accommodate..." rows="3"></textarea>
+</div>
+
+<div class="group-label">Keep in touch</div>
+<label class="marketing-option">
+<input id="fMarketingOptIn" type="checkbox"/>
+<span>I'm happy for On The Green Games to occasionally send me news and offers by email.</span>
+</label>
+
 </div>
 </div>
 </div>
@@ -299,7 +517,7 @@
 </div>
 <footer>
 <div class="wrap foot-row">
-<a class="logo" href="index.html"><img src="/favicon.png" alt="logo" class="logo-image"></span> ON THE GREEN GAMES</a>
+<a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
 <div class="foot-links">
 <a href="index.html">Home</a>
 <a href="packages.html">Packages</a>
@@ -347,6 +565,14 @@
   const incentiveButton = document.getElementById('packageIncentiveButton');
   const summaryError = document.getElementById('summaryError');
   const summarySuccess = document.getElementById('summarySuccess');
+  const fullDetailsToggle = document.getElementById('fullDetailsToggle');
+  const fullDetailsPanel = document.getElementById('fullDetailsPanel');
+
+  fullDetailsToggle.addEventListener('click', function(){
+    const currentlyOpen = fullDetailsToggle.getAttribute('aria-expanded') === 'true';
+    fullDetailsToggle.setAttribute('aria-expanded', String(!currentlyOpen));
+    fullDetailsPanel.hidden = currentlyOpen;
+  });
 
   let travelFee = 0;
   let bookingContext = null; // { venueName, venuePostcode, weddingDate, travelFee }
@@ -648,28 +874,49 @@
 
   async function saveBooking(formData){
     const bookingData = window._bookingData;
+
     const response = await fetch(BOOKING_FUNCTION_URL, {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
       body:JSON.stringify({
         customer:{
-  first_name: formData.firstName,
-  last_name: formData.lastName,
-  email: formData.email
-},
+          first_name:formData.firstName,
+          last_name:formData.lastName,
+          email:formData.email,
+          phone:formData.phone || null,
+          address_line_1:formData.customerAddress1 || null,
+          address_line_2:formData.customerAddress2 || null,
+          town_city:formData.customerTown || null,
+          county:formData.customerCounty || null,
+          postcode:formData.customerPostcode || null,
+          preferred_contact_method:formData.preferredContactMethod || null,
+          marketing_opt_in:formData.marketingOptIn
+        },
         venue:{
-          name:bookingContext.venueName,
+          venue_name:bookingContext.venueName,
           postcode:bookingContext.venuePostcode,
-          eventDate:bookingContext.weddingDate
+          address_line_1:formData.venueAddress1 || null,
+          address_line_2:formData.venueAddress2 || null,
+          town_city:formData.venueTown || null,
+          county:formData.venueCounty || null,
+          contact_name:formData.venueContact || null
         },
         booking:{
-          selectionType:bookingData.selectionType,
-          packageCode:bookingData.packageCode,
-          includesMiniGolf:bookingData.includesMiniGolf,
+          event_date:bookingContext.weddingDate,
+          selection_type:bookingData.selectionType,
+          package_code:bookingData.packageCode,
+          includes_mini_golf:bookingData.includesMiniGolf,
           selectedGames:bookingData.selectedGames,
-          eventHost:bookingData.eventHost,
-          setup:bookingData.setup,
-          notes:formData.notes || null
+          event_host:bookingData.eventHost,
+          setup_preference:bookingData.setup,
+          guest_count:formData.guestCount,
+          delivery_time:formData.deliveryTime,
+          collection_time:formData.collectionTime,
+          customer_notes:formData.customerNotes || null,
+          setup_notes:formData.setupNotes || null,
+          weather_contingency:formData.weatherContingency || null,
+          special_requests:formData.specialRequests || null,
+          source:'website'
         }
       })
     });
@@ -690,18 +937,61 @@
     summarySuccess.classList.remove('show');
 
     const firstName = document.getElementById('fFirstName').value.trim();
-const lastName = document.getElementById('fLastName').value.trim();
-const email = document.getElementById('fEmail').value.trim();
-const notes = document.getElementById('fNotes').value.trim();
+    const lastName = document.getElementById('fLastName').value.trim();
+    const email = document.getElementById('fEmail').value.trim();
 
-if(!firstName || !lastName || !email){
-  summaryError.textContent =
-    'Please enter your first name, last name and email address.';
-  summaryError.classList.add('show');
-  return;
-}
+    const phone = document.getElementById('fPhone').value.trim();
+    const preferredContactMethod = document.getElementById('fPreferredContactMethod').value || null;
+
+    const customerAddress1 = document.getElementById('fCustomerAddress1').value.trim();
+    const customerAddress2 = document.getElementById('fCustomerAddress2').value.trim();
+    const customerTown = document.getElementById('fCustomerTown').value.trim();
+    const customerCounty = document.getElementById('fCustomerCounty').value.trim();
+    const customerPostcode = document.getElementById('fCustomerPostcode').value.trim();
+
+    const guestCountRaw = document.getElementById('fGuestCount').value;
+    const deliveryTime = document.getElementById('fDeliveryTime').value || null;
+    const collectionTime = document.getElementById('fCollectionTime').value || null;
+
+    const venueAddress1 = document.getElementById('fVenueAddress1').value.trim();
+    const venueAddress2 = document.getElementById('fVenueAddress2').value.trim();
+    const venueTown = document.getElementById('fVenueTown').value.trim();
+    const venueCounty = document.getElementById('fVenueCounty').value.trim();
+    const venueContact = document.getElementById('fVenueContact').value.trim();
+
+    const customerNotes = document.getElementById('fCustomerNotes').value.trim();
+    const setupNotes = document.getElementById('fSetupNotes').value.trim();
+    const weatherContingency = document.getElementById('fWeatherContingency').value.trim();
+    const specialRequests = document.getElementById('fSpecialRequests').value.trim();
+    const marketingOptIn = document.getElementById('fMarketingOptIn').checked;
+
+    const guestCount = guestCountRaw === '' ? null : Number(guestCountRaw);
+
+    if(!firstName || !lastName || !email){
+      summaryError.textContent = 'Please enter your first name, last name and email address.';
+      summaryError.classList.add('show');
+      return;
+    }
     if(!/^\S+@\S+\.\S+$/.test(email)){
       summaryError.textContent = 'Please enter a valid email address.';
+      summaryError.classList.add('show');
+      return;
+    }
+
+    if(customerPostcode){
+      const compactCustomerPostcode = customerPostcode.toUpperCase().replace(/\s+/g, '');
+      if(!/^[A-Z0-9]{5,7}$/.test(compactCustomerPostcode)){
+        summaryError.textContent = 'Please check the postcode in your optional customer address, or leave it blank for now.';
+        summaryError.classList.add('show');
+        return;
+      }
+    }
+
+    if(
+      guestCount !== null &&
+      (!Number.isInteger(guestCount) || guestCount < 0)
+    ){
+      summaryError.textContent = 'Please enter a valid number of guests.';
       summaryError.classList.add('show');
       return;
     }
@@ -716,14 +1006,36 @@ if(!firstName || !lastName || !email){
 
     try{
       const result = await saveBooking({
-  firstName,
-  lastName,
-  email,
-  notes
-});
+        firstName,
+        lastName,
+        email,
+        phone,
+        preferredContactMethod,
+        customerAddress1,
+        customerAddress2,
+        customerTown,
+        customerCounty,
+        customerPostcode,
+        guestCount,
+        deliveryTime,
+        collectionTime,
+        venueAddress1,
+        venueAddress2,
+        venueTown,
+        venueCounty,
+        venueContact,
+        customerNotes,
+        setupNotes,
+        weatherContingency,
+        specialRequests,
+        marketingOptIn
+      });
+
       const bookingId = result.bookingId;
+      const bookingReference = result.bookingReference || bookingId;
       sessionStorage.setItem('oggPendingBookingId', String(bookingId));
-      summarySuccess.textContent = `Booking saved. Your reference is ${bookingId}. The 25% deposit due is ${money(result.depositDue)}.`;
+      sessionStorage.setItem('oggPendingBookingReference', String(bookingReference));
+      summarySuccess.textContent = `Booking saved. Your reference is ${bookingReference}. The 25% deposit due is ${money(result.depositDue)}.`;
       summarySuccess.classList.add('show');
       submitBtn.textContent = 'Booking Saved ✓';
     } catch(error){
