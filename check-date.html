@@ -365,8 +365,7 @@
   // the event date as YYYY-MM-DD. Adjust BOOKINGS_TABLE / BOOKING_DATE_COLUMN
   // to match your actual schema. See the big comment above SUPABASE_URL for
   // the RLS gotcha if a real booking still doesn't show as blocked.
-  const BOOKINGS_TABLE = 'bookings';                              // TODO if different
-  const BOOKING_DATE_COLUMN = 'event_date';                       // TODO if different
+  const AVAILABILITY_RPC = 'get_unavailable_dates';
 
   // Demo-only blocked dates so the calendar visibly works before Supabase is
   // wired up. This is ignored the moment SUPABASE_URL above is set for real.
@@ -388,24 +387,45 @@
   let blockedDates = new Set();
 
   async function fetchBlockedDates(){
-    if(!SUPABASE_CONFIGURED){
-      return new Set(DEMO_BLOCKED_DATES);
-    }
-    try{
-      const url = `${SUPABASE_URL}/rest/v1/${BOOKINGS_TABLE}?select=${BOOKING_DATE_COLUMN}`;
-      const res = await fetch(url, {
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
-        }
-      });
-      const rows = await res.json();
-      return new Set(rows.map(r => r[BOOKING_DATE_COLUMN]));
-    } catch(e){
-      console.warn('Could not reach Supabase, treating all dates as available for now.', e);
-      return new Set();
-    }
+  if(!SUPABASE_CONFIGURED){
+    return new Set(DEMO_BLOCKED_DATES);
   }
+
+  try{
+    const url = `${SUPABASE_URL}/rest/v1/rpc/${AVAILABILITY_RPC}`;
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    });
+
+    if(!res.ok){
+      const errorText = await res.text();
+      throw new Error(
+        `Availability check failed (${res.status}): ${errorText}`
+      );
+    }
+
+    const rows = await res.json();
+
+    return new Set(
+      rows.map(row => row.event_date)
+    );
+
+  } catch(e){
+    console.error(
+      'Could not load unavailable dates from Supabase.',
+      e
+    );
+
+    return new Set();
+  }
+}
 
   // ---- Calendar rendering ----
   const todayDate = new Date();
