@@ -1,16 +1,13 @@
 // Netlify Function: netlify/functions/create-booking.js
 //
 // Required Netlify environment variables:
-//
-// Recommended:
-//   SUPABASE_URL
-//   SUPABASE_SECRET_KEY
-//
-// Legacy alternative:
 //   SUPABASE_URL
 //   SUPABASE_SERVICE_ROLE_KEY
 //
-// Never put either secret key in frontend JavaScript or HTML.
+// This function does not trust prices or totals from the browser. It resolves
+// the chosen products, then calls public.create_booking_v2(p_payload jsonb).
+// That wrapper keeps the existing booking validation/pricing flow and also saves
+// the optional customer profile fields collected by the expanded booking form.
 
 'use strict';
 
@@ -21,113 +18,66 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 const MAX_BODY_BYTES = 64 * 1024;
 
-// These packages automatically include mini golf.
-const PACKAGES_WITH_MINI_GOLF = new Set([
-  'par',
-  'birdie',
-  'eagle'
-]);
+const PACKAGES_WITH_MINI_GOLF = new Set(['par', 'birdie', 'eagle']);
 
-// Allows the function to understand names used by the existing
-// booking page while resolving them to permanent product codes.
+// Supports the labels used by the current/older booking-page code.
 const PRODUCT_ALIASES = new Map([
   ['mini golf', 'mini_golf'],
   ['9 hole mini golf', 'mini_golf'],
   ['9-hole mini golf', 'mini_golf'],
-
   ['giant jenga', 'giant_jenga'],
-
   ['connect 4', 'giant_connect_4'],
   ['connect four', 'giant_connect_4'],
   ['giant connect 4', 'giant_connect_4'],
   ['giant connect four', 'giant_connect_4'],
-
   ['snakes & ladders', 'giant_snakes_and_ladders'],
   ['snakes and ladders', 'giant_snakes_and_ladders'],
   ['giant snakes & ladders', 'giant_snakes_and_ladders'],
   ['giant snakes and ladders', 'giant_snakes_and_ladders'],
-
   ['noughts & crosses', 'giant_noughts_and_crosses'],
   ['noughts and crosses', 'giant_noughts_and_crosses'],
   ['giant noughts & crosses', 'giant_noughts_and_crosses'],
   ['giant noughts and crosses', 'giant_noughts_and_crosses'],
-
   ['cornhole', 'cornhole'],
-
   ['giant dominoes', 'giant_dominoes'],
   ['dominoes', 'giant_dominoes'],
-
   ['limbo', 'limbo'],
-
   ['event host', 'event_host']
 ]);
 
-function createResponse(statusCode, body) {
+function response(statusCode, body) {
   return {
     statusCode,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-store'
     },
-    body: statusCode === 204 ? '' : JSON.stringify(body)
+    body: JSON.stringify(body)
   };
 }
 
-function cleanText(value, maxLength = 3000) {
-  if (value === null || value === undefined) {
-    return null;
-  }
-
+function text(value, maxLength = 3000) {
+  if (value === null || value === undefined) return null;
   const cleaned = String(value).trim();
-
-  return cleaned
-    ? cleaned.slice(0, maxLength)
-    : null;
+  return cleaned ? cleaned.slice(0, maxLength) : null;
 }
 
 function firstDefined(...values) {
-  return values.find(
-    value => value !== undefined && value !== null
-  );
+  return values.find(value => value !== undefined && value !== null);
 }
 
-function parseBoolean(value, fallback = false) {
-  if (
-    value === undefined ||
-    value === null ||
-    value === ''
-  ) {
-    return fallback;
-  }
+function booleanValue(value, fallback = false) {
+  if (value === undefined || value === null || value === '') return fallback;
+  if (typeof value === 'boolean') return value;
+  if (typeof value === 'number') return value !== 0;
 
-  if (typeof value === 'boolean') {
-    return value;
-  }
-
-  if (typeof value === 'number') {
-    return value !== 0;
-  }
-
-  const normalised = String(value)
-    .trim()
-    .toLowerCase();
-
-  if (
-    ['true', '1', 'yes', 'on'].includes(normalised)
-  ) {
-    return true;
-  }
-
-  if (
-    ['false', '0', 'no', 'off'].includes(normalised)
-  ) {
-    return false;
-  }
-
+  const normalised = String(value).trim().toLowerCase();
+  if (['true', '1', 'yes', 'on'].includes(normalised)) return true;
+  if (['false', '0', 'no', 'off'].includes(normalised)) return false;
   return fallback;
 }
 
-function ensureArray(value) {
+function arrayValue(value) {
   return Array.isArray(value) ? value : [];
 }
 
@@ -153,56 +103,34 @@ function splitCombinedName(combinedName) {
     .filter(Boolean);
 
   if (parts.length < 2) {
-    return {
-      firstName: null,
-      lastName: null
-    };
+    return { firstName: null, lastName: null };
   }
 
-  const firstName = parts.shift();
-
   return {
-    firstName,
+    firstName: parts.shift(),
     lastName: parts.join(' ')
   };
 }
 
 function parseEventBody(event) {
   const rawBody = event.isBase64Encoded
-    ? Buffer
-        .from(event.body || '', 'base64')
-        .toString('utf8')
+    ? Buffer.from(event.body || '', 'base64').toString('utf8')
     : event.body || '';
 
-  if (
-    Buffer.byteLength(rawBody, 'utf8') >
-    MAX_BODY_BYTES
-  ) {
-    const error = new Error(
-      'The booking request is too large.'
-    );
-
+  if (Buffer.byteLength(rawBody, 'utf8') > MAX_BODY_BYTES) {
+    const error = new Error('The booking request is too large.');
     error.statusCode = 413;
     throw error;
   }
 
   try {
     const parsed = JSON.parse(rawBody || '{}');
-
-    if (
-      !parsed ||
-      typeof parsed !== 'object' ||
-      Array.isArray(parsed)
-    ) {
-      throw new Error('Request is not an object.');
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      throw new Error('not an object');
     }
-
     return parsed;
   } catch {
-    const error = new Error(
-      'The request body is not valid JSON.'
-    );
-
+    const error = new Error('The request body is not valid JSON.');
     error.statusCode = 400;
     throw error;
   }
@@ -213,138 +141,79 @@ function normaliseInput(body) {
   const venue = body.venue || {};
   const booking = body.booking || {};
 
-  // Supports the older single customer.name field temporarily.
   const fallbackName = splitCombinedName(customer.name);
 
-  const firstName = cleanText(
-    firstDefined(
-      customer.first_name,
-      customer.firstName,
-      fallbackName.firstName
-    ),
+  const firstName = text(
+    firstDefined(customer.first_name, customer.firstName, fallbackName.firstName),
     100
   );
 
-  const lastName = cleanText(
-    firstDefined(
-      customer.last_name,
-      customer.lastName,
-      fallbackName.lastName
-    ),
+  const lastName = text(
+    firstDefined(customer.last_name, customer.lastName, fallbackName.lastName),
     150
   );
 
-  const email =
-    cleanText(customer.email, 320)?.toLowerCase() ||
-    null;
+  const email = text(customer.email, 320)?.toLowerCase() || null;
 
   if (!firstName || !lastName) {
-    throw new Error(
-      'A first name and last name are required.'
-    );
+    throw new Error('A first name and last name are required.');
   }
 
   if (!email || !EMAIL_REGEX.test(email)) {
-    throw new Error(
-      'A valid email address is required.'
-    );
+    throw new Error('A valid email address is required.');
   }
 
-  const venueName = cleanText(
-    firstDefined(
-      venue.venue_name,
-      venue.venueName,
-      venue.name
-    ),
+  const venueName = text(
+    firstDefined(venue.venue_name, venue.venueName, venue.name),
     200
   );
 
-  const postcode =
-    cleanText(venue.postcode, 20)?.toUpperCase() ||
-    null;
+  const postcode = text(venue.postcode, 20)?.toUpperCase() || null;
 
-  const eventDate = cleanText(
-    firstDefined(
-      booking.event_date,
-      booking.eventDate,
-      venue.eventDate
-    ),
+  const eventDate = text(
+    firstDefined(booking.event_date, booking.eventDate, venue.eventDate),
     10
   );
 
   if (!venueName) {
-    throw new Error(
-      'A venue name is required.'
-    );
+    throw new Error('A venue name is required.');
   }
 
   if (!postcode) {
-    throw new Error(
-      'A venue postcode is required.'
-    );
+    throw new Error('A venue postcode is required.');
   }
 
-  if (
-    !eventDate ||
-    !DATE_REGEX.test(eventDate)
-  ) {
-    throw new Error(
-      'The event date must use YYYY-MM-DD format.'
-    );
+  if (!eventDate || !DATE_REGEX.test(eventDate)) {
+    throw new Error('The event date must use YYYY-MM-DD format.');
   }
 
-  const selectionType = normaliseCode(
-    firstDefined(
-      booking.selection_type,
-      booking.selectionType
-    )
-  );
+  const selectionType = normaliseLabel(
+    firstDefined(booking.selection_type, booking.selectionType)
+  ).replace(/\s+/g, '_');
 
-  if (
-    ![
-      'package',
-      'build_your_own'
-    ].includes(selectionType)
-  ) {
-    throw new Error(
-      'Choose a package or build your own selection.'
-    );
+  if (!['package', 'build_your_own'].includes(selectionType)) {
+    throw new Error('Choose a package or build your own selection.');
   }
 
-  const packageCode =
-    cleanText(
-      firstDefined(
-        booking.package_code,
-        booking.packageCode
-      ),
-      50
-    )?.toLowerCase() || null;
+  const packageCode = text(
+    firstDefined(booking.package_code, booking.packageCode),
+    50
+  )?.toLowerCase() || null;
 
-  if (
-    selectionType === 'package' &&
-    !packageCode
-  ) {
-    throw new Error(
-      'A package must be selected.'
-    );
+  if (selectionType === 'package' && !packageCode) {
+    throw new Error('A package must be selected.');
   }
 
-  const setupPreference = normaliseCode(
+  const setupPreference = normaliseLabel(
     firstDefined(
       booking.setup_preference,
       booking.setupPreference,
       booking.setup,
       'unsure'
     )
-  );
+  ).replace(/\s+/g, '_');
 
-  if (
-    ![
-      'outdoor',
-      'indoor',
-      'unsure'
-    ].includes(setupPreference)
-  ) {
+  if (!['outdoor', 'indoor', 'unsure'].includes(setupPreference)) {
     throw new Error(
       'The setup preference must be outdoor, indoor or unsure.'
     );
@@ -355,13 +224,65 @@ function normaliseInput(body) {
       first_name: firstName,
       last_name: lastName,
       email,
+      phone: text(customer.phone, 50),
 
-      phone: cleanText(
-        customer.phone,
-        50
+      address_line_1: text(
+        firstDefined(
+          customer.address_line_1,
+          customer.addressLine1
+        ),
+        250
       ),
 
-      marketing_opt_in: parseBoolean(
+      address_line_2: text(
+        firstDefined(
+          customer.address_line_2,
+          customer.addressLine2
+        ),
+        250
+      ),
+
+      town_city: text(
+        firstDefined(
+          customer.town_city,
+          customer.townCity
+        ),
+        150
+      ),
+
+      county: text(
+        customer.county,
+        150
+      ),
+
+      postcode:
+        text(
+          customer.postcode,
+          20
+        )?.toUpperCase() || null,
+
+      preferred_contact_method: (() => {
+        const value = normaliseLabel(
+          firstDefined(
+            customer.preferred_contact_method,
+            customer.preferredContactMethod
+          )
+        ).replace(/\s+/g, '_');
+
+        if (!value) {
+          return null;
+        }
+
+        if (!['email', 'phone'].includes(value)) {
+          throw new Error(
+            'The preferred contact method must be email or phone.'
+          );
+        }
+
+        return value;
+      })(),
+
+      marketing_opt_in: booleanValue(
         firstDefined(
           customer.marketing_opt_in,
           customer.marketingOptIn
@@ -373,7 +294,7 @@ function normaliseInput(body) {
     venue: {
       venue_name: venueName,
 
-      address_line_1: cleanText(
+      address_line_1: text(
         firstDefined(
           venue.address_line_1,
           venue.addressLine1
@@ -381,7 +302,7 @@ function normaliseInput(body) {
         250
       ),
 
-      address_line_2: cleanText(
+      address_line_2: text(
         firstDefined(
           venue.address_line_2,
           venue.addressLine2
@@ -389,7 +310,7 @@ function normaliseInput(body) {
         250
       ),
 
-      town_city: cleanText(
+      town_city: text(
         firstDefined(
           venue.town_city,
           venue.townCity
@@ -397,14 +318,14 @@ function normaliseInput(body) {
         150
       ),
 
-      county: cleanText(
+      county: text(
         venue.county,
         150
       ),
 
       postcode,
 
-      contact_name: cleanText(
+      contact_name: text(
         firstDefined(
           venue.contact_name,
           venue.contactName
@@ -424,7 +345,7 @@ function normaliseInput(body) {
 
       setup_preference: setupPreference,
 
-      delivery_time: cleanText(
+      delivery_time: text(
         firstDefined(
           booking.delivery_time,
           booking.deliveryTime
@@ -432,7 +353,7 @@ function normaliseInput(body) {
         20
       ),
 
-      collection_time: cleanText(
+      collection_time: text(
         firstDefined(
           booking.collection_time,
           booking.collectionTime
@@ -445,7 +366,7 @@ function normaliseInput(body) {
         booking.guestCount
       ),
 
-      customer_notes: cleanText(
+      customer_notes: text(
         firstDefined(
           booking.customer_notes,
           booking.customerNotes,
@@ -454,7 +375,7 @@ function normaliseInput(body) {
         3000
       ),
 
-      setup_notes: cleanText(
+      setup_notes: text(
         firstDefined(
           booking.setup_notes,
           booking.setupNotes
@@ -462,7 +383,7 @@ function normaliseInput(body) {
         3000
       ),
 
-      weather_contingency: cleanText(
+      weather_contingency: text(
         firstDefined(
           booking.weather_contingency,
           booking.weatherContingency
@@ -470,7 +391,7 @@ function normaliseInput(body) {
         3000
       ),
 
-      special_requests: cleanText(
+      special_requests: text(
         firstDefined(
           booking.special_requests,
           booking.specialRequests
@@ -479,34 +400,30 @@ function normaliseInput(body) {
       ),
 
       source:
-        cleanText(booking.source, 50)
-          ?.toLowerCase() ||
-        'website',
+        text(
+          booking.source,
+          50
+        )?.toLowerCase() || 'website',
 
-      // Temporary fields used to resolve the chosen
-      // products before calling the Supabase function.
-      requested_product_ids: ensureArray(
+      requested_product_ids: arrayValue(
         firstDefined(
           booking.selected_product_ids,
           booking.selectedProductIds
         )
       ),
 
-      requested_product_codes: ensureArray(
+      requested_product_codes: arrayValue(
         firstDefined(
           booking.selected_product_codes,
           booking.selectedProductCodes
         )
       ),
 
-      requested_games: ensureArray(
-        firstDefined(
-          booking.selectedGames,
-          booking.selected_games
-        )
+      requested_games: arrayValue(
+        booking.selectedGames
       ),
 
-      includes_mini_golf: parseBoolean(
+      includes_mini_golf: booleanValue(
         firstDefined(
           booking.includes_mini_golf,
           booking.includesMiniGolf
@@ -514,7 +431,7 @@ function normaliseInput(body) {
         false
       ),
 
-      event_host: parseBoolean(
+      event_host: booleanValue(
         firstDefined(
           booking.event_host,
           booking.eventHost
@@ -526,19 +443,18 @@ function normaliseInput(body) {
 }
 
 function getSupabaseConfig() {
-  const baseUrl = String(
-    process.env.SUPABASE_URL || ''
-  ).replace(/\/$/, '');
+  const baseUrl =
+    String(
+      process.env.SUPABASE_URL || ''
+    ).replace(/\/$/, '');
 
-  const secretKey =
-    process.env.SUPABASE_SECRET_KEY ||
-    process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const serviceKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_SECRET_KEY;
 
-  if (!baseUrl || !secretKey) {
+  if (!baseUrl || !serviceKey) {
     const error = new Error(
-      'Missing SUPABASE_URL and either ' +
-      'SUPABASE_SECRET_KEY or ' +
-      'SUPABASE_SERVICE_ROLE_KEY in Netlify.'
+      'Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in Netlify environment variables.'
     );
 
     error.statusCode = 500;
@@ -547,14 +463,8 @@ function getSupabaseConfig() {
 
   return {
     baseUrl,
-    secretKey
+    serviceKey
   };
-}
-
-function isLegacyJwtKey(key) {
-  // Legacy service-role keys are JWTs containing
-  // three dot-separated sections.
-  return String(key).split('.').length === 3;
 }
 
 async function supabaseRequest(
@@ -563,43 +473,46 @@ async function supabaseRequest(
 ) {
   const {
     baseUrl,
-    secretKey
+    serviceKey
   } = getSupabaseConfig();
 
-  const headers = {
-    apikey: secretKey,
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    ...(options.headers || {})
-  };
-
-  // A legacy service_role key is a JWT and should also
-  // be sent as a Bearer token.
-  //
-  // The newer sb_secret_ key is not a JWT, so it is
-  // sent only through the apikey header.
-  if (isLegacyJwtKey(secretKey)) {
-    headers.Authorization =
-      `Bearer ${secretKey}`;
-  }
-
   const requestOptions = {
-    method: options.method || 'GET',
-    headers
+    method:
+      options.method ||
+      'GET',
+
+    headers: {
+      apikey:
+        serviceKey,
+
+      Authorization:
+        `Bearer ${serviceKey}`,
+
+      Accept:
+        'application/json',
+
+      'Content-Type':
+        'application/json',
+
+      ...(options.headers || {})
+    }
   };
 
   if (options.body !== undefined) {
     requestOptions.body =
-      JSON.stringify(options.body);
+      JSON.stringify(
+        options.body
+      );
   }
 
   let result;
 
   try {
-    result = await fetch(
-      `${baseUrl}/rest/v1/${path}`,
-      requestOptions
-    );
+    result =
+      await fetch(
+        `${baseUrl}/rest/v1/${path}`,
+        requestOptions
+      );
   } catch (cause) {
     const error = new Error(
       'The booking service could not reach Supabase.'
@@ -607,11 +520,11 @@ async function supabaseRequest(
 
     error.statusCode = 502;
     error.cause = cause;
-
     throw error;
   }
 
-  const raw = await result.text();
+  const raw =
+    await result.text();
 
   let data = null;
 
@@ -627,11 +540,9 @@ async function supabaseRequest(
     const message =
       data &&
       typeof data === 'object'
-        ? (
-            data.message ||
-            data.details ||
-            data.hint
-          )
+        ? data.message ||
+          data.details ||
+          data.hint
         : null;
 
     const error = new Error(
@@ -639,21 +550,19 @@ async function supabaseRequest(
       'Supabase rejected the booking request.'
     );
 
-    if (
+    error.statusCode =
       result.status === 409 ||
       data?.code === '23505' ||
       /date.*unavailable|already.*book/i.test(
         error.message
       )
-    ) {
-      error.statusCode = 409;
-    } else if (result.status >= 500) {
-      error.statusCode = 502;
-    } else {
-      error.statusCode = 400;
-    }
+        ? 409
+        : result.status >= 500
+          ? 502
+          : 400;
 
-    error.supabaseCode = data?.code;
+    error.supabaseCode =
+      data?.code;
 
     throw error;
   }
@@ -662,12 +571,10 @@ async function supabaseRequest(
 }
 
 async function getActiveProducts() {
-  const rows = await supabaseRequest(
-    'products' +
-    '?select=id,code,name,category,active' +
-    '&active=eq.true' +
-    '&order=display_order.asc'
-  );
+  const rows =
+    await supabaseRequest(
+      'products?select=id,code,name,category,active&active=eq.true&order=display_order.asc'
+    );
 
   if (!Array.isArray(rows)) {
     throw new Error(
@@ -682,9 +589,14 @@ function resolveProductIds(
   input,
   products
 ) {
-  const byId = new Map();
-  const byCode = new Map();
-  const byName = new Map();
+  const byId =
+    new Map();
+
+  const byCode =
+    new Map();
+
+  const byName =
+    new Map();
 
   for (const product of products) {
     byId.set(
@@ -703,13 +615,17 @@ function resolveProductIds(
     );
   }
 
-  const selectedIds = new Set();
-  const unknownSelections = [];
+  const selectedIds =
+    new Set();
 
-  function addById(value) {
-    const id = String(value || '')
-      .trim()
-      .toLowerCase();
+  const unknownSelections =
+    [];
+
+  const addById = value => {
+    const id =
+      String(value || '')
+        .trim()
+        .toLowerCase();
 
     if (
       !UUID_REGEX.test(id) ||
@@ -725,10 +641,12 @@ function resolveProductIds(
     selectedIds.add(
       byId.get(id).id
     );
-  }
+  };
 
-  function addByCodeOrName(value) {
-    const raw = String(value || '').trim();
+  const addByCodeOrName = value => {
+    const raw =
+      String(value || '')
+        .trim();
 
     if (!raw) {
       return;
@@ -739,9 +657,13 @@ function resolveProductIds(
       return;
     }
 
-    const label = normaliseLabel(raw);
+    const label =
+      normaliseLabel(raw);
+
     const aliasCode =
-      PRODUCT_ALIASES.get(label);
+      PRODUCT_ALIASES.get(
+        label
+      );
 
     const product =
       (
@@ -749,27 +671,37 @@ function resolveProductIds(
           ? byCode.get(aliasCode)
           : null
       ) ||
-      byCode.get(normaliseCode(raw)) ||
+      byCode.get(
+        normaliseCode(raw)
+      ) ||
       byName.get(label);
 
     if (!product) {
-      unknownSelections.push(raw);
+      unknownSelections.push(
+        raw
+      );
+
       return;
     }
 
-    selectedIds.add(product.id);
-  }
+    selectedIds.add(
+      product.id
+    );
+  };
 
-  input.booking.requested_product_ids
+  input.booking
+    .requested_product_ids
     .forEach(addById);
 
-  input.booking.requested_product_codes
+  input.booking
+    .requested_product_codes
     .forEach(addByCodeOrName);
 
-  input.booking.requested_games
+  input.booking
+    .requested_games
     .forEach(addByCodeOrName);
 
-  const packageIncludesMiniGolf =
+  const packageIncludesGolf =
     input.booking.selection_type ===
       'package' &&
     PACKAGES_WITH_MINI_GOLF.has(
@@ -778,25 +710,38 @@ function resolveProductIds(
 
   if (
     input.booking.includes_mini_golf ||
-    packageIncludesMiniGolf
+    packageIncludesGolf
   ) {
-    addByCodeOrName('mini_golf');
-  }
-
-  if (input.booking.event_host) {
-    addByCodeOrName('event_host');
-  }
-
-  if (unknownSelections.length) {
-    throw new Error(
-      'One or more selected products are invalid: ' +
-      [
-        ...new Set(unknownSelections)
-      ].join(', ')
+    addByCodeOrName(
+      'mini_golf'
     );
   }
 
-  return [...selectedIds];
+  if (
+    input.booking.event_host
+  ) {
+    addByCodeOrName(
+      'event_host'
+    );
+  }
+
+  if (
+    unknownSelections.length
+  ) {
+    throw new Error(
+      `One or more selected products are invalid: ${
+        [
+          ...new Set(
+            unknownSelections
+          )
+        ].join(', ')
+      }`
+    );
+  }
+
+  return [
+    ...selectedIds
+  ];
 }
 
 function buildRpcPayload(
@@ -804,9 +749,11 @@ function buildRpcPayload(
   selectedProductIds
 ) {
   return {
-    customer: input.customer,
+    customer:
+      input.customer,
 
-    venue: input.venue,
+    venue:
+      input.venue,
 
     booking: {
       event_date:
@@ -851,23 +798,40 @@ function buildRpcPayload(
   };
 }
 
-exports.handler = async function handler(event) {
-  if (event.httpMethod === 'OPTIONS') {
-    return createResponse(204, {});
+exports.handler =
+  async function handler(event) {
+
+  if (
+    event.httpMethod === 'OPTIONS'
+  ) {
+    return response(
+      204,
+      {}
+    );
   }
 
-  if (event.httpMethod !== 'POST') {
-    return createResponse(405, {
-      error: 'Method not allowed.'
-    });
+  if (
+    event.httpMethod !== 'POST'
+  ) {
+    return response(
+      405,
+      {
+        error:
+          'Method not allowed.'
+      }
+    );
   }
 
   try {
     const body =
-      parseEventBody(event);
+      parseEventBody(
+        event
+      );
 
     const input =
-      normaliseInput(body);
+      normaliseInput(
+        body
+      );
 
     const products =
       await getActiveProducts();
@@ -886,11 +850,13 @@ exports.handler = async function handler(event) {
 
     const result =
       await supabaseRequest(
-        'rpc/create_booking',
+        'rpc/create_booking_v2',
         {
-          method: 'POST',
-          body: {
-            p_payload: payload
+          method:'POST',
+
+          body:{
+            p_payload:
+              payload
           }
         }
       );
@@ -901,48 +867,55 @@ exports.handler = async function handler(event) {
       Array.isArray(result)
     ) {
       throw new Error(
-        'Supabase created the booking but ' +
-        'returned an invalid response.'
+        'Supabase created the booking but returned an invalid response.'
       );
     }
 
-    return createResponse(201, {
-      ...result,
+    return response(
+      201,
+      {
+        ...result,
 
-      // Compatibility aliases for the existing
-      // booking-page JavaScript.
-      bookingId:
-        result.booking_id,
+        bookingId:
+          result.booking_id,
 
-      bookingReference:
-        result.booking_reference,
+        bookingReference:
+          result.booking_reference,
 
-      travelFee:
-        result.travel_fee,
+        travelFee:
+          result.travel_fee,
 
-      total:
-        result.total_price,
+        total:
+          result.total_price,
 
-      depositDue:
-        result.deposit_required,
+        depositDue:
+          result.deposit_required,
 
-      expiresAt:
-        result.expires_at
-    });
+        expiresAt:
+          result.expires_at
+      }
+    );
+
   } catch (error) {
+
     console.error(
       'create-booking failed',
       {
-        message: error.message,
-        statusCode: error.statusCode,
+        message:
+          error.message,
+
+        statusCode:
+          error.statusCode,
+
         supabaseCode:
           error.supabaseCode,
+
         cause:
           error.cause?.message
       }
     );
 
-    return createResponse(
+    return response(
       error.statusCode || 400,
       {
         error:
