@@ -629,9 +629,9 @@ async function createStripeCheckout(
    * confirmation page later.
    */
   params.set(
-    'success_url',
-    `${siteUrl}/booking.html?payment=success&session_id={CHECKOUT_SESSION_ID}`
-  );
+  'success_url',
+  `${siteUrl}/booking-confirmed.html?session_id={CHECKOUT_SESSION_ID}`
+);
 
 
   params.set(
