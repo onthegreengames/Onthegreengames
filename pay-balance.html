@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z1194VV4R4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Z1194VV4R4');
+  </script>
+
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <title>Pay Your Balance | On The Green Games</title>
+
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="styles.css" rel="stylesheet"/>
+
+  <style>
+    .balance-page{
+      min-height:calc(100vh - 220px);
+      padding:72px 0 100px;
+    }
+    .balance-shell{
+      max-width:760px;
+      margin:0 auto;
+    }
+    .balance-card{
+      background:#fff;
+      border:1px solid rgba(30,71,52,0.14);
+      border-radius:22px;
+      box-shadow:0 18px 55px rgba(20,45,32,0.10);
+      padding:42px;
+    }
+    .balance-eyebrow{
+      margin-bottom:8px;
+      color:var(--gold);
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .balance-card h1{
+      margin:0 0 12px;
+      font-size:clamp(34px,6vw,54px);
+      line-height:1.02;
+    }
+    .balance-lede{
+      margin:0;
+      max-width:650px;
+      color:rgba(27,42,32,.72);
+      font-size:16px;
+      line-height:1.7;
+    }
+    .balance-summary{
+      margin-top:30px;
+      border-top:1px solid rgba(30,71,52,.12);
+      border-bottom:1px solid rgba(30,71,52,.12);
+    }
+    .balance-row{
+      display:flex;
+      justify-content:space-between;
+      gap:24px;
+      padding:15px 0;
+      border-bottom:1px solid rgba(30,71,52,.09);
+      font-size:14px;
+    }
+    .balance-row:last-child{ border-bottom:0; }
+    .balance-row span:first-child{
+      color:rgba(27,42,32,.62);
+    }
+    .balance-row strong{
+      text-align:right;
+      color:var(--green-deep);
+    }
+    .balance-total strong{
+      color:var(--gold);
+      font-size:20px;
+    }
+    .balance-note{
+      margin-top:24px;
+      padding:18px 20px;
+      border-radius:13px;
+      background:rgba(30,71,52,.07);
+      color:var(--green-deep);
+      font-size:14px;
+      line-height:1.6;
+    }
+    .balance-note.warning{
+      background:rgba(192,145,60,.10);
+      border:1px solid rgba(192,145,60,.22);
+    }
+    .balance-note.error{
+      background:rgba(179,73,47,.09);
+      color:#8f321f;
+    }
+    .balance-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:26px;
+    }
+    .balance-spinner{
+      width:24px;
+      height:24px;
+      margin:0 0 14px;
+      border:3px solid rgba(30,71,52,.15);
+      border-top-color:var(--green-deep);
+      border-radius:50%;
+      animation:balance-spin .8s linear infinite;
+    }
+    @keyframes balance-spin{
+      to{ transform:rotate(360deg); }
+    }
+    [hidden]{ display:none !important; }
+    @media (max-width:640px){
+      .balance-page{ padding:42px 0 70px; }
+      .balance-card{ padding:28px 22px; border-radius:17px; }
+      .balance-row{ gap:14px; }
+      .balance-row strong{ max-width:58%; }
+      .balance-actions{ flex-direction:column; }
+      .balance-actions .btn{ width:100%; justify-content:center; text-align:center; box-sizing:border-box; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
+      <button aria-expanded="false" aria-label="Toggle menu" class="nav-toggle" id="navToggle" type="button">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <div class="nav-dropdown">
+          <button aria-expanded="false" class="nav-dropdown-trigger" id="exploreTrigger" type="button">Explore <span class="chev"></span></button>
+          <div class="mega-panel" id="explorePanel">
+            <a class="mega-item" href="mini-golf.html">
+              <div class="mega-item-title">Mini Golf</div>
+              <div class="mega-item-desc">9-hole wedding mini golf, delivered and set up for you.</div>
+            </a>
+            <a class="mega-item" href="giant-games.html">
+              <div class="mega-item-title">Giant Games</div>
+              <div class="mega-item-desc">Seven giant garden games available for all-day wedding hire.</div>
+            </a>
+            <a class="mega-item" href="gallery.html">
+              <div class="mega-item-title">Gallery</div>
+              <div class="mega-item-desc">Wedding mini golf and garden games setups in action.</div>
+            </a>
+          </div>
+        </div>
+        <a href="packages.html">Packages</a>
+        <a href="booking-info.html">Booking Info</a>
+      </div>
+    </nav>
+  </div>
+
+  <main class="balance-page">
+    <div class="wrap balance-shell">
+      <div class="balance-card">
+
+        <div id="loadingState">
+          <div class="balance-spinner" aria-hidden="true"></div>
+          <div class="balance-eyebrow">Secure balance payment</div>
+          <h1>Loading your booking…</h1>
+          <p class="balance-lede">We're checking the secure payment link and your current balance.</p>
+        </div>
+
+        <div id="readyState" hidden>
+          <div class="balance-eyebrow">Remaining balance</div>
+          <h1>Finish paying for your wedding booking.</h1>
+          <p class="balance-lede" id="readyLede"></p>
+
+          <div class="balance-summary">
+            <div class="balance-row">
+              <span>Booking reference</span>
+              <strong id="bookingReference">—</strong>
+            </div>
+            <div class="balance-row">
+              <span>Wedding date</span>
+              <strong id="eventDate">—</strong>
+            </div>
+            <div class="balance-row">
+              <span>Total booking price</span>
+              <strong id="totalPrice">—</strong>
+            </div>
+            <div class="balance-row">
+              <span>Paid so far</span>
+              <strong id="totalPaid">—</strong>
+            </div>
+            <div class="balance-row balance-total">
+              <span>Remaining balance</span>
+              <strong id="remainingBalance">—</strong>
+            </div>
+          </div>
+
+          <div class="balance-note warning" id="cancelledNotice" hidden>
+            Payment was not completed. Your wedding booking remains confirmed. You can return to secure payment below.
+          </div>
+
+          <div class="balance-note">
+            Your original booking remains confirmed while you pay the balance. You'll be taken to Stripe's secure checkout and returned to On The Green Games when payment is complete.
+          </div>
+
+          <div class="balance-actions">
+            <button class="btn gold" id="payBalanceBtn" type="button">Pay remaining balance</button>
+            <a class="btn" href="booking-info.html">Booking information</a>
+          </div>
+
+          <div class="balance-note error" id="paymentError" hidden></div>
+        </div>
+
+        <div id="paidState" hidden>
+          <div class="balance-eyebrow">Paid in full</div>
+          <h1>There is nothing left to pay.</h1>
+          <p class="balance-lede" id="paidLede"></p>
+
+          <div class="balance-summary">
+            <div class="balance-row">
+              <span>Booking reference</span>
+              <strong id="paidBookingReference">—</strong>
+            </div>
+            <div class="balance-row">
+              <span>Wedding date</span>
+              <strong id="paidEventDate">—</strong>
+            </div>
+            <div class="balance-row balance-total">
+              <span>Remaining balance</span>
+              <strong>£0.00</strong>
+            </div>
+          </div>
+
+          <div class="balance-actions">
+            <a class="btn gold" href="index.html">Return home →</a>
+            <a class="btn" href="booking-info.html">Booking information</a>
+          </div>
+        </div>
+
+        <div id="errorState" hidden>
+          <div class="balance-eyebrow">Balance payment link</div>
+          <h1>We couldn't load this booking.</h1>
+          <p class="balance-lede">The link may be incomplete or the booking may not currently have a balance available for payment.</p>
+          <div class="balance-note error" id="errorMessage" style="margin-top:24px;"></div>
+          <div class="balance-actions">
+            <button class="btn gold" id="retryBtn" type="button">Try again →</button>
+            <a class="btn" href="index.html">Return home</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap foot-row">
+      <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
+      <div class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="packages.html">Packages</a>
+        <a href="booking-info.html">Booking Info</a>
+      </div>
+      <div class="foot-note">© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
+    </div>
+  </footer>
+
+  <script src="nav.js"></script>
+  <script>
+    const SUMMARY_URL = '/.netlify/functions/get-balance-payment';
+    const CHECKOUT_URL = '/.netlify/functions/create-balance-checkout';
+
+    const loadingState = document.getElementById('loadingState');
+    const readyState = document.getElementById('readyState');
+    const paidState = document.getElementById('paidState');
+    const errorState = document.getElementById('errorState');
+    const payBalanceBtn = document.getElementById('payBalanceBtn');
+    const paymentError = document.getElementById('paymentError');
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token') || '';
+    const paymentReturnState = params.get('payment');
+
+    let currentSummary = null;
+
+    function money(value){
+      return '£' + Number(value || 0).toLocaleString('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatDate(value){
+      if(!value) return '—';
+      const date = new Date(value + 'T00:00:00');
+      if(Number.isNaN(date.getTime())) return value;
+      return date.toLocaleDateString('en-GB', {
+        weekday:'long',
+        day:'numeric',
+        month:'long',
+        year:'numeric'
+      });
+    }
+
+    function showOnly(state){
+      [loadingState, readyState, paidState, errorState].forEach(el => {
+        el.hidden = el !== state;
+      });
+    }
+
+    async function getSummary(){
+      const response = await fetch(
+        `${SUMMARY_URL}?token=${encodeURIComponent(token)}`,
+        { headers:{ 'Accept':'application/json' } }
+      );
+
+      let data = {};
+      try{ data = await response.json(); } catch(error){}
+
+      if(!response.ok){
+        throw new Error(data.error || 'We could not load this balance payment.');
+      }
+
+      return data;
+    }
+
+    function renderSummary(data){
+      currentSummary = data;
+
+      if(data.fullyPaid || Number(data.remainingBalance) <= 0.005){
+        document.getElementById('paidBookingReference').textContent = data.bookingReference || '—';
+        document.getElementById('paidEventDate').textContent = formatDate(data.eventDate);
+        document.getElementById('paidLede').textContent =
+          `${data.firstName ? `${data.firstName}, your` : 'Your'} booking ${data.bookingReference || ''} is already paid in full.`;
+        showOnly(paidState);
+        return;
+      }
+
+      document.getElementById('bookingReference').textContent = data.bookingReference || '—';
+      document.getElementById('eventDate').textContent = formatDate(data.eventDate);
+      document.getElementById('totalPrice').textContent = money(data.totalPrice);
+      document.getElementById('totalPaid').textContent = money(data.totalPaid);
+      document.getElementById('remainingBalance').textContent = money(data.remainingBalance);
+
+      document.getElementById('readyLede').textContent =
+        `${data.firstName ? `${data.firstName}, your` : 'Your'} wedding date is already secured. You can pay the remaining ${money(data.remainingBalance)} below.`;
+
+      payBalanceBtn.textContent = data.existingCheckoutUrl
+        ? `Continue secure payment — ${money(data.remainingBalance)}`
+        : `Pay remaining balance — ${money(data.remainingBalance)}`;
+
+      document.getElementById('cancelledNotice').hidden = paymentReturnState !== 'cancelled';
+      showOnly(readyState);
+    }
+
+    async function loadBalance(){
+      if(!token){
+        document.getElementById('errorMessage').textContent = 'The secure balance-payment token is missing from this link.';
+        showOnly(errorState);
+        return;
+      }
+
+      showOnly(loadingState);
+
+      try{
+        const data = await getSummary();
+        renderSummary(data);
+      } catch(error){
+        console.error(error);
+        document.getElementById('errorMessage').textContent =
+          error.message || 'We could not load this balance payment.';
+        showOnly(errorState);
+      }
+    }
+
+    async function startBalancePayment(){
+      if(!currentSummary) return;
+
+      paymentError.hidden = true;
+
+      if(currentSummary.existingCheckoutUrl){
+        window.location.assign(currentSummary.existingCheckoutUrl);
+        return;
+      }
+
+      payBalanceBtn.disabled = true;
+      payBalanceBtn.textContent = 'Opening secure payment…';
+
+      try{
+        const response = await fetch(CHECKOUT_URL, {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body:JSON.stringify({ token })
+        });
+
+        let data = {};
+        try{ data = await response.json(); } catch(error){}
+
+        if(!response.ok){
+          throw new Error(data.error || 'We could not open secure payment.');
+        }
+
+        if(!data.checkoutUrl){
+          throw new Error('Stripe did not return a secure payment page.');
+        }
+
+        window.location.assign(data.checkoutUrl);
+
+      } catch(error){
+        console.error(error);
+        paymentError.textContent = error.message || 'We could not open secure payment.';
+        paymentError.hidden = false;
+        payBalanceBtn.disabled = false;
+        payBalanceBtn.textContent = `Pay remaining balance — ${money(currentSummary.remainingBalance)}`;
+      }
+    }
+
+    payBalanceBtn.addEventListener('click', startBalancePayment);
+    document.getElementById('retryBtn').addEventListener('click', loadBalance);
+
+    loadBalance();
+  </script>
+</body>
+</html>
