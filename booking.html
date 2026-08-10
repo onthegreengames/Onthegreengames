@@ -12,7 +12,7 @@
   gtag('config', 'G-Z1194VV4R4');
 </script>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="Build an all-day wedding mini golf and giant garden games package online, choose your games and see the package price and travel fee clearly." name="description"/><meta content="noindex,follow" name="robots"/><link href="https://onthegreengames.co.uk/booking" rel="canonical"/><meta content="website" property="og:type"/><meta content="On The Green Games" property="og:site_name"/><meta content="Build Your Wedding Games Package | On The Green Games" property="og:title"/><meta content="Build an all-day wedding mini golf and giant garden games package online, choose your games and see the package price and travel fee clearly." property="og:description"/><meta content="https://onthegreengames.co.uk/booking.html" property="og:url"/><meta content="summary" name="twitter:card"/><meta content="Build Your Wedding Games Package | On The Green Games" name="twitter:title"/><meta content="Build an all-day wedding mini golf and giant garden games package online, choose your games and see the package price and travel fee clearly." name="twitter:description"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="Build an all-day wedding mini golf and giant garden games package online, choose your games and see the package price and travel fee clearly." name="description"/><meta content="noindex,follow" name="robots"/><link href="https://onthegreengames.co.uk/booking.html" rel="canonical"/><meta content="website" property="og:type"/><meta content="On The Green Games" property="og:site_name"/><meta content="Build Your Wedding Games Package | On The Green Games" property="og:title"/><meta content="Build an all-day wedding mini golf and giant garden games package online, choose your games and see the package price and travel fee clearly." property="og:description"/><meta content="https://onthegreengames.co.uk/booking.html" property="og:url"/><meta content="summary" name="twitter:card"/><meta content="Build Your Wedding Games Package | On The Green Games" name="twitter:title"/><meta content="Build an all-day wedding mini golf and giant garden games package online, choose your games and see the package price and travel fee clearly." name="twitter:description"/>
 <title>Build Your Wedding Games Package | On The Green Games</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -64,6 +64,19 @@
     background:rgba(30,71,52,0.1); color:var(--green-deep); font-size:12.5px; font-weight:600;
   }
   .summary-success.show{ display:block; }
+  .payment-actions{
+    display:grid; gap:10px; margin-top:14px;
+  }
+  .payment-actions .btn{
+    width:100%; justify-content:center; text-align:center; box-sizing:border-box;
+  }
+  .payment-actions .btn .payment-amount{
+    margin-left:5px; font-weight:700;
+  }
+  .payment-choice-label{
+    margin-top:12px; font-size:12px; font-weight:700; letter-spacing:0.05em;
+    text-transform:uppercase; color:rgba(27,42,32,0.58); text-align:center;
+  }
 
   .details-toggle{
     width:100%;
@@ -507,8 +520,13 @@ You can add as much or as little information as you have now. Everything in this
 <span class="amount" id="totalAmount">£0</span>
 </div>
 <div class="summary-badge" id="packageBadge"></div>
-<a class="btn gold" href="#" id="submitBooking">Book Now →</a>
-<div class="summary-note">A 25% deposit secures your date. Every package is available all day within your chosen timings, latest collection 8pm.</div>
+<div class="payment-choice-label">Choose how you'd like to pay</div>
+<div class="payment-actions" id="paymentActions">
+<a class="btn gold" href="#" id="payDepositBtn">Book now &amp; pay 25% deposit <span class="payment-amount" id="depositButtonAmount">£0</span></a>
+<a class="btn" href="#" id="payFullBtn">Book now &amp; pay in full <span class="payment-amount" id="fullButtonAmount">£0</span></a>
+<a class="btn gold" href="#" id="resumePaymentBtn" style="display:none;">Return to secure payment →</a>
+</div>
+<div class="summary-note">Pay securely through Stripe. A 25% deposit secures your date, with the remaining balance payable later. You can also pay the full amount now. Every package is available all day within your chosen timings, latest collection 8pm.</div>
 <div class="summary-error" id="summaryError"></div>
 <div class="summary-success" id="summarySuccess"></div>
 </div>
@@ -547,6 +565,7 @@ You can add as much or as little information as you have now. Everything in this
   // The Netlify Function rechecks package prices, travel fee and date availability
   // before writing anything to Supabase. This prevents browser-side price tampering.
   const BOOKING_FUNCTION_URL = '/.netlify/functions/create-booking';
+  const CHECKOUT_FUNCTION_URL = '/.netlify/functions/create-checkout-session';
 
   const packageGames = Array.from(document.querySelectorAll('.package-game-cb'));
   const customGames = Array.from(document.querySelectorAll('.custom-game-cb'));
@@ -556,7 +575,12 @@ You can add as much or as little information as you have now. Everything in this
   const eventHostRow = document.getElementById('eventHostRow');
   const customGolfToggle = document.getElementById('customGolfToggle');
   const setupOpts = Array.from(document.querySelectorAll('#setupPair .radio-opt'));
-  const submitBtn = document.getElementById('submitBooking');
+  const payDepositBtn = document.getElementById('payDepositBtn');
+  const payFullBtn = document.getElementById('payFullBtn');
+  const depositButtonAmount = document.getElementById('depositButtonAmount');
+  const fullButtonAmount = document.getElementById('fullButtonAmount');
+  const resumePaymentBtn = document.getElementById('resumePaymentBtn');
+  const paymentButtons = [payDepositBtn, payFullBtn];
   const packageGamesStep = document.getElementById('packageGamesStep');
   const buildOwnStep = document.getElementById('buildOwnStep');
   const buildOwnBtn = document.getElementById('buildOwnBtn');
@@ -576,6 +600,23 @@ You can add as much or as little information as you have now. Everything in this
 
   let travelFee = 0;
   let bookingContext = null; // { venueName, venuePostcode, weddingDate, travelFee }
+
+  // If Stripe sends the customer back after cancelling payment, reuse the
+  // booking that was already created rather than creating a second hold.
+  const paymentReturnParams = new URLSearchParams(window.location.search);
+  const paymentReturnState = paymentReturnParams.get('payment');
+  let activePendingBookingId = null;
+  let activePendingSnapshot = null;
+  let paymentCompleteReturn = paymentReturnState === 'success';
+
+  if(paymentReturnState === 'cancelled'){
+    activePendingBookingId = sessionStorage.getItem('oggPendingBookingId');
+    try{
+      activePendingSnapshot = JSON.parse(sessionStorage.getItem('oggPendingPayment') || 'null');
+    } catch(error){
+      activePendingSnapshot = null;
+    }
+  }
 
   function currentPackageKey(){
     const checked = packageInputs.find(input => input.checked);
@@ -798,7 +839,16 @@ You can add as much or as little information as you have now. Everything in this
       badgeEl.classList.remove('show');
     }
 
-    submitBtn.classList.toggle('disabled', !selectionComplete || !meetsMinimum || !bookingContext);
+    const paymentDisabled = paymentCompleteReturn || (!activePendingBookingId && (!selectionComplete || !meetsMinimum || !bookingContext));
+    paymentButtons.forEach(button => {
+      button.classList.toggle('disabled', paymentDisabled);
+      button.setAttribute('aria-disabled', String(paymentDisabled));
+    });
+
+    const displayedTotal = activePendingSnapshot?.total ?? total;
+    const displayedDeposit = activePendingSnapshot?.depositDue ?? (Math.round(total * 25) / 100);
+    document.getElementById('depositButtonAmount').textContent = money(displayedDeposit);
+    document.getElementById('fullButtonAmount').textContent = money(displayedTotal);
 
     const setup = document.querySelector('input[name="setup"]:checked')?.value || 'unsure';
     window._bookingData = {
@@ -929,13 +979,68 @@ You can add as much or as little information as you have now. Everything in this
     return result;
   }
 
-  submitBtn.addEventListener('click', async function(event){
-    event.preventDefault();
-    if(submitBtn.classList.contains('disabled')) return;
+  function setBuilderLocked(locked){
+    const builder = document.querySelector('.builder-grid > .builder-col:first-child');
+    if(!builder) return;
 
-    summaryError.classList.remove('show');
-    summarySuccess.classList.remove('show');
+    builder.querySelectorAll('input, textarea, select, button').forEach(control => {
+      control.disabled = locked;
+    });
 
+    builder.style.opacity = locked ? '0.72' : '';
+  }
+
+  function setPaymentButtonsLoading(paymentType){
+    paymentButtons.forEach(button => {
+      button.classList.add('disabled');
+      button.setAttribute('aria-disabled', 'true');
+    });
+
+    if(paymentType === 'deposit'){
+      payDepositBtn.textContent = 'Opening secure deposit payment…';
+      payFullBtn.textContent = 'Pay in full';
+    } else {
+      payDepositBtn.textContent = 'Pay 25% deposit';
+      payFullBtn.textContent = 'Opening secure full payment…';
+    }
+  }
+
+  function restorePaymentButtonLabels(){
+    const total = activePendingSnapshot?.total ?? window._bookingData?.total ?? 0;
+    const depositDue = activePendingSnapshot?.depositDue ?? window._bookingData?.depositDue ?? 0;
+
+    payDepositBtn.innerHTML = `Book now &amp; pay 25% deposit <span class="payment-amount" id="depositButtonAmount">${money(depositDue)}</span>`;
+    payFullBtn.innerHTML = `Book now &amp; pay in full <span class="payment-amount" id="fullButtonAmount">${money(total)}</span>`;
+
+    // The spans were recreated by innerHTML, so refresh the references used by recalc.
+    // Their values are already correct here; future recalc calls query them directly below.
+  }
+
+  async function createCheckout(bookingId, paymentType){
+    const response = await fetch(CHECKOUT_FUNCTION_URL, {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({
+        bookingId,
+        paymentType
+      })
+    });
+
+    let result = {};
+    try{ result = await response.json(); } catch(error){}
+
+    if(!response.ok){
+      throw new Error(result.error || 'We could not open secure payment. Please try again.');
+    }
+
+    if(!result.checkoutUrl){
+      throw new Error('Stripe did not return a secure checkout link. Please try again.');
+    }
+
+    return result;
+  }
+
+  function collectFormData(){
     const firstName = document.getElementById('fFirstName').value.trim();
     const lastName = document.getElementById('fLastName').value.trim();
     const email = document.getElementById('fEmail').value.trim();
@@ -968,22 +1073,17 @@ You can add as much or as little information as you have now. Everything in this
     const guestCount = guestCountRaw === '' ? null : Number(guestCountRaw);
 
     if(!firstName || !lastName || !email){
-      summaryError.textContent = 'Please enter your first name, last name and email address.';
-      summaryError.classList.add('show');
-      return;
+      throw new Error('Please enter your first name, last name and email address.');
     }
+
     if(!/^\S+@\S+\.\S+$/.test(email)){
-      summaryError.textContent = 'Please enter a valid email address.';
-      summaryError.classList.add('show');
-      return;
+      throw new Error('Please enter a valid email address.');
     }
 
     if(customerPostcode){
       const compactCustomerPostcode = customerPostcode.toUpperCase().replace(/\s+/g, '');
       if(!/^[A-Z0-9]{5,7}$/.test(compactCustomerPostcode)){
-        summaryError.textContent = 'Please check the postcode in your optional customer address, or leave it blank for now.';
-        summaryError.classList.add('show');
-        return;
+        throw new Error('Please check the postcode in your optional customer address, or leave it blank for now.');
       }
     }
 
@@ -991,60 +1091,126 @@ You can add as much or as little information as you have now. Everything in this
       guestCount !== null &&
       (!Number.isInteger(guestCount) || guestCount < 0)
     ){
-      summaryError.textContent = 'Please enter a valid number of guests.';
-      summaryError.classList.add('show');
-      return;
-    }
-    if(!bookingContext){
-      summaryError.textContent = 'Please check your date and venue before booking.';
-      summaryError.classList.add('show');
-      return;
+      throw new Error('Please enter a valid number of guests.');
     }
 
-    submitBtn.classList.add('disabled');
-    submitBtn.textContent = 'Saving booking…';
+    if(!bookingContext){
+      throw new Error('Please check your date and venue before booking.');
+    }
+
+    return {
+      firstName,
+      lastName,
+      email,
+      phone,
+      preferredContactMethod,
+      customerAddress1,
+      customerAddress2,
+      customerTown,
+      customerCounty,
+      customerPostcode,
+      guestCount,
+      deliveryTime,
+      collectionTime,
+      venueAddress1,
+      venueAddress2,
+      venueTown,
+      venueCounty,
+      venueContact,
+      customerNotes,
+      setupNotes,
+      weatherContingency,
+      specialRequests,
+      marketingOptIn
+    };
+  }
+
+  async function startPayment(paymentType){
+    summaryError.classList.remove('show');
+    summarySuccess.classList.remove('show');
+
+    if(paymentCompleteReturn) return;
+
+    setPaymentButtonsLoading(paymentType);
 
     try{
-      const result = await saveBooking({
-        firstName,
-        lastName,
-        email,
-        phone,
-        preferredContactMethod,
-        customerAddress1,
-        customerAddress2,
-        customerTown,
-        customerCounty,
-        customerPostcode,
-        guestCount,
-        deliveryTime,
-        collectionTime,
-        venueAddress1,
-        venueAddress2,
-        venueTown,
-        venueCounty,
-        venueContact,
-        customerNotes,
-        setupNotes,
-        weatherContingency,
-        specialRequests,
-        marketingOptIn
-      });
+      let bookingId = activePendingBookingId;
+      let bookingReference = activePendingSnapshot?.bookingReference || null;
 
-      const bookingId = result.bookingId;
-      const bookingReference = result.bookingReference || bookingId;
-      sessionStorage.setItem('oggPendingBookingId', String(bookingId));
-      sessionStorage.setItem('oggPendingBookingReference', String(bookingReference));
-      summarySuccess.textContent = `Booking saved. Your reference is ${bookingReference}. The 25% deposit due is ${money(result.depositDue)}.`;
-      summarySuccess.classList.add('show');
-      submitBtn.textContent = 'Booking Saved ✓';
+      if(!bookingId){
+        const formData = collectFormData();
+        const result = await saveBooking(formData);
+
+        bookingId = result.bookingId;
+        bookingReference = result.bookingReference || bookingId;
+
+        if(!bookingId){
+          throw new Error('The booking was saved without a booking ID. Please contact us before trying again.');
+        }
+
+        activePendingBookingId = String(bookingId);
+        activePendingSnapshot = {
+          bookingId:String(bookingId),
+          bookingReference:String(bookingReference),
+          depositDue:Number(result.depositDue),
+          total:Number(result.total),
+          expiresAt:result.expiresAt || null
+        };
+
+        sessionStorage.setItem('oggPendingBookingId', String(bookingId));
+        sessionStorage.setItem('oggPendingBookingReference', String(bookingReference));
+        sessionStorage.setItem('oggPendingPayment', JSON.stringify(activePendingSnapshot));
+
+        // The booking now exists in Supabase. Lock the builder so a retry cannot
+        // accidentally display different selections while paying the saved booking.
+        setBuilderLocked(true);
+      }
+
+      const checkout = await createCheckout(bookingId, paymentType);
+
+      activePendingSnapshot = {
+        ...(activePendingSnapshot || {}),
+        bookingId:String(bookingId),
+        bookingReference:String(checkout.bookingReference || bookingReference || bookingId),
+        depositDue:Number(activePendingSnapshot?.depositDue ?? window._bookingData?.depositDue ?? 0),
+        total:Number(activePendingSnapshot?.total ?? window._bookingData?.total ?? 0),
+        expiresAt:checkout.expiresAt || activePendingSnapshot?.expiresAt || null,
+        checkoutUrl:checkout.checkoutUrl,
+        paymentType
+      };
+
+      sessionStorage.setItem('oggPendingPayment', JSON.stringify(activePendingSnapshot));
+      window.location.assign(checkout.checkoutUrl);
+
     } catch(error){
       console.error(error);
-      summaryError.textContent = error.message || 'We could not save the booking. Please try again.';
+
+      if(activePendingBookingId){
+        summaryError.textContent = `${error.message || 'We could not open secure payment.'} Your booking has already been saved and is being held temporarily, so you can retry payment without creating another booking.`;
+        setBuilderLocked(true);
+      } else {
+        summaryError.textContent = error.message || 'We could not start your booking. Please try again.';
+      }
+
       summaryError.classList.add('show');
-      submitBtn.classList.remove('disabled');
-      submitBtn.textContent = 'Book Now →';
+      restorePaymentButtonLabels();
+      recalc();
+      if(activePendingBookingId){
+        setBuilderLocked(true);
+      }
     }
+  }
+
+  payDepositBtn.addEventListener('click', function(event){
+    event.preventDefault();
+    if(payDepositBtn.classList.contains('disabled')) return;
+    startPayment('deposit');
+  });
+
+  payFullBtn.addEventListener('click', function(event){
+    event.preventDefault();
+    if(payFullBtn.classList.contains('disabled')) return;
+    startPayment('full');
   });
 
   // Preselect from package links, e.g. booking.html?package=birdie.
@@ -1057,6 +1223,34 @@ You can add as much or as little information as you have now. Everything in this
   }
 
   recalc();
+
+  if(paymentReturnState === 'cancelled' && activePendingBookingId){
+    setBuilderLocked(true);
+    summaryError.textContent = 'Payment was not completed. Your booking is still being held temporarily. You can return to the same secure Stripe checkout while the payment window is still open.';
+    summaryError.classList.add('show');
+
+    if(activePendingSnapshot?.checkoutUrl){
+      payDepositBtn.style.display = 'none';
+      payFullBtn.style.display = 'none';
+      resumePaymentBtn.style.display = 'inline-flex';
+      resumePaymentBtn.href = activePendingSnapshot.checkoutUrl;
+    } else if(activePendingSnapshot){
+      document.getElementById('depositButtonAmount').textContent = money(activePendingSnapshot.depositDue || 0);
+      document.getElementById('fullButtonAmount').textContent = money(activePendingSnapshot.total || 0);
+    }
+  }
+
+  if(paymentReturnState === 'success'){
+    summarySuccess.textContent = 'Thanks — Stripe has received your payment. Your booking is being confirmed now.';
+    summarySuccess.classList.add('show');
+    paymentButtons.forEach(button => {
+      button.classList.add('disabled');
+      button.setAttribute('aria-disabled', 'true');
+    });
+    sessionStorage.removeItem('oggPendingBookingId');
+    sessionStorage.removeItem('oggPendingBookingReference');
+    sessionStorage.removeItem('oggPendingPayment');
+  }
 
   // Sticky summary fallback for page builders that break CSS position:sticky.
   (function(){
