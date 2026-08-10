@@ -229,7 +229,8 @@
           </div>
 
           <div class="confirmation-actions">
-            <a class="btn gold" href="index.html">Return home →</a>
+            <a class="btn gold" href="#" id="payBalanceBtn" hidden>Pay remaining balance now →</a>
+            <a class="btn" href="index.html">Return home</a>
             <a class="btn" href="booking-info.html">Booking information</a>
           </div>
         </div>
@@ -327,6 +328,9 @@
     function renderConfirmed(data){
       const paymentType = data.paymentType;
       const isFullyPaid = Number(data.remainingBalance) <= 0.005;
+      const payBalanceBtn = document.getElementById('payBalanceBtn');
+      payBalanceBtn.hidden = true;
+      payBalanceBtn.removeAttribute('href');
 
       document.getElementById('bookingReference').textContent = data.bookingReference || '—';
       document.getElementById('eventDate').textContent = formatDate(data.eventDate);
@@ -341,7 +345,12 @@
           `We've received your 25% deposit for booking ${data.bookingReference}. Your booking is now confirmed.`;
         document.getElementById('paymentLabel').textContent = 'Deposit paid';
         document.getElementById('nextStepsText').textContent =
-          `Your remaining balance of ${money(data.remainingBalance)} will be payable later through a secure Stripe payment link. Keep your booking reference handy if you need to update any wedding details.`;
+          `Your remaining balance is ${money(data.remainingBalance)}. You can pay it now using the secure button below, or use the same balance-payment link later.`;
+        if(data.balancePaymentUrl && Number(data.remainingBalance) > 0.005){
+          payBalanceBtn.href = data.balancePaymentUrl;
+          payBalanceBtn.hidden = false;
+          payBalanceBtn.textContent = `Pay remaining balance now — ${money(data.remainingBalance)}`;
+        }
       } else if(paymentType === 'balance'){
         document.getElementById('confirmedEyebrow').textContent = 'Balance paid';
         document.getElementById('confirmationTitle').textContent = isFullyPaid
