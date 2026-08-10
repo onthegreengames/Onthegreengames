@@ -183,7 +183,7 @@ exports.handler = async function handler(event) {
 
     const bookingRows = await supabaseGet(
       `bookings?id=eq.${encodeURIComponent(bookingId)}` +
-      '&select=id,booking_reference,event_date,status,total_price,deposit_required,expires_at,balance_payment_token'
+      '&select=id,booking_reference,event_date,status,total_price,deposit_required,balance_due_date,expires_at,balance_payment_token'
     );
 
     const booking = Array.isArray(bookingRows) ? bookingRows[0] : null;
@@ -253,6 +253,7 @@ exports.handler = async function handler(event) {
       bookingStatus: booking.status,
       totalPrice,
       depositRequired: moneyNumber(booking.deposit_required),
+      balanceDueDate: booking.balance_due_date || null,
       paymentType: paymentTypeFromStripe,
       currentPaymentAmount: currentPayment
         ? moneyNumber(currentPayment.amount)
