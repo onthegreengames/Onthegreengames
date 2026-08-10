@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z1194VV4R4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Z1194VV4R4');
+  </script>
+
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <title>Booking Confirmed | On The Green Games</title>
+
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="styles.css" rel="stylesheet"/>
+
+  <style>
+    .confirmation-page{
+      min-height:calc(100vh - 220px);
+      padding:72px 0 100px;
+    }
+    .confirmation-shell{
+      max-width:760px;
+      margin:0 auto;
+    }
+    .confirmation-card{
+      background:#fff;
+      border:1px solid rgba(30,71,52,0.14);
+      border-radius:22px;
+      box-shadow:0 18px 55px rgba(20,45,32,0.10);
+      padding:42px;
+    }
+    .confirmation-icon{
+      width:58px;
+      height:58px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:20px;
+      background:var(--green-deep);
+      color:#fff;
+      font:700 28px/1 'Inter',sans-serif;
+    }
+    .confirmation-eyebrow{
+      margin-bottom:8px;
+      color:var(--gold);
+      font-size:12px;
+      font-weight:700;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .confirmation-card h1{
+      margin:0 0 12px;
+      font-size:clamp(34px,6vw,54px);
+      line-height:1.02;
+    }
+    .confirmation-lede{
+      margin:0;
+      max-width:650px;
+      color:rgba(27,42,32,.72);
+      font-size:16px;
+      line-height:1.7;
+    }
+    .confirmation-summary{
+      margin-top:30px;
+      border-top:1px solid rgba(30,71,52,.12);
+      border-bottom:1px solid rgba(30,71,52,.12);
+    }
+    .confirmation-row{
+      display:flex;
+      justify-content:space-between;
+      gap:24px;
+      padding:15px 0;
+      border-bottom:1px solid rgba(30,71,52,.09);
+      font-size:14px;
+    }
+    .confirmation-row:last-child{ border-bottom:0; }
+    .confirmation-row span:first-child{
+      color:rgba(27,42,32,.62);
+    }
+    .confirmation-row strong{
+      text-align:right;
+      color:var(--green-deep);
+    }
+    .confirmation-total strong{
+      color:var(--gold);
+      font-size:18px;
+    }
+    .confirmation-next{
+      margin-top:28px;
+      padding:20px;
+      border-radius:14px;
+      background:rgba(192,145,60,.10);
+      border:1px solid rgba(192,145,60,.22);
+    }
+    .confirmation-next h2{
+      margin:0 0 7px;
+      font-size:20px;
+    }
+    .confirmation-next p{
+      margin:0;
+      color:rgba(27,42,32,.72);
+      font-size:13.5px;
+      line-height:1.65;
+    }
+    .confirmation-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:26px;
+    }
+    .confirmation-status{
+      padding:18px 20px;
+      border-radius:13px;
+      background:rgba(30,71,52,.07);
+      color:var(--green-deep);
+      font-size:14px;
+      line-height:1.6;
+      font-weight:600;
+    }
+    .confirmation-status.error{
+      background:rgba(179,73,47,.09);
+      color:#8f321f;
+    }
+    .confirmation-spinner{
+      width:24px;
+      height:24px;
+      margin:0 0 14px;
+      border:3px solid rgba(30,71,52,.15);
+      border-top-color:var(--green-deep);
+      border-radius:50%;
+      animation:confirmation-spin .8s linear infinite;
+    }
+    @keyframes confirmation-spin{
+      to{ transform:rotate(360deg); }
+    }
+    [hidden]{ display:none !important; }
+    @media (max-width:640px){
+      .confirmation-page{ padding:42px 0 70px; }
+      .confirmation-card{ padding:28px 22px; border-radius:17px; }
+      .confirmation-row{ gap:14px; }
+      .confirmation-row strong{ max-width:58%; }
+      .confirmation-actions{ flex-direction:column; }
+      .confirmation-actions .btn{ width:100%; justify-content:center; text-align:center; box-sizing:border-box; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
+      <button aria-expanded="false" aria-label="Toggle menu" class="nav-toggle" id="navToggle" type="button">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <div class="nav-dropdown">
+          <button aria-expanded="false" class="nav-dropdown-trigger" id="exploreTrigger" type="button">Explore <span class="chev"></span></button>
+          <div class="mega-panel" id="explorePanel">
+            <a class="mega-item" href="mini-golf.html">
+              <div class="mega-item-title">Mini Golf</div>
+              <div class="mega-item-desc">9-hole wedding mini golf, delivered and set up for you.</div>
+            </a>
+            <a class="mega-item" href="giant-games.html">
+              <div class="mega-item-title">Giant Games</div>
+              <div class="mega-item-desc">Seven giant garden games available for all-day wedding hire.</div>
+            </a>
+            <a class="mega-item" href="gallery.html">
+              <div class="mega-item-title">Gallery</div>
+              <div class="mega-item-desc">Wedding mini golf and garden games setups in action.</div>
+            </a>
+          </div>
+        </div>
+        <a href="packages.html">Packages</a>
+        <a href="booking-info.html">Booking Info</a>
+      </div>
+    </nav>
+  </div>
+
+  <main class="confirmation-page">
+    <div class="wrap confirmation-shell">
+      <div class="confirmation-card">
+        <div id="loadingState">
+          <div class="confirmation-spinner" aria-hidden="true"></div>
+          <div class="confirmation-eyebrow">Secure payment received</div>
+          <h1>Confirming your booking…</h1>
+          <p class="confirmation-lede">Stripe has returned you safely to On The Green Games. We're checking the payment against your booking now.</p>
+        </div>
+
+        <div id="confirmedState" hidden>
+          <div class="confirmation-icon" aria-hidden="true">✓</div>
+          <div class="confirmation-eyebrow" id="confirmedEyebrow">Booking confirmed</div>
+          <h1 id="confirmationTitle">Your date is secured.</h1>
+          <p class="confirmation-lede" id="confirmationLede"></p>
+
+          <div class="confirmation-summary">
+            <div class="confirmation-row">
+              <span>Booking reference</span>
+              <strong id="bookingReference">—</strong>
+            </div>
+            <div class="confirmation-row">
+              <span>Wedding date</span>
+              <strong id="eventDate">—</strong>
+            </div>
+            <div class="confirmation-row">
+              <span id="paymentLabel">Payment received</span>
+              <strong id="paymentAmount">—</strong>
+            </div>
+            <div class="confirmation-row">
+              <span>Total paid so far</span>
+              <strong id="totalPaid">—</strong>
+            </div>
+            <div class="confirmation-row confirmation-total">
+              <span>Remaining balance</span>
+              <strong id="remainingBalance">—</strong>
+            </div>
+          </div>
+
+          <div class="confirmation-next">
+            <h2>What happens next?</h2>
+            <p id="nextStepsText"></p>
+          </div>
+
+          <div class="confirmation-actions">
+            <a class="btn gold" href="index.html">Return home →</a>
+            <a class="btn" href="booking-info.html">Booking information</a>
+          </div>
+        </div>
+
+        <div id="processingState" hidden>
+          <div class="confirmation-icon" aria-hidden="true">✓</div>
+          <div class="confirmation-eyebrow">Payment received</div>
+          <h1>We're finishing your confirmation.</h1>
+          <p class="confirmation-lede">Stripe has received your payment successfully. The booking record is taking a little longer than usual to update.</p>
+          <div class="confirmation-status" style="margin-top:26px;">Your payment has not been lost or charged again. Keep this page open for a moment, or refresh it shortly.</div>
+          <div class="confirmation-actions">
+            <button class="btn gold" id="retryButton" type="button">Check again →</button>
+            <a class="btn" href="index.html">Return home</a>
+          </div>
+        </div>
+
+        <div id="errorState" hidden>
+          <div class="confirmation-eyebrow">We couldn't load the confirmation</div>
+          <h1>Please keep your payment receipt.</h1>
+          <p class="confirmation-lede">We couldn't display your booking details on this page. This does not automatically mean your payment failed.</p>
+          <div class="confirmation-status error" id="errorMessage" style="margin-top:26px;"></div>
+          <div class="confirmation-actions">
+            <button class="btn gold" id="errorRetryButton" type="button">Try again →</button>
+            <a class="btn" href="index.html">Return home</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap foot-row">
+      <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
+      <div class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="packages.html">Packages</a>
+        <a href="booking-info.html">Booking Info</a>
+      </div>
+      <div class="foot-note">© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
+    </div>
+  </footer>
+
+  <script src="nav.js"></script>
+  <script>
+    const CONFIRMATION_URL = '/.netlify/functions/get-booking-confirmation';
+    const MAX_AUTOMATIC_ATTEMPTS = 8;
+    const RETRY_DELAY_MS = 1400;
+
+    const loadingState = document.getElementById('loadingState');
+    const confirmedState = document.getElementById('confirmedState');
+    const processingState = document.getElementById('processingState');
+    const errorState = document.getElementById('errorState');
+
+    function money(value){
+      return '£' + Number(value || 0).toLocaleString('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function formatDate(value){
+      if(!value) return '—';
+      const date = new Date(value + 'T00:00:00');
+      if(Number.isNaN(date.getTime())) return value;
+      return date.toLocaleDateString('en-GB', {
+        weekday:'long',
+        day:'numeric',
+        month:'long',
+        year:'numeric'
+      });
+    }
+
+    function showOnly(state){
+      [loadingState, confirmedState, processingState, errorState].forEach(el => {
+        el.hidden = el !== state;
+      });
+    }
+
+    async function fetchConfirmation(sessionId){
+      const response = await fetch(
+        `${CONFIRMATION_URL}?session_id=${encodeURIComponent(sessionId)}`,
+        { headers:{ 'Accept':'application/json' } }
+      );
+
+      let data = {};
+      try{ data = await response.json(); } catch(error){}
+
+      if(!response.ok){
+        throw new Error(data.error || 'We could not load your booking confirmation.');
+      }
+
+      return data;
+    }
+
+    function renderConfirmed(data){
+      const paymentType = data.paymentType;
+      const isFullyPaid = Number(data.remainingBalance) <= 0.005;
+
+      document.getElementById('bookingReference').textContent = data.bookingReference || '—';
+      document.getElementById('eventDate').textContent = formatDate(data.eventDate);
+      document.getElementById('paymentAmount').textContent = money(data.currentPaymentAmount);
+      document.getElementById('totalPaid').textContent = money(data.totalPaid);
+      document.getElementById('remainingBalance').textContent = money(data.remainingBalance);
+
+      if(paymentType === 'deposit'){
+        document.getElementById('confirmedEyebrow').textContent = 'Deposit paid — booking confirmed';
+        document.getElementById('confirmationTitle').textContent = 'Your wedding date is secured.';
+        document.getElementById('confirmationLede').textContent =
+          `We've received your 25% deposit for booking ${data.bookingReference}. Your booking is now confirmed.`;
+        document.getElementById('paymentLabel').textContent = 'Deposit paid';
+        document.getElementById('nextStepsText').textContent =
+          `Your remaining balance of ${money(data.remainingBalance)} will be payable later through a secure Stripe payment link. Keep your booking reference handy if you need to update any wedding details.`;
+      } else if(paymentType === 'balance'){
+        document.getElementById('confirmedEyebrow').textContent = 'Balance paid';
+        document.getElementById('confirmationTitle').textContent = isFullyPaid
+          ? 'Your booking is paid in full.'
+          : 'Your balance payment has been received.';
+        document.getElementById('confirmationLede').textContent =
+          `We've received your balance payment for booking ${data.bookingReference}.`;
+        document.getElementById('paymentLabel').textContent = 'Balance payment';
+        document.getElementById('nextStepsText').textContent = isFullyPaid
+          ? 'There is nothing further to pay. Keep your booking reference handy if you need to update any wedding details before the day.'
+          : `The remaining balance is ${money(data.remainingBalance)}.`;
+      } else {
+        document.getElementById('confirmedEyebrow').textContent = 'Paid in full — booking confirmed';
+        document.getElementById('confirmationTitle').textContent = 'Your wedding booking is confirmed.';
+        document.getElementById('confirmationLede').textContent =
+          `We've received the full payment for booking ${data.bookingReference}. Your wedding date is secured and there is nothing further to pay.`;
+        document.getElementById('paymentLabel').textContent = 'Full payment received';
+        document.getElementById('nextStepsText').textContent =
+          'Your booking is paid in full. Keep your booking reference handy if you need to update any wedding details before the day.';
+      }
+
+      sessionStorage.removeItem('oggPendingBookingId');
+      sessionStorage.removeItem('oggPendingBookingReference');
+      sessionStorage.removeItem('oggPendingPayment');
+
+      showOnly(confirmedState);
+    }
+
+    async function loadConfirmation(autoRetry = true){
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
+
+      if(!sessionId){
+        document.getElementById('errorMessage').textContent =
+          'The Stripe Checkout Session ID is missing from this confirmation link.';
+        showOnly(errorState);
+        return;
+      }
+
+      showOnly(loadingState);
+
+      let lastData = null;
+
+      try{
+        const attempts = autoRetry ? MAX_AUTOMATIC_ATTEMPTS : 1;
+
+        for(let attempt = 0; attempt < attempts; attempt++){
+          lastData = await fetchConfirmation(sessionId);
+
+          if(lastData.confirmed || lastData.state === 'confirmed'){
+            renderConfirmed(lastData);
+            return;
+          }
+
+          if(lastData.state === 'not_paid'){
+            throw new Error('Stripe does not show this Checkout Session as paid.');
+          }
+
+          if(attempt < attempts - 1){
+            await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+          }
+        }
+
+        showOnly(processingState);
+
+      } catch(error){
+        console.error(error);
+        document.getElementById('errorMessage').textContent =
+          error.message || 'We could not load your booking confirmation.';
+        showOnly(errorState);
+      }
+    }
+
+    document.getElementById('retryButton').addEventListener('click', () => loadConfirmation(false));
+    document.getElementById('errorRetryButton').addEventListener('click', () => loadConfirmation(false));
+
+    loadConfirmation(true);
+  </script>
+</body>
+</html>
