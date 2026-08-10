@@ -183,7 +183,7 @@ exports.handler = async function handler(event) {
 
     const bookingRows = await supabaseGet(
       `bookings?id=eq.${encodeURIComponent(bookingId)}` +
-      '&select=id,booking_reference,event_date,status,total_price,deposit_required,expires_at'
+      '&select=id,booking_reference,event_date,status,total_price,deposit_required,expires_at,balance_payment_token'
     );
 
     const booking = Array.isArray(bookingRows) ? bookingRows[0] : null;
@@ -262,7 +262,14 @@ exports.handler = async function handler(event) {
       remainingBalance,
       currency: String(session.currency || 'gbp').toLowerCase(),
       stripePaymentStatus: session.payment_status || null,
-      paidAt: currentPayment?.paid_at || null
+      paidAt: currentPayment?.paid_at || null,
+      balancePaymentUrl:
+        confirmed &&
+        booking.status === 'confirmed_part_paid' &&
+        remainingBalance > 0.005 &&
+        booking.balance_payment_token
+          ? `/pay-balance.html?token=${encodeURIComponent(booking.balance_payment_token)}`
+          : null
     });
 
   } catch (error) {
