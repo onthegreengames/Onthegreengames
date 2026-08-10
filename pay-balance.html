@@ -185,6 +185,10 @@
               <strong id="eventDate">—</strong>
             </div>
             <div class="balance-row">
+              <span>Balance due</span>
+              <strong id="balanceDueDate">—</strong>
+            </div>
+            <div class="balance-row">
               <span>Total booking price</span>
               <strong id="totalPrice">—</strong>
             </div>
@@ -340,12 +344,16 @@
 
       document.getElementById('bookingReference').textContent = data.bookingReference || '—';
       document.getElementById('eventDate').textContent = formatDate(data.eventDate);
+      document.getElementById('balanceDueDate').textContent =
+        data.balanceDueDate ? formatDate(data.balanceDueDate) : '—';
       document.getElementById('totalPrice').textContent = money(data.totalPrice);
       document.getElementById('totalPaid').textContent = money(data.totalPaid);
       document.getElementById('remainingBalance').textContent = money(data.remainingBalance);
 
       document.getElementById('readyLede').textContent =
-        `${data.firstName ? `${data.firstName}, your` : 'Your'} wedding date is already secured. You can pay the remaining ${money(data.remainingBalance)} below.`;
+        data.balanceDueDate
+          ? `${data.firstName ? `${data.firstName}, your` : 'Your'} wedding date is already secured. Your remaining ${money(data.remainingBalance)} must be paid by ${formatDate(data.balanceDueDate)} — 14 days before the wedding.`
+          : `${data.firstName ? `${data.firstName}, your` : 'Your'} wedding date is already secured. You can pay the remaining ${money(data.remainingBalance)} below.`;
 
       payBalanceBtn.textContent = data.existingCheckoutUrl
         ? `Continue secure payment — ${money(data.remainingBalance)}`
