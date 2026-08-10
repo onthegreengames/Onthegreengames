@@ -209,6 +209,10 @@
               <span>Wedding date</span>
               <strong id="eventDate">—</strong>
             </div>
+            <div class="confirmation-row" id="balanceDueRow" hidden>
+              <span>Balance due</span>
+              <strong id="balanceDueDate">—</strong>
+            </div>
             <div class="confirmation-row">
               <span id="paymentLabel">Payment received</span>
               <strong id="paymentAmount">—</strong>
@@ -334,6 +338,19 @@
 
       document.getElementById('bookingReference').textContent = data.bookingReference || '—';
       document.getElementById('eventDate').textContent = formatDate(data.eventDate);
+
+      const balanceDueRow = document.getElementById('balanceDueRow');
+      const balanceDueDate = document.getElementById('balanceDueDate');
+      const hasBalanceOutstanding = Number(data.remainingBalance) > 0.005;
+
+      if(hasBalanceOutstanding && data.balanceDueDate){
+        balanceDueDate.textContent = formatDate(data.balanceDueDate);
+        balanceDueRow.hidden = false;
+      } else {
+        balanceDueDate.textContent = '—';
+        balanceDueRow.hidden = true;
+      }
+
       document.getElementById('paymentAmount').textContent = money(data.currentPaymentAmount);
       document.getElementById('totalPaid').textContent = money(data.totalPaid);
       document.getElementById('remainingBalance').textContent = money(data.remainingBalance);
@@ -345,7 +362,9 @@
           `We've received your 25% deposit for booking ${data.bookingReference}. Your booking is now confirmed.`;
         document.getElementById('paymentLabel').textContent = 'Deposit paid';
         document.getElementById('nextStepsText').textContent =
-          `Your remaining balance is ${money(data.remainingBalance)}. You can pay it now using the secure button below, or use the same balance-payment link later.`;
+          data.balanceDueDate
+            ? `Your remaining balance is ${money(data.remainingBalance)} and must be paid by ${formatDate(data.balanceDueDate)} — 14 days before your wedding. You can pay it now using the secure button below, or use the same balance-payment link later.`
+            : `Your remaining balance is ${money(data.remainingBalance)}. You can pay it now using the secure button below, or use the same balance-payment link later.`;
         if(data.balancePaymentUrl && Number(data.remainingBalance) > 0.005){
           payBalanceBtn.href = data.balancePaymentUrl;
           payBalanceBtn.hidden = false;
