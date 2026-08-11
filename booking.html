@@ -526,7 +526,7 @@ You can add as much or as little information as you have now. Everything in this
 <a class="btn" href="#" id="payFullBtn">Book now &amp; pay in full <span class="payment-amount" id="fullButtonAmount">£0</span></a>
 <a class="btn gold" href="#" id="resumePaymentBtn" style="display:none;">Return to secure payment →</a>
 </div>
-<div class="summary-note" id="paymentSummaryNote">Pay securely through Stripe. A 25% deposit secures your date, with the remaining balance payable later. You can also pay the full amount now. Every package is available all day within your chosen timings, latest collection 8pm.</div>
+<div class="summary-note" id="paymentSummaryNote">Pay securely through Stripe. A 25% deposit secures your date, with the remaining balance due 30 days before your wedding. You can also pay the full amount now. Every package is available all day within your chosen timings, latest collection 8pm.</div>
 <div class="summary-error" id="summaryError"></div>
 <div class="summary-success" id="summarySuccess"></div>
 </div>
@@ -655,7 +655,7 @@ You can add as much or as little information as you have now. Everything in this
   function isShortNoticeBooking(){
     if(!bookingContext?.weddingDate) return false;
     const days = daysUntilEvent(bookingContext.weddingDate);
-    return Number.isInteger(days) && days >= 0 && days < 14;
+    return Number.isInteger(days) && days >= 0 && days < 30;
   }
 
   function updatePaymentOptionsForDate(){
@@ -665,12 +665,12 @@ You can add as much or as little information as you have now. Everything in this
       payDepositBtn.style.display = 'none';
       paymentChoiceLabel.textContent = 'Full payment required for this date';
       paymentSummaryNote.textContent =
-        'Your wedding is less than 14 days away, so full payment is required at booking. Pay securely through Stripe. Every package is available all day within your chosen timings, latest collection 8pm.';
+        'Your wedding is less than 30 days away, so full payment is required at booking. Pay securely through Stripe. Every package is available all day within your chosen timings, latest collection 8pm.';
     } else {
       payDepositBtn.style.display = '';
       paymentChoiceLabel.textContent = "Choose how you'd like to pay";
       paymentSummaryNote.textContent =
-        'Pay securely through Stripe. A 25% deposit secures your date, with the remaining balance payable later. You can also pay the full amount now. Every package is available all day within your chosen timings, latest collection 8pm.';
+        'Pay securely through Stripe. A 25% deposit secures your date, with the remaining balance due 30 days before your wedding. You can also pay the full amount now. Every package is available all day within your chosen timings, latest collection 8pm.';
     }
 
     return shortNotice;
@@ -1183,7 +1183,7 @@ You can add as much or as little information as you have now. Everything in this
 
     if(paymentType === 'deposit' && isShortNoticeBooking()){
       summaryError.textContent =
-        'Full payment is required for bookings made less than 14 days before the wedding.';
+        'Full payment is required for bookings made less than 30 days before the wedding.';
       summaryError.classList.add('show');
       return;
     }
