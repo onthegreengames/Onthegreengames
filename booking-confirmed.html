@@ -363,7 +363,7 @@
         document.getElementById('paymentLabel').textContent = 'Deposit paid';
         document.getElementById('nextStepsText').textContent =
           data.balanceDueDate
-            ? `Your remaining balance is ${money(data.remainingBalance)} and must be paid by ${formatDate(data.balanceDueDate)} — 14 days before your wedding. You can pay it now using the secure button below, or use the same balance-payment link later.`
+            ? `Your remaining balance is ${money(data.remainingBalance)} and must be paid by ${formatDate(data.balanceDueDate)} — 30 days before your wedding. You can pay it now using the secure button below, or use the same balance-payment link later.`
             : `Your remaining balance is ${money(data.remainingBalance)}. You can pay it now using the secure button below, or use the same balance-payment link later.`;
         if(data.balancePaymentUrl && Number(data.remainingBalance) > 0.005){
           payBalanceBtn.href = data.balancePaymentUrl;
