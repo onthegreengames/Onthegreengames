@@ -21,7 +21,7 @@
  *   public.prepare_stripe_checkout(...)
  *
  * Short-notice rule:
- * If the wedding is fewer than 14 calendar days away,
+ * If the wedding is fewer than 30 calendar days away,
  * a deposit Checkout is rejected server-side and the
  * booking must be paid in full.
  */
@@ -124,10 +124,10 @@ function assertPaymentTypeAllowedForDate(checkout) {
 
   if (
     daysUntilEvent >= 0 &&
-    daysUntilEvent < 14
+    daysUntilEvent < 30
   ) {
     throw createError(
-      'Full payment is required for bookings made less than 14 days before the wedding.',
+      'Full payment is required for bookings made less than 30 days before the wedding.',
       400
     );
   }
@@ -554,11 +554,6 @@ async function createStripeCheckout(checkout) {
     `On The Green Games — ${checkout.booking_reference}`
   );
 
-  params.set(
-  'payment_intent_data[receipt_email]',
-  checkout.customer_email
-);
-
   if (checkout.stripe_customer_id) {
     params.set(
       'customer',
@@ -573,6 +568,15 @@ async function createStripeCheckout(checkout) {
 
     params.set(
       'customer_email',
+      checkout.customer_email
+    );
+  }
+
+  // Ask Stripe to email its payment receipt to the customer as well as
+  // sending OTGG's own transactional confirmation through Resend.
+  if (checkout.customer_email) {
+    params.set(
+      'payment_intent_data[receipt_email]',
       checkout.customer_email
     );
   }
