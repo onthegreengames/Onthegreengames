@@ -253,6 +253,10 @@ async function createStripeCheckout(checkout) {
     'payment_intent_data[description]',
     `On The Green Games — ${checkout.booking_reference} — balance`
   );
+  params.set(
+  'payment_intent_data[receipt_email]',
+  checkout.customer_email
+);
 
   if (checkout.stripe_customer_id) {
     params.set('customer', checkout.stripe_customer_id);
