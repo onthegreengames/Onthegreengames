@@ -352,7 +352,7 @@
 
       document.getElementById('readyLede').textContent =
         data.balanceDueDate
-          ? `${data.firstName ? `${data.firstName}, your` : 'Your'} wedding date is already secured. Your remaining ${money(data.remainingBalance)} must be paid by ${formatDate(data.balanceDueDate)} — 14 days before the wedding.`
+          ? `${data.firstName ? `${data.firstName}, your` : 'Your'} wedding date is already secured. Your remaining ${money(data.remainingBalance)} must be paid by ${formatDate(data.balanceDueDate)} — 30 days before the wedding.`
           : `${data.firstName ? `${data.firstName}, your` : 'Your'} wedding date is already secured. You can pay the remaining ${money(data.remainingBalance)} below.`;
 
       payBalanceBtn.textContent = data.existingCheckoutUrl
