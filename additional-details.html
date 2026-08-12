@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <meta name="referrer" content="no-referrer"/>
+  <meta name="description" content="Review and update the final wedding-day details for your On The Green Games booking."/>
+  <title>Final Wedding Details | On The Green Games</title>
+
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="styles.css" rel="stylesheet"/>
+
+  <style>
+    .final-details-shell{
+      padding-bottom:100px;
+    }
+
+    .secure-note{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin:0 0 24px;
+      padding:13px 15px;
+      border:1px solid rgba(30,71,52,0.14);
+      border-radius:11px;
+      background:rgba(30,71,52,0.045);
+      color:rgba(27,42,32,0.72);
+      font-size:12.5px;
+      line-height:1.55;
+    }
+
+    .secure-note strong{
+      color:var(--green-deep);
+    }
+
+    .details-layout{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 340px;
+      gap:28px;
+      align-items:start;
+    }
+
+    .details-card,
+    .booking-recap{
+      background:#fff;
+      border:1px solid rgba(30,71,52,0.13);
+      border-radius:18px;
+      box-shadow:0 12px 36px rgba(25,52,38,0.06);
+    }
+
+    .details-card{
+      padding:28px;
+    }
+
+    .booking-recap{
+      position:sticky;
+      top:24px;
+      overflow:hidden;
+    }
+
+    .recap-head{
+      padding:22px 22px 18px;
+      background:var(--green-deep);
+      color:#fff;
+    }
+
+    .recap-head .small{
+      margin-bottom:5px;
+      color:rgba(255,255,255,0.68);
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+    }
+
+    .recap-head h3{
+      margin:0;
+      color:#fff;
+      font-size:22px;
+    }
+
+    .recap-body{
+      padding:20px 22px 22px;
+    }
+
+    .recap-row{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      padding:8px 0;
+      border-bottom:1px solid rgba(30,71,52,0.08);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .recap-row:last-child{
+      border-bottom:0;
+    }
+
+    .recap-row span:first-child{
+      color:rgba(27,42,32,0.58);
+    }
+
+    .recap-row strong{
+      max-width:62%;
+      text-align:right;
+      color:var(--green-deep);
+    }
+
+    .recap-section-title{
+      margin:20px 0 8px;
+      color:var(--green-deep);
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+    }
+
+    .booked-items{
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+
+    .booked-items li{
+      padding:7px 0;
+      border-bottom:1px solid rgba(30,71,52,0.08);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .booked-items li:last-child{
+      border-bottom:0;
+    }
+
+    .section-block + .section-block{
+      margin-top:32px;
+      padding-top:30px;
+      border-top:1px solid rgba(30,71,52,0.11);
+    }
+
+    .section-label{
+      margin-bottom:7px;
+      color:var(--gold);
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:0.09em;
+      text-transform:uppercase;
+    }
+
+    .section-block h2{
+      margin:0 0 7px;
+      color:var(--green-deep);
+      font-size:27px;
+    }
+
+    .section-intro{
+      margin:0 0 20px;
+      color:rgba(27,42,32,0.65);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .field-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .field{
+      margin-bottom:16px;
+    }
+
+    .field label{
+      display:block;
+      margin-bottom:7px;
+      color:var(--green-deep);
+      font-size:12.5px;
+      font-weight:700;
+    }
+
+    .field label .optional{
+      color:rgba(27,42,32,0.48);
+      font-weight:500;
+    }
+
+    .field input,
+    .field select,
+    .field textarea{
+      width:100%;
+      box-sizing:border-box;
+      border:1px solid var(--green-line);
+      border-radius:10px;
+      background:#fff;
+      color:var(--ink);
+      font:inherit;
+      outline:none;
+      transition:border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .field input,
+    .field select{
+      min-height:45px;
+      padding:11px 12px;
+    }
+
+    .field textarea{
+      min-height:98px;
+      padding:12px;
+      resize:vertical;
+      line-height:1.55;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus{
+      border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(192,145,60,0.12);
+    }
+
+    .field-help{
+      margin:6px 0 0;
+      color:rgba(27,42,32,0.55);
+      font-size:11.5px;
+      line-height:1.5;
+    }
+
+    .venue-display{
+      margin-bottom:18px;
+      padding:15px 16px;
+      border-radius:11px;
+      background:#f7f4ec;
+      color:rgba(27,42,32,0.75);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .venue-display strong{
+      color:var(--green-deep);
+    }
+
+    .form-actions{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-top:28px;
+    }
+
+    .form-actions .btn{
+      border:0;
+      cursor:pointer;
+    }
+
+    .form-actions .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+    }
+
+    .last-saved{
+      color:rgba(27,42,32,0.56);
+      font-size:11.5px;
+      line-height:1.45;
+    }
+
+    .form-message{
+      display:none;
+      margin-top:16px;
+      padding:12px 14px;
+      border-radius:10px;
+      font-size:12.5px;
+      font-weight:600;
+      line-height:1.5;
+    }
+
+    .form-message.show{
+      display:block;
+    }
+
+    .form-message.error{
+      background:rgba(179,73,47,0.10);
+      color:#8f321f;
+    }
+
+    .form-message.success{
+      background:rgba(30,71,52,0.09);
+      color:var(--green-deep);
+    }
+
+    .state-card{
+      padding:42px 28px;
+      text-align:center;
+    }
+
+    .state-card h2{
+      margin:8px 0 10px;
+      color:var(--green-deep);
+      font-size:30px;
+    }
+
+    .state-card p{
+      max-width:620px;
+      margin:0 auto;
+      color:rgba(27,42,32,0.65);
+      font-size:14px;
+      line-height:1.65;
+    }
+
+    .spinner{
+      width:34px;
+      height:34px;
+      margin:0 auto 14px;
+      border:3px solid rgba(30,71,52,0.13);
+      border-top-color:var(--gold);
+      border-radius:50%;
+      animation:spin .8s linear infinite;
+    }
+
+    @keyframes spin{
+      to{ transform:rotate(360deg); }
+    }
+
+    [hidden]{
+      display:none !important;
+    }
+
+    @media(max-width:850px){
+      .details-layout{
+        grid-template-columns:1fr;
+      }
+
+      .booking-recap{
+        position:static;
+        order:-1;
+      }
+    }
+
+    @media(max-width:620px){
+      .final-details-shell{
+        padding-bottom:70px;
+      }
+
+      .details-card{
+        padding:20px 16px;
+        border-radius:14px;
+      }
+
+      .field-row{
+        grid-template-columns:1fr;
+        gap:0;
+      }
+
+      .section-block h2{
+        font-size:24px;
+      }
+
+      .form-actions{
+        align-items:stretch;
+        flex-direction:column;
+      }
+
+      .form-actions .btn{
+        width:100%;
+        justify-content:center;
+        text-align:center;
+      }
+
+      .last-saved{
+        text-align:center;
+      }
+
+      .recap-row{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:3px;
+      }
+
+      .recap-row strong{
+        max-width:100%;
+        text-align:left;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
+      <button aria-expanded="false" aria-label="Toggle menu" class="nav-toggle" id="navToggle" type="button">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="packages.html">Packages</a>
+        <a href="games.html">Games</a>
+        <a href="booking-info.html">Booking Info</a>
+        <a class="btn" href="check-date.html">Check Availability →</a>
+      </div>
+    </nav>
+  </div>
+
+  <div class="wrap page-hero">
+    <div class="eyebrow">Your booking</div>
+    <h1>Final Wedding Details</h1>
+    <p class="lede">Review the practical details for your wedding day and tell us everything we need for a smooth delivery, setup and collection.</p>
+  </div>
+
+  <main class="wrap final-details-shell">
+    <div class="secure-note">
+      <span>🔒</span>
+      <div><strong>This is your private booking link.</strong> You can return to it and update these details again before your wedding. Please don't forward the link to anyone who shouldn't be able to edit your booking details.</div>
+    </div>
+
+    <section class="details-card state-card" id="loadingState">
+      <div class="spinner" aria-hidden="true"></div>
+      <h2>Loading your booking…</h2>
+      <p>We're securely retrieving the latest details for your wedding.</p>
+    </section>
+
+    <section class="details-card state-card" id="errorState" hidden>
+      <div class="section-label">We couldn't load this link</div>
+      <h2>Something isn't right.</h2>
+      <p id="errorMessage">This final wedding details link may be invalid or no longer available.</p>
+    </section>
+
+    <section class="details-card state-card" id="lockedState" hidden>
+      <div class="section-label">Booking details</div>
+      <h2>These details can no longer be edited online.</h2>
+      <p id="lockedMessage">Please reply to your booking email if you need to speak to us about this wedding.</p>
+    </section>
+
+    <div class="details-layout" id="readyState" hidden>
+      <form class="details-card" id="detailsForm" novalidate>
+        <section class="section-block">
+          <div class="section-label">Timings</div>
+          <h2>When should we arrive?</h2>
+          <p class="section-intro">Confirm the delivery/setup and collection times agreed with your venue. Our latest collection time is 8pm.</p>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="deliveryTime">Delivery / setup time</label>
+              <input id="deliveryTime" name="delivery_time" type="time" required/>
+            </div>
+
+            <div class="field">
+              <label for="collectionTime">Collection time</label>
+              <input id="collectionTime" name="collection_time" type="time" max="20:00" required/>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <div class="section-label">Venue & setup</div>
+          <h2>Where are we setting up?</h2>
+          <p class="section-intro">Your booked venue is shown below. Use these fields for the practical information we'll need when we arrive.</p>
+
+          <div class="venue-display" id="venueDisplay"></div>
+
+          <div class="field">
+            <label for="setupPreference">Setup preference</label>
+            <select id="setupPreference" name="setup_preference" required>
+              <option value="unsure">Not sure yet</option>
+              <option value="outdoor">Outdoors</option>
+              <option value="indoor">Indoors</option>
+            </select>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="venueContactName">Venue contact name <span class="optional">(optional)</span></label>
+              <input id="venueContactName" name="venue_contact_name" maxlength="200" type="text" placeholder="Wedding coordinator / venue contact"/>
+            </div>
+
+            <div class="field">
+              <label for="venueContactPhone">Venue contact phone <span class="optional">(optional)</span></label>
+              <input id="venueContactPhone" name="venue_contact_phone" maxlength="50" type="tel" placeholder="Phone number"/>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="arrivalInstructions">Where should we report on arrival? <span class="optional">(optional)</span></label>
+            <textarea id="arrivalInstructions" name="arrival_instructions" maxlength="5000" placeholder="For example: use the service entrance and ask for the wedding coordinator at reception."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="parkingLoadingInstructions">Parking / loading instructions <span class="optional">(optional)</span></label>
+            <textarea id="parkingLoadingInstructions" name="parking_loading_instructions" maxlength="5000" placeholder="Loading bays, parking location, gate codes, vehicle access, or anything else useful."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="accessRestrictions">Access restrictions <span class="optional">(optional)</span></label>
+            <textarea id="accessRestrictions" name="access_restrictions" maxlength="5000" placeholder="Stairs, lifts, narrow access, long carries, restricted vehicle access, or anything else we should plan for."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="venueRestrictions">Venue restrictions <span class="optional">(optional)</span></label>
+            <textarea id="venueRestrictions" name="venue_restrictions" maxlength="5000" placeholder="Any rules or restrictions the venue has asked us to follow."></textarea>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <div class="section-label">Wedding-day contact</div>
+          <h2>Who should we contact on the day?</h2>
+          <p class="section-intro">This should be someone who will be reachable around our delivery and collection times. It can be you, your partner, a family member, wedding coordinator or another trusted contact.</p>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="weddingDayContactName">Contact name</label>
+              <input id="weddingDayContactName" name="wedding_day_contact_name" maxlength="200" type="text" required/>
+            </div>
+
+            <div class="field">
+              <label for="weddingDayContactPhone">Contact phone</label>
+              <input id="weddingDayContactPhone" name="wedding_day_contact_phone" maxlength="50" type="tel" required/>
+            </div>
+          </div>
+        </section>
+
+        <section class="section-block">
+          <div class="section-label">Final practical details</div>
+          <h2>Anything else we need to know?</h2>
+          <p class="section-intro">We've brought forward the practical information you provided when booking. Update it if plans have changed.</p>
+
+          <div class="field">
+            <label for="setupNotes">Setup notes <span class="optional">(optional)</span></label>
+            <textarea id="setupNotes" name="setup_notes" maxlength="3000" placeholder="Preferred setup area or any other setup information."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="weatherContingency">Wet-weather / backup plan <span class="optional">(optional)</span></label>
+            <textarea id="weatherContingency" name="weather_contingency" maxlength="3000" placeholder="If you're planning an outdoor setup, tell us what indoor backup space is available if the weather changes."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="specialRequests">Special requests <span class="optional">(optional)</span></label>
+            <textarea id="specialRequests" name="special_requests" maxlength="3000" placeholder="Anything specific you'd like us to accommodate."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="additionalNotes">Other final notes <span class="optional">(optional)</span></label>
+            <textarea id="additionalNotes" name="additional_notes" maxlength="5000" placeholder="Anything else that will help us prepare for your wedding day."></textarea>
+          </div>
+        </section>
+
+        <div class="form-actions">
+          <button class="btn gold" id="saveButton" type="submit">Save final wedding details</button>
+          <div class="last-saved" id="lastSaved"></div>
+        </div>
+
+        <div class="form-message error" id="formError" role="alert"></div>
+        <div class="form-message success" id="formSuccess" role="status"></div>
+      </form>
+
+      <aside class="booking-recap">
+        <div class="recap-head">
+          <div class="small">Your booking</div>
+          <h3 id="recapReference">—</h3>
+        </div>
+        <div class="recap-body">
+          <div class="recap-row"><span>Wedding date</span><strong id="recapDate">—</strong></div>
+          <div class="recap-row"><span>Venue</span><strong id="recapVenue">—</strong></div>
+          <div class="recap-row"><span>Booking</span><strong id="recapPackage">—</strong></div>
+          <div class="recap-row"><span>Total paid</span><strong id="recapTotal">—</strong></div>
+
+          <div class="recap-section-title">What you've booked</div>
+          <ul class="booked-items" id="recapItems"></ul>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap foot-row">
+      <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
+      <div class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="packages.html">Packages</a>
+        <a href="booking-info.html">Booking Info</a>
+      </div>
+      <div class="foot-note">© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
+    </div>
+  </footer>
+
+  <script src="nav.js"></script>
+  <script>
+    (() => {
+      'use strict';
+
+      const GET_URL = '/.netlify/functions/get-final-details';
+      const SAVE_URL = '/.netlify/functions/save-final-details';
+      const token = new URLSearchParams(window.location.search).get('token') || '';
+
+      const loadingState = document.getElementById('loadingState');
+      const errorState = document.getElementById('errorState');
+      const lockedState = document.getElementById('lockedState');
+      const readyState = document.getElementById('readyState');
+      const form = document.getElementById('detailsForm');
+      const saveButton = document.getElementById('saveButton');
+      const formError = document.getElementById('formError');
+      const formSuccess = document.getElementById('formSuccess');
+      const lastSaved = document.getElementById('lastSaved');
+
+      let currentData = null;
+
+      function showOnly(state){
+        [loadingState, errorState, lockedState, readyState].forEach(el => {
+          el.hidden = el !== state;
+        });
+      }
+
+      function escapeHtml(value){
+        return String(value ?? '').replace(/[&<>"']/g, char => ({
+          '&':'&amp;',
+          '<':'&lt;',
+          '>':'&gt;',
+          '"':'&quot;',
+          "'":'&#39;'
+        })[char]);
+      }
+
+      function formatDate(value){
+        if(!value) return '—';
+        const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if(!match) return value;
+
+        const date = new Date(Date.UTC(
+          Number(match[1]),
+          Number(match[2]) - 1,
+          Number(match[3])
+        ));
+
+        return date.toLocaleDateString('en-GB', {
+          weekday:'long',
+          day:'numeric',
+          month:'long',
+          year:'numeric',
+          timeZone:'UTC'
+        });
+      }
+
+      function formatDateTime(value){
+        if(!value) return '';
+        const date = new Date(value);
+        if(Number.isNaN(date.getTime())) return '';
+        return date.toLocaleString('en-GB', {
+          day:'numeric',
+          month:'short',
+          year:'numeric',
+          hour:'2-digit',
+          minute:'2-digit'
+        });
+      }
+
+      function money(value){
+        return new Intl.NumberFormat('en-GB', {
+          style:'currency',
+          currency:'GBP'
+        }).format(Number(value || 0));
+      }
+
+      function setValue(id, value){
+        const el = document.getElementById(id);
+        if(el) el.value = value ?? '';
+      }
+
+      function venueText(venue){
+        return [
+          venue?.venue_name,
+          venue?.address_line_1,
+          venue?.address_line_2,
+          venue?.town_city,
+          venue?.county,
+          venue?.postcode
+        ].filter(Boolean).join(', ');
+      }
+
+      async function api(url, body){
+        const response = await fetch(url, {
+          method:'POST',
+          headers:{
+            'Content-Type':'application/json',
+            'Accept':'application/json'
+          },
+          body:JSON.stringify(body)
+        });
+
+        let data = {};
+        try{ data = await response.json(); } catch(error){}
+
+        if(!response.ok){
+          throw new Error(data.error || 'Something went wrong. Please try again.');
+        }
+
+        return data;
+      }
+
+      function render(data){
+        currentData = data;
+
+        if(!data.can_edit){
+          const status = String(data.booking_status || '').replaceAll('_', ' ');
+          document.getElementById('lockedMessage').textContent =
+            data.event_date
+              ? `Booking ${data.booking_reference} for ${formatDate(data.event_date)} is currently ${status || 'not editable'}. Please reply to your booking email if you need to make a change.`
+              : 'Please reply to your booking email if you need to make a change.';
+          showOnly(lockedState);
+          return;
+        }
+
+        const fd = data.final_details || {};
+        const booking = data.booking || {};
+        const venue = data.venue || {};
+
+        setValue('deliveryTime', booking.delivery_time);
+        setValue('collectionTime', booking.collection_time);
+        setValue('setupPreference', booking.setup_preference || 'unsure');
+
+        setValue('venueContactName', fd.venue_contact_name);
+        setValue('venueContactPhone', fd.venue_contact_phone);
+        setValue('weddingDayContactName', fd.wedding_day_contact_name);
+        setValue('weddingDayContactPhone', fd.wedding_day_contact_phone);
+
+        setValue('arrivalInstructions', fd.arrival_instructions);
+        setValue('parkingLoadingInstructions', fd.parking_loading_instructions);
+        setValue('accessRestrictions', fd.access_restrictions);
+        setValue('venueRestrictions', fd.venue_restrictions);
+        setValue('additionalNotes', fd.additional_notes);
+
+        setValue('setupNotes', booking.setup_notes);
+        setValue('weatherContingency', booking.weather_contingency);
+        setValue('specialRequests', booking.special_requests);
+
+        document.getElementById('venueDisplay').innerHTML =
+          `<strong>${escapeHtml(venue.venue_name || 'Your venue')}</strong><br>${escapeHtml(
+            [
+              venue.address_line_1,
+              venue.address_line_2,
+              venue.town_city,
+              venue.county,
+              venue.postcode
+            ].filter(Boolean).join(', ') || 'Address held on your booking'
+          )}`;
+
+        document.getElementById('recapReference').textContent = data.booking_reference || '—';
+        document.getElementById('recapDate').textContent = formatDate(data.event_date);
+        document.getElementById('recapVenue').textContent = venue.venue_name || '—';
+        document.getElementById('recapPackage').textContent =
+          booking.package_name ||
+          (booking.selection_type === 'build_your_own' ? 'Build Your Own' : 'Wedding games booking');
+        document.getElementById('recapTotal').textContent = money(booking.total_price);
+
+        const items = Array.isArray(booking.items) ? booking.items : [];
+        const itemsEl = document.getElementById('recapItems');
+        itemsEl.innerHTML = '';
+
+        if(items.length){
+          items.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = `${Number(item.quantity || 1) > 1 ? `${item.quantity} × ` : ''}${item.name || 'Booked item'}`;
+            itemsEl.appendChild(li);
+          });
+        } else {
+          const li = document.createElement('li');
+          li.textContent = 'Your booked items are confirmed on your booking.';
+          itemsEl.appendChild(li);
+        }
+
+        if(fd.customer_updated_at){
+          lastSaved.textContent = `Last updated ${formatDateTime(fd.customer_updated_at)}`;
+        } else {
+          lastSaved.textContent = 'Not submitted yet';
+        }
+
+        showOnly(readyState);
+      }
+
+      function collectDetails(){
+        return {
+          delivery_time: document.getElementById('deliveryTime').value,
+          collection_time: document.getElementById('collectionTime').value,
+          setup_preference: document.getElementById('setupPreference').value,
+
+          venue_contact_name: document.getElementById('venueContactName').value.trim(),
+          venue_contact_phone: document.getElementById('venueContactPhone').value.trim(),
+          wedding_day_contact_name: document.getElementById('weddingDayContactName').value.trim(),
+          wedding_day_contact_phone: document.getElementById('weddingDayContactPhone').value.trim(),
+
+          arrival_instructions: document.getElementById('arrivalInstructions').value.trim(),
+          parking_loading_instructions: document.getElementById('parkingLoadingInstructions').value.trim(),
+          access_restrictions: document.getElementById('accessRestrictions').value.trim(),
+          venue_restrictions: document.getElementById('venueRestrictions').value.trim(),
+
+          setup_notes: document.getElementById('setupNotes').value.trim(),
+          weather_contingency: document.getElementById('weatherContingency').value.trim(),
+          special_requests: document.getElementById('specialRequests').value.trim(),
+          additional_notes: document.getElementById('additionalNotes').value.trim()
+        };
+      }
+
+      function validate(details){
+        if(!details.delivery_time || !details.collection_time){
+          throw new Error('Please confirm both the delivery/setup time and collection time.');
+        }
+
+        if(details.collection_time > '20:00'){
+          throw new Error('The latest available collection time is 8pm.');
+        }
+
+        if(details.collection_time <= details.delivery_time){
+          throw new Error('Collection time must be later than the delivery/setup time.');
+        }
+
+        if(!details.wedding_day_contact_name){
+          throw new Error('Please provide a wedding-day contact name.');
+        }
+
+        if(!details.wedding_day_contact_phone || details.wedding_day_contact_phone.length < 7){
+          throw new Error('Please provide a valid wedding-day contact phone number.');
+        }
+      }
+
+      async function load(){
+        if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(token)){
+          document.getElementById('errorMessage').textContent =
+            'This final wedding details link is invalid. Please use the link from your On The Green Games email.';
+          showOnly(errorState);
+          return;
+        }
+
+        showOnly(loadingState);
+
+        try{
+          const data = await api(GET_URL, { token });
+          render(data);
+        } catch(error){
+          console.error(error);
+          document.getElementById('errorMessage').textContent =
+            error.message || 'We could not load your booking details.';
+          showOnly(errorState);
+        }
+      }
+
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        formError.className = 'form-message error';
+        formSuccess.className = 'form-message success';
+        formError.textContent = '';
+        formSuccess.textContent = '';
+
+        try{
+          const details = collectDetails();
+          validate(details);
+
+          saveButton.disabled = true;
+          saveButton.textContent = 'Saving…';
+
+          const result = await api(SAVE_URL, {
+            token,
+            details
+          });
+
+          const refreshed = await api(GET_URL, { token });
+          render(refreshed);
+
+          formSuccess.textContent = result.emailSent === false
+            ? 'Your final wedding details have been saved. We could not send the confirmation email just now, but your details are safely stored.'
+            : 'Your final wedding details have been saved. We’ve also sent you a confirmation email.';
+
+          formSuccess.className = 'form-message success show';
+          formSuccess.scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+        } catch(error){
+          console.error(error);
+          formError.textContent = error.message || 'We could not save your final wedding details.';
+          formError.className = 'form-message error show';
+          formError.scrollIntoView({ behavior:'smooth', block:'nearest' });
+        } finally {
+          saveButton.disabled = false;
+          saveButton.textContent = 'Save final wedding details';
+        }
+      });
+
+      load();
+    })();
+  </script>
+</body>
+</html>
