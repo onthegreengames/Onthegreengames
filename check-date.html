@@ -11,217 +11,685 @@
 
   gtag('config', 'G-Z1194VV4R4');
 </script>
+
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="Check your wedding date and venue postcode for mini golf and giant garden games hire, including live availability and any applicable travel fee." name="description"/><meta content="noindex,follow" name="robots"/><link href="https://onthegreengames.co.uk/check-date.html" rel="canonical"/><meta content="website" property="og:type"/><meta content="On The Green Games" property="og:site_name"/><meta content="Check Wedding Games Hire Availability | On The Green Games" property="og:title"/><meta content="Check your wedding date and venue postcode for mini golf and giant garden games hire, including live availability and any applicable travel fee." property="og:description"/><meta content="https://onthegreengames.co.uk/check-date.html" property="og:url"/><meta content="summary" name="twitter:card"/><meta content="Check Wedding Games Hire Availability | On The Green Games" name="twitter:title"/><meta content="Check your wedding date and venue postcode for mini golf and giant garden games hire, including live availability and any applicable travel fee." name="twitter:description"/>
-<link rel="icon" type="image/png" href="/favicon.png">
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="Check your wedding date and venue postcode for mini golf and giant garden games hire, including live availability and any applicable travel fee." name="description"/>
+<meta content="noindex,follow" name="robots"/>
+<link href="https://onthegreengames.co.uk/check-date.html" rel="canonical"/>
+
+<meta content="website" property="og:type"/>
+<meta content="On The Green Games" property="og:site_name"/>
+<meta content="Check Wedding Games Hire Availability | On The Green Games" property="og:title"/>
+<meta content="Check your wedding date and venue postcode for mini golf and giant garden games hire, including live availability and any applicable travel fee." property="og:description"/>
+<meta content="https://onthegreengames.co.uk/check-date.html" property="og:url"/>
+
+<meta content="summary" name="twitter:card"/>
+<meta content="Check Wedding Games Hire Availability | On The Green Games" name="twitter:title"/>
+<meta content="Check your wedding date and venue postcode for mini golf and giant garden games hire, including live availability and any applicable travel fee." name="twitter:description"/>
+
 <title>Check Wedding Games Hire Availability | On The Green Games</title>
+
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="styles.css" rel="stylesheet"/>
+
 <style>
-  .check-wrap{ max-width:620px; margin:0 auto; }
+  .check-wrap{
+    max-width:620px;
+    margin:0 auto;
+  }
+
   .check-card{
-    background:var(--cream-card); border:1px solid var(--green-line); border-radius:22px;
-    padding:40px; box-shadow:0 24px 50px -34px rgba(27,42,32,0.25);
+    background:var(--cream-card);
+    border:1px solid var(--green-line);
+    border-radius:22px;
+    padding:40px;
+    box-shadow:0 24px 50px -34px rgba(27,42,32,0.25);
   }
+
   .mileage-line{
-    display:flex; justify-content:space-between; align-items:center;
-    background:rgba(30,71,52,0.06); border-radius:12px; padding:14px 18px;
-    font-size:14px; font-weight:600; margin-top:6px; min-height:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(30,71,52,0.06);
+    border-radius:12px;
+    padding:14px 18px;
+    font-size:14px;
+    font-weight:600;
+    margin-top:6px;
+    min-height:20px;
   }
-  .mileage-line.empty{ display:none; }
+
+  .mileage-line.empty{
+    display:none;
+  }
+
   .avail-result{
-    margin-top:22px; padding:20px; border-radius:14px; display:none;
+    margin-top:22px;
+    padding:20px;
+    border-radius:14px;
+    display:none;
   }
-  .avail-result.show{ display:block; }
-  .avail-result.available{ background:rgba(192,145,60,0.12); border:1px solid rgba(192,145,60,0.35); }
-  .avail-result.unavailable{ background:rgba(217,122,87,0.12); border:1px solid rgba(217,122,87,0.35); }
-  .avail-result h4{ font-family:'Fraunces'; font-weight:600; font-size:17px; margin-bottom:6px; }
-  .avail-result p{ font-size:13.5px; color:rgba(27,42,32,0.7); margin:0; }
-  .check-total{ display:flex; justify-content:space-between; align-items:baseline; margin-top:16px; }
-  .check-total .label{ font-size:13.5px; color:rgba(27,42,32,0.6); }
-  .check-total .amount{ font-family:'Fraunces'; font-weight:600; font-size:20px; color:var(--green-deep); }
+
+  .avail-result.show{
+    display:block;
+  }
+
+  .avail-result.available{
+    background:rgba(192,145,60,0.12);
+    border:1px solid rgba(192,145,60,0.35);
+  }
+
+  .avail-result.unavailable{
+    background:rgba(217,122,87,0.12);
+    border:1px solid rgba(217,122,87,0.35);
+  }
+
+  .avail-result h4{
+    font-family:'Fraunces';
+    font-weight:600;
+    font-size:17px;
+    margin-bottom:6px;
+  }
+
+  .avail-result p{
+    font-size:13.5px;
+    color:rgba(27,42,32,0.7);
+    margin:0;
+  }
+
+  .check-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-top:16px;
+  }
+
+  .check-total .label{
+    font-size:13.5px;
+    color:rgba(27,42,32,0.6);
+  }
+
+  .check-total .amount{
+    font-family:'Fraunces';
+    font-weight:600;
+    font-size:20px;
+    color:var(--green-deep);
+  }
+
   .field-error{
-    font-size:12.5px; color:#B3492F; margin-top:6px; display:none; font-weight:600;
+    font-size:12.5px;
+    color:#B3492F;
+    margin-top:6px;
+    display:none;
+    font-weight:600;
   }
-  .field-error.show{ display:block; }
-  .field.has-error input{ border-color:#B3492F; }
-  .field.is-valid input{ border-color:var(--green-mid); }
-  .btn.loading{ opacity:0.7; pointer-events:none; }
-  .btn:disabled, .btn.disabled{ opacity:0.45; pointer-events:none; }
+
+  .field-error.show{
+    display:block;
+  }
+
+  .field.has-error input{
+    border-color:#B3492F;
+  }
+
+  .field.is-valid input{
+    border-color:var(--green-mid);
+  }
+
+  .btn.loading{
+    opacity:0.7;
+    pointer-events:none;
+  }
+
+  .btn:disabled,
+  .btn.disabled{
+    opacity:0.45;
+    pointer-events:none;
+  }
+
+  .booking-open-note{
+    background:rgba(192,145,60,0.10);
+    border:1px solid rgba(192,145,60,0.30);
+    border-radius:12px;
+    padding:12px 15px;
+    margin-bottom:12px;
+    font-size:12.5px;
+    line-height:1.5;
+    color:rgba(27,42,32,0.75);
+  }
+
+  .booking-open-note strong{
+    color:var(--green-deep);
+  }
+
   .cal-widget{
-    border:1.5px solid var(--green-line); border-radius:14px; padding:18px;
+    border:1.5px solid var(--green-line);
+    border-radius:14px;
+    padding:18px;
   }
-  .cal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-  .cal-title{ font-family:'Fraunces'; font-weight:600; font-size:15px; color:var(--green-deep); }
+
+  .cal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+
+  .cal-title{
+    font-family:'Fraunces';
+    font-weight:600;
+    font-size:15px;
+    color:var(--green-deep);
+  }
+
   .cal-nav{
-    background:none; border:1px solid var(--green-line); border-radius:8px;
-    width:30px; height:30px; font-size:16px; cursor:pointer; color:var(--green-deep);
-    display:flex; align-items:center; justify-content:center; transition:.15s;
+    background:none;
+    border:1px solid var(--green-line);
+    border-radius:8px;
+    width:30px;
+    height:30px;
+    font-size:16px;
+    cursor:pointer;
+    color:var(--green-deep);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.15s;
   }
-  .cal-nav:hover{ background:rgba(30,71,52,0.06); }
-  .cal-nav:disabled{ opacity:0.3; cursor:not-allowed; }
-  .cal-weekdays{ display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); text-align:center; font-size:11px; font-weight:700; color:rgba(27,42,32,0.45); letter-spacing:0.04em; margin-bottom:6px; }
-  .cal-grid{ display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:3px; }
+
+  .cal-nav:hover{
+    background:rgba(30,71,52,0.06);
+  }
+
+  .cal-nav:disabled{
+    opacity:0.3;
+    cursor:not-allowed;
+  }
+
+  .cal-weekdays{
+    display:grid;
+    grid-template-columns:repeat(7, minmax(0,1fr));
+    text-align:center;
+    font-size:11px;
+    font-weight:700;
+    color:rgba(27,42,32,0.45);
+    letter-spacing:0.04em;
+    margin-bottom:6px;
+  }
+
+  .cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7, minmax(0,1fr));
+    gap:3px;
+  }
+
   .cal-day{
-    aspect-ratio:1; display:flex; align-items:center; justify-content:center;
-    font-size:13px; font-weight:500; border-radius:8px; cursor:pointer;
-    background:none; border:1.5px solid transparent; color:var(--ink); transition:.12s;
-    box-sizing:border-box; padding:0; margin:0; min-width:0; width:100%;
-    font-family:inherit; appearance:none; -webkit-appearance:none;
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    font-weight:500;
+    border-radius:8px;
+    cursor:pointer;
+    background:none;
+    border:1.5px solid transparent;
+    color:var(--ink);
+    transition:.12s;
+    box-sizing:border-box;
+    padding:0;
+    margin:0;
+    min-width:0;
+    width:100%;
+    font-family:inherit;
+    appearance:none;
+    -webkit-appearance:none;
   }
-  .cal-day:hover:not(.cal-disabled):not(.cal-blocked){ background:rgba(30,71,52,0.08); }
-  .cal-day.cal-empty{ cursor:default; }
-  .cal-day.cal-today{ border-color:var(--green-mid); font-weight:700; }
-  .cal-day.cal-selected{ background:var(--green-deep); color:#fff; font-weight:700; }
-  .cal-day.cal-disabled{ color:rgba(27,42,32,0.25); cursor:not-allowed; }
+
+  .cal-day:hover:not(.cal-disabled):not(.cal-blocked):not(.cal-not-open){
+    background:rgba(30,71,52,0.08);
+  }
+
+  .cal-day.cal-empty{
+    cursor:default;
+  }
+
+  .cal-day.cal-today{
+    border-color:var(--green-mid);
+    font-weight:700;
+  }
+
+  .cal-day.cal-selected{
+    background:var(--green-deep);
+    color:#fff;
+    font-weight:700;
+  }
+
+  .cal-day.cal-disabled{
+    color:rgba(27,42,32,0.25);
+    cursor:not-allowed;
+  }
+
+  .cal-day.cal-not-open{
+    color:rgba(27,42,32,0.35);
+    cursor:not-allowed;
+    background:rgba(27,42,32,0.035);
+  }
+
   .cal-day.cal-blocked{
-    color:rgba(217,122,87,0.85); cursor:not-allowed;
-    background:repeating-linear-gradient(135deg, rgba(217,122,87,0.08) 0 4px, transparent 4px 8px);
+    color:rgba(217,122,87,0.85);
+    cursor:not-allowed;
+    background:repeating-linear-gradient(
+      135deg,
+      rgba(217,122,87,0.08) 0 4px,
+      transparent 4px 8px
+    );
     text-decoration:line-through;
   }
-  .cal-legend{ display:flex; gap:16px; margin-top:14px; font-size:11.5px; color:rgba(27,42,32,0.55); }
-  .cal-legend .cal-dot{ width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:5px; }
-  .cal-dot-avail{ background:var(--green-mid); }
-  .cal-dot-blocked{ background:#D97A57; }
+
+  .cal-legend{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-top:14px;
+    font-size:11.5px;
+    color:rgba(27,42,32,0.55);
+  }
+
+  .cal-legend .cal-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    display:inline-block;
+    margin-right:5px;
+  }
+
+  .cal-dot-avail{
+    background:var(--green-mid);
+  }
+
+  .cal-dot-not-open{
+    background:rgba(27,42,32,0.25);
+  }
+
+  .cal-dot-blocked{
+    background:#D97A57;
+  }
+
   .cal-selected-label{
-    margin-top:14px; padding-top:14px; border-top:1px solid var(--green-line);
-    font-size:13.5px; font-weight:600; color:var(--green-deep);
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid var(--green-line);
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--green-deep);
+  }
+
+  @media(max-width:600px){
+    .check-card{
+      padding:24px 18px;
+    }
+
+    .cal-widget{
+      padding:14px;
+    }
+
+    .cal-legend{
+      gap:10px 14px;
+    }
   }
 </style>
 </head>
+
 <body>
+
 <div class="wrap">
 <nav>
-<a class="logo" href="index.html"><img src="/favicon.png" alt="logo" class="logo-image"></span> ON THE GREEN GAMES</a>
+<a class="logo" href="index.html">
+<span class="logo-mark"></span>
+ON THE GREEN GAMES
+</a>
+
 <button aria-expanded="false" aria-label="Toggle menu" class="nav-toggle" id="navToggle" type="button">
-<span></span><span></span><span></span>
+<span></span>
+<span></span>
+<span></span>
 </button>
+
 <div class="nav-links" id="navLinks">
+
 <a href="index.html">Home</a>
+
 <div class="nav-dropdown">
-<button aria-expanded="false" class="nav-dropdown-trigger" id="exploreTrigger" type="button">Explore <span class="chev"></span></button>
+
+<button aria-expanded="false" class="nav-dropdown-trigger" id="exploreTrigger" type="button">
+Explore <span class="chev"></span>
+</button>
+
 <div class="mega-panel" id="explorePanel">
+
 <a class="mega-item" href="mini-golf.html">
 <div class="mega-item-title">Mini Golf</div>
 <div class="mega-item-desc">9-hole wedding mini golf, delivered and set up for you.</div>
 </a>
+
 <a class="mega-item" href="giant-games.html">
 <div class="mega-item-title">Giant Games</div>
 <div class="mega-item-desc">Seven giant garden games available for all-day wedding hire.</div>
 </a>
+
 <a class="mega-item" href="gallery.html">
 <div class="mega-item-title">Gallery</div>
 <div class="mega-item-desc">Wedding mini golf and garden games setups in action.</div>
 </a>
+
 </div>
 </div>
+
 <a href="packages.html">Packages</a>
 <a href="booking-info.html">Booking Info</a>
 <a class="btn" href="check-date.html">Check Availability →</a>
+
 </div>
 </nav>
 </div>
+
+
 <div class="wrap page-hero">
-<div class="eyebrow">Check your wedding date and venue</div>
-<h1>Check Wedding Mini Golf &amp; Garden Games Availability</h1>
-<p class="lede">Enter your wedding venue and date to check live availability and calculate any travel fee for the postcode. We regularly cover the North West, North Wales and the South Lakes, and can travel to wider areas such as Birmingham where the additional journey charge is practical. Nothing is booked at this stage; you will continue to the package builder next.</p>
+
+<div class="eyebrow">
+Check your wedding date and venue
 </div>
+
+<h1>
+Check Wedding Mini Golf &amp; Garden Games Availability
+</h1>
+
+<p class="lede">
+Enter your wedding venue and date to check live availability and calculate any travel fee for the postcode. We regularly cover the North West, North Wales and the South Lakes, and can travel to wider areas such as Birmingham where the additional journey charge is practical. Nothing is booked at this stage; you will continue to the package builder next.
+</p>
+
+</div>
+
+
 <div class="wrap" style="padding-bottom:100px;">
+
 <div class="check-wrap">
+
 <div class="check-card">
+
+
 <div class="field">
-<label>Venue name</label>
-<input id="cVenue" placeholder="Venue name" type="text"/>
+
+<label>
+Venue name
+</label>
+
+<input
+id="cVenue"
+placeholder="Venue name"
+type="text"
+/>
+
 </div>
+
+
 <div class="field" id="postcodeField">
-<label>Venue postcode</label>
-<input id="cPostcode" placeholder="e.g. M1 1AE" type="text"/>
-<div class="mileage-line empty" id="mileageLine"></div>
-<div class="field-error" id="postcodeError"></div>
+
+<label>
+Venue postcode
+</label>
+
+<input
+id="cPostcode"
+placeholder="e.g. M1 1AE"
+type="text"
+/>
+
+<div
+class="mileage-line empty"
+id="mileageLine">
 </div>
+
+<div
+class="field-error"
+id="postcodeError">
+</div>
+
+</div>
+
+
 <div class="field">
-<label>Wedding date</label>
-<div class="cal-widget" id="calWidget">
+
+<label>
+Wedding date
+</label>
+
+<div
+class="booking-open-note"
+id="bookingOpenNote">
+Loading booking dates…
+</div>
+
+<div
+class="cal-widget"
+id="calWidget">
+
 <div class="cal-head">
-<button aria-label="Previous month" class="cal-nav" id="calPrev" type="button">‹</button>
-<span class="cal-title" id="calTitle"></span>
-<button aria-label="Next month" class="cal-nav" id="calNext" type="button">›</button>
+
+<button
+aria-label="Previous month"
+class="cal-nav"
+id="calPrev"
+type="button">
+‹
+</button>
+
+<span
+class="cal-title"
+id="calTitle">
+</span>
+
+<button
+aria-label="Next month"
+class="cal-nav"
+id="calNext"
+type="button">
+›
+</button>
+
 </div>
+
+
 <div class="cal-weekdays">
-<span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+
+<span>Mo</span>
+<span>Tu</span>
+<span>We</span>
+<span>Th</span>
+<span>Fr</span>
+<span>Sa</span>
+<span>Su</span>
+
 </div>
-<div class="cal-grid" id="calGrid"></div>
+
+
+<div
+class="cal-grid"
+id="calGrid">
+</div>
+
+
 <div class="cal-legend">
-<span><i class="cal-dot cal-dot-avail"></i> Available</span>
-<span><i class="cal-dot cal-dot-blocked"></i> Booked</span>
+
+<span>
+<i class="cal-dot cal-dot-avail"></i>
+Available
+</span>
+
+<span>
+<i class="cal-dot cal-dot-not-open"></i>
+Not yet available
+</span>
+
+<span>
+<i class="cal-dot cal-dot-blocked"></i>
+Booked
+</span>
+
 </div>
-<div class="cal-selected-label" id="calSelected">No date selected yet</div>
+
+
+<div
+class="cal-selected-label"
+id="calSelected">
+No date selected yet
 </div>
+
 </div>
-<div class="avail-result" id="availResult">
+
+</div>
+
+
+<div
+class="avail-result"
+id="availResult">
+
 <h4 id="availTitle"></h4>
+
 <p id="availBody"></p>
-<div class="check-total" id="checkTotal" style="display:none;">
-<span class="label">Travel fee for this area</span>
-<span class="amount" id="checkMileageAmount">£0</span>
+
+<div
+class="check-total"
+id="checkTotal"
+style="display:none;">
+
+<span class="label">
+Travel fee for this area
+</span>
+
+<span
+class="amount"
+id="checkMileageAmount">
+£0
+</span>
+
+</div>
+
+</div>
+
+
+<a
+class="btn gold"
+href="#"
+id="checkBtn"
+style="width:100%; justify-content:center; margin-top:24px;">
+Create Your Package →
+</a>
+
+
+<p
+id="formError"
+style="color:#B3492F; font-size:13px; margin-top:12px; display:none;">
+Please fill in venue name, postcode and your wedding date first.
+</p>
+
+
 </div>
 </div>
-<a class="btn gold" href="#" id="checkBtn" style="width:100%; justify-content:center; margin-top:24px;">Create Your Package →</a>
-<p id="formError" style="color:#B3492F; font-size:13px; margin-top:12px; display:none;">Please fill in venue name, postcode and your wedding date first.</p>
 </div>
-</div>
-</div>
+
+
 <footer>
+
 <div class="wrap foot-row">
-<a class="logo" href="index.html"><img src="/favicon.png" alt="logo" class="logo-image"></span> ON THE GREEN GAMES</a>
+
+<a class="logo" href="index.html">
+<span class="logo-mark"></span>
+ON THE GREEN GAMES
+</a>
+
 <div class="foot-links">
-<a href="index.html">Home</a>
-<a href="packages.html">Packages</a>
-<a href="booking-info.html">Booking Info</a>
+
+<a href="index.html">
+Home
+</a>
+
+<a href="packages.html">
+Packages
+</a>
+
+<a href="booking-info.html">
+Booking Info
+</a>
+
 </div>
-<div class="foot-note">© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
+
+<div class="foot-note">
+© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.
 </div>
+
+</div>
+
 </footer>
+
+
 <script src="nav.js"></script>
+
+
 <script>
-  // ---- Postcode validation + flat area fee, backed by a Supabase postcode-district table ----
-  //
-  // TODO before this is live: fill in your real Supabase project URL and anon
-  // (public) key below. The anon key is safe to expose in browser code, it's
-  // designed for exactly this, read-only public queries. Never put your
-  // service_role key here.
-  //
-  // Expected table: one row per POSTCODE DISTRICT (the outward code, e.g. "M1",
-  // "SW1A", "PR1", not the full unit postcode), with a column holding the flat
-  // FEE IN POUNDS you want to charge for that area (0 for your standard local
-  // area, a higher flat number for further-out areas — whatever you decide
-  // per district, no calculation involved). Districts are the right grain for
-  // this, ~2,900 UK-wide vs 1.7m full postcodes, small enough to import
-  // easily. Adjust table/column names below to match your actual import.
-  //
-  // IMPORTANT — if lookups return nothing even though the row exists:
-  // Supabase tables have Row Level Security (RLS) switched ON by default,
-  // which blocks ALL access, including plain reads, until you explicitly add
-  // a policy. This is almost always why a table "isn't working" from the
-  // browser even though the URL/key are correct. Fix: in the Supabase
-  // dashboard go to Authentication > Policies > [table] > New Policy, and add
-  // a SELECT policy for the "anon" role (e.g. "Enable read access for all
-  // users"). You'll need this on BOTH postcode_districts and bookings below.
-  // Also double check DISTRICT_COLUMN / FEE_COLUMN / BOOKING_DATE_COLUMN
-  // actually match your real column names, and that dates in the bookings
-  // table are stored as plain YYYY-MM-DD (a "date" column, not a timestamp).
-  const SUPABASE_URL = 'https://untytznzbngourawgbqx.supabase.co';   // TODO
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVudHl0em56Ym5nb3VyYXdnYnF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMjg0NzQsImV4cCI6MjEwMDkwNDQ3NH0.SMdbMdWeM2JWJE7C0FHTngceBUXnoEimwygAlPR0fhM';               // TODO
-  const DISTRICTS_TABLE = 'postcode_districts';                   // TODO if different
-  const DISTRICT_COLUMN = 'district';                             // TODO if different
-  const FEE_COLUMN = 'fee';                                       // TODO if different
 
-  const SUPABASE_CONFIGURED = !SUPABASE_URL.includes('YOUR-PROJECT-REF');
+  /* ============================================================
+     SUPABASE CONFIGURATION
+     ============================================================ */
 
-  // Demo-only district fees so this is testable before Supabase is wired up.
-  // Ignored automatically the moment SUPABASE_URL above is set for real.
+  const SUPABASE_URL =
+    'https://untytznzbngourawgbqx.supabase.co';
+
+  const SUPABASE_ANON_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVudHl0em56Ym5nb3VyYXdnYnF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzMjg0NzQsImV4cCI6MjEwMDkwNDQ3NH0.SMdbMdWeM2JWJE7C0FHTngceBUXnoEimwygAlPR0fhM';
+
+  const DISTRICTS_TABLE =
+    'postcode_districts';
+
+  const DISTRICT_COLUMN =
+    'district';
+
+  const FEE_COLUMN =
+    'fee';
+
+  const BOOKINGS_TABLE =
+    'bookings';
+
+  const BOOKING_DATE_COLUMN =
+    'event_date';
+
+  const SUPABASE_CONFIGURED =
+    !SUPABASE_URL.includes('YOUR-PROJECT-REF');
+
+
+  /*
+    Safety fallback only.
+
+    The real date comes from:
+    public.get_earliest_bookable_date()
+
+    If Supabase temporarily cannot be reached, we fail safe and
+    continue blocking dates before 1 June 2027 rather than
+    accidentally opening them.
+  */
+
+  const FALLBACK_EARLIEST_BOOKABLE_DATE =
+    '2027-06-01';
+
+
+  /* ============================================================
+     DEMO VALUES
+     ============================================================ */
+
   const DEMO_DISTRICTS = {
     'PR1':  0,
     'M1':   25,
@@ -232,355 +700,1605 @@
     'SW1A': 120
   };
 
-  // Full UK postcode format: outward code (district) + inward code, e.g. "M1 1AE"
-  const POSTCODE_REGEX = /^([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})$/i;
 
-  let travelFee = 0;
-  let feeReady = false;
-  let postcodeValid = false;
+  const DEMO_BLOCKED_DATES = (() => {
+
+    const now =
+      new Date();
+
+    const fmt =
+      (y, m, day) =>
+        y +
+        '-' +
+        String(m + 1).padStart(2, '0') +
+        '-' +
+        String(day).padStart(2, '0');
+
+    const todayMidnight =
+      new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+      );
+
+    const candidates = [
+
+      fmt(
+        now.getFullYear(),
+        now.getMonth(),
+        10
+      ),
+
+      fmt(
+        now.getFullYear(),
+        now.getMonth(),
+        20
+      ),
+
+      fmt(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        5
+      ),
+
+      fmt(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        15
+      )
+
+    ];
+
+    return candidates.filter(
+      dStr =>
+        new Date(dStr + 'T00:00:00') >=
+        todayMidnight
+    );
+
+  })();
+
+
+  /* ============================================================
+     POSTCODE
+     ============================================================ */
+
+  const POSTCODE_REGEX =
+    /^([A-Z]{1,2}\d[A-Z\d]?)\s*(\d[A-Z]{2})$/i;
+
+  let travelFee =
+    0;
+
+  let feeReady =
+    false;
+
+  let postcodeValid =
+    false;
+
 
   function extractDistrict(pc){
-    const clean = (pc || '').trim().toUpperCase();
-    const match = clean.match(POSTCODE_REGEX);
-    return match ? match[1] : null;
+
+    const clean =
+      (pc || '')
+        .trim()
+        .toUpperCase();
+
+    const match =
+      clean.match(
+        POSTCODE_REGEX
+      );
+
+    return match
+      ? match[1]
+      : null;
+
   }
+
 
   async function lookupDistrictFee(district){
+
     if(!SUPABASE_CONFIGURED){
-      return Object.prototype.hasOwnProperty.call(DEMO_DISTRICTS, district) ? DEMO_DISTRICTS[district] : null;
+
+      return Object.prototype.hasOwnProperty.call(
+        DEMO_DISTRICTS,
+        district
+      )
+        ? DEMO_DISTRICTS[district]
+        : null;
+
     }
+
     try{
-      const url = `${SUPABASE_URL}/rest/v1/${DISTRICTS_TABLE}?${DISTRICT_COLUMN}=eq.${encodeURIComponent(district)}&select=${FEE_COLUMN}`;
-      const res = await fetch(url, {
-        headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
-      });
-      const rows = await res.json();
-      if(rows.length){
+
+      const url =
+        `${SUPABASE_URL}/rest/v1/${DISTRICTS_TABLE}` +
+        `?${DISTRICT_COLUMN}=eq.${encodeURIComponent(district)}` +
+        `&select=${FEE_COLUMN}`;
+
+      const res =
+        await fetch(
+          url,
+          {
+            headers:{
+              apikey:
+                SUPABASE_ANON_KEY,
+
+              Authorization:
+                `Bearer ${SUPABASE_ANON_KEY}`
+            }
+          }
+        );
+
+      const rows =
+        await res.json();
+
+      if(
+        Array.isArray(rows) &&
+        rows.length
+      ){
+
         return rows[0][FEE_COLUMN];
+
       }
-    } catch(e){ console.warn('Supabase district lookup failed', e); }
+
+    }
+    catch(error){
+
+      console.warn(
+        'Supabase district lookup failed',
+        error
+      );
+
+    }
+
     return null;
+
   }
+
 
   function setPostcodeError(msg){
-    const fieldEl = document.getElementById('postcodeField');
-    const errEl = document.getElementById('postcodeError');
-    fieldEl.classList.add('has-error');
-    fieldEl.classList.remove('is-valid');
-    errEl.textContent = msg;
-    errEl.classList.add('show');
-    document.getElementById('mileageLine').classList.add('empty');
+
+    const fieldEl =
+      document.getElementById(
+        'postcodeField'
+      );
+
+    const errEl =
+      document.getElementById(
+        'postcodeError'
+      );
+
+    fieldEl.classList.add(
+      'has-error'
+    );
+
+    fieldEl.classList.remove(
+      'is-valid'
+    );
+
+    errEl.textContent =
+      msg;
+
+    errEl.classList.add(
+      'show'
+    );
+
+    document
+      .getElementById(
+        'mileageLine'
+      )
+      .classList
+      .add(
+        'empty'
+      );
+
   }
+
 
   function clearPostcodeError(){
-    const fieldEl = document.getElementById('postcodeField');
-    document.getElementById('postcodeError').classList.remove('show');
-    fieldEl.classList.remove('has-error');
+
+    const fieldEl =
+      document.getElementById(
+        'postcodeField'
+      );
+
+    document
+      .getElementById(
+        'postcodeError'
+      )
+      .classList
+      .remove(
+        'show'
+      );
+
+    fieldEl.classList.remove(
+      'has-error'
+    );
+
   }
 
-  // ---- Live summary box ----
-  // Shows once we have a valid, priced postcode AND a date picked on the
-  // calendar (the calendar already prevents picking a booked date, so by
-  // the time both are set there is nothing left to "check" - this is just
-  // a running summary of what will be carried through to the package builder).
+
   function updateSummary(){
-    const resultEl = document.getElementById('availResult');
-    const titleEl = document.getElementById('availTitle');
-    const bodyEl = document.getElementById('availBody');
-    const totalRow = document.getElementById('checkTotal');
 
-    if(postcodeValid && selectedDate){
-      resultEl.classList.remove('unavailable');
-      resultEl.classList.add('available', 'show');
-      titleEl.textContent = "You're all set";
-      bodyEl.textContent = 'That date is free at your venue. Continue to build your package, your venue, date and travel fee are already saved.';
-      totalRow.style.display = 'flex';
-      document.getElementById('checkMileageAmount').textContent = '£' + travelFee;
-    } else {
-      resultEl.classList.remove('show', 'available', 'unavailable');
+    const resultEl =
+      document.getElementById(
+        'availResult'
+      );
+
+    const titleEl =
+      document.getElementById(
+        'availTitle'
+      );
+
+    const bodyEl =
+      document.getElementById(
+        'availBody'
+      );
+
+    const totalRow =
+      document.getElementById(
+        'checkTotal'
+      );
+
+
+    const validSelectedDate =
+      selectedDate &&
+      selectedDate >=
+        earliestBookableDateString &&
+      !blockedDates.has(
+        selectedDate
+      );
+
+
+    if(
+      postcodeValid &&
+      validSelectedDate
+    ){
+
+      resultEl.classList.remove(
+        'unavailable'
+      );
+
+      resultEl.classList.add(
+        'available',
+        'show'
+      );
+
+      titleEl.textContent =
+        "You're all set";
+
+      bodyEl.textContent =
+        'That date is free at your venue. Continue to build your package, your venue, date and travel fee are already saved.';
+
+      totalRow.style.display =
+        'flex';
+
+      document
+        .getElementById(
+          'checkMileageAmount'
+        )
+        .textContent =
+          '£' + travelFee;
+
     }
+    else{
+
+      resultEl.classList.remove(
+        'show',
+        'available',
+        'unavailable'
+      );
+
+      totalRow.style.display =
+        'none';
+
+    }
+
   }
+
 
   async function updateAreaFee(){
-    const pc = document.getElementById('cPostcode').value;
-    const lineEl = document.getElementById('mileageLine');
-    const fieldEl = document.getElementById('postcodeField');
 
-    postcodeValid = false;
-    feeReady = false;
-    travelFee = 0;
-    fieldEl.classList.remove('is-valid');
+    const pc =
+      document
+        .getElementById(
+          'cPostcode'
+        )
+        .value;
 
-    if(!pc.trim()){
+    const lineEl =
+      document.getElementById(
+        'mileageLine'
+      );
+
+    const fieldEl =
+      document.getElementById(
+        'postcodeField'
+      );
+
+
+    postcodeValid =
+      false;
+
+    feeReady =
+      false;
+
+    travelFee =
+      0;
+
+    fieldEl.classList.remove(
+      'is-valid'
+    );
+
+
+    if(
+      !pc.trim()
+    ){
+
       clearPostcodeError();
-      lineEl.classList.add('empty');
+
+      lineEl.classList.add(
+        'empty'
+      );
+
       updateSummary();
+
       return;
+
     }
 
-    const district = extractDistrict(pc);
-    if(!district){
-      setPostcodeError("That doesn't look like a valid UK postcode. Double check and try again.");
+
+    const district =
+      extractDistrict(
+        pc
+      );
+
+
+    if(
+      !district
+    ){
+
+      setPostcodeError(
+        "That doesn't look like a valid UK postcode. Double check and try again."
+      );
+
       updateSummary();
+
       return;
+
     }
 
-    lineEl.classList.remove('empty');
-    lineEl.textContent = 'Checking postcode…';
 
-    const fee = await lookupDistrictFee(district);
+    lineEl.classList.remove(
+      'empty'
+    );
 
-    if(fee === null || fee === undefined){
-      setPostcodeError("We don't have coverage data for that postcode yet. Get in touch and we'll confirm your price manually.");
+    lineEl.textContent =
+      'Checking postcode…';
+
+
+    const fee =
+      await lookupDistrictFee(
+        district
+      );
+
+
+    if(
+      fee === null ||
+      fee === undefined
+    ){
+
+      setPostcodeError(
+        "We don't have coverage data for that postcode yet. Get in touch and we'll confirm your price manually."
+      );
+
       updateSummary();
+
       return;
+
     }
+
 
     clearPostcodeError();
-    fieldEl.classList.add('is-valid');
-    postcodeValid = true;
 
-    travelFee = Math.round(fee);
-    feeReady = true;
+    fieldEl.classList.add(
+      'is-valid'
+    );
 
-    lineEl.textContent = travelFee > 0
-      ? `Travel fee for this area: £${travelFee}`
-      : `Within our standard area, no extra travel fee`;
+    postcodeValid =
+      true;
+
+    travelFee =
+      Math.round(
+        fee
+      );
+
+    feeReady =
+      true;
+
+
+    lineEl.textContent =
+      travelFee > 0
+
+        ? `Travel fee for this area: £${travelFee}`
+
+        : 'Within our standard area, no extra travel fee';
+
 
     updateSummary();
+
   }
+
 
   let pcDebounce;
-  document.getElementById('cPostcode').addEventListener('input', () => {
-    clearTimeout(pcDebounce);
-    pcDebounce = setTimeout(updateAreaFee, 600);
-  });
 
-  // ---- Availability calendar, backed by Supabase ----
-  //
-  // Reuses SUPABASE_URL / SUPABASE_ANON_KEY / SUPABASE_CONFIGURED defined above.
-  //
-  // Expected table: a table (default name below) with one row per CONFIRMED
-  // booking, containing at minimum a date column (default name below) storing
-  // the event date as YYYY-MM-DD. Adjust BOOKINGS_TABLE / BOOKING_DATE_COLUMN
-  // to match your actual schema. See the big comment above SUPABASE_URL for
-  // the RLS gotcha if a real booking still doesn't show as blocked.
-  const AVAILABILITY_RPC = 'get_unavailable_dates';
 
-  // Demo-only blocked dates so the calendar visibly works before Supabase is
-  // wired up. This is ignored the moment SUPABASE_URL above is set for real.
-  const DEMO_BLOCKED_DATES = (() => {
-    const now = new Date();
-    const fmt = (y, m, day) => y + '-' + String(m+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
-    const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const candidates = [
-      fmt(now.getFullYear(), now.getMonth(), 10),
-      fmt(now.getFullYear(), now.getMonth(), 20),
-      fmt(now.getFullYear(), now.getMonth() + 1, 5),
-      fmt(now.getFullYear(), now.getMonth() + 1, 15)
-    ];
-    // Only keep dates that haven't already passed, so this stays a believable demo
-    // regardless of what day of the month "today" happens to be.
-    return candidates.filter(dStr => new Date(dStr + 'T00:00:00') >= todayMidnight);
-  })();
+  document
+    .getElementById(
+      'cPostcode'
+    )
+    .addEventListener(
+      'input',
+      () => {
 
-  let blockedDates = new Set();
+        clearTimeout(
+          pcDebounce
+        );
+
+        pcDebounce =
+          setTimeout(
+            updateAreaFee,
+            600
+          );
+
+      }
+    );
+
+
+  /* ============================================================
+     DATE HELPERS
+     ============================================================ */
+
+  function fmtDate(
+    y,
+    m,
+    d
+  ){
+
+    return (
+      y +
+      '-' +
+      String(m + 1)
+        .padStart(2, '0') +
+      '-' +
+      String(d)
+        .padStart(2, '0')
+    );
+
+  }
+
+
+  function dateFromString(
+    value
+  ){
+
+    if(
+      !/^\d{4}-\d{2}-\d{2}$/.test(
+        String(value || '')
+      )
+    ){
+
+      return null;
+
+    }
+
+
+    const [
+      year,
+      month,
+      day
+    ] =
+      value
+        .split('-')
+        .map(Number);
+
+
+    const date =
+      new Date(
+        year,
+        month - 1,
+        day
+      );
+
+
+    date.setHours(
+      0,
+      0,
+      0,
+      0
+    );
+
+
+    if(
+      date.getFullYear() !== year ||
+      date.getMonth() !== month - 1 ||
+      date.getDate() !== day
+    ){
+
+      return null;
+
+    }
+
+
+    return date;
+
+  }
+
+
+  function longDate(
+    date
+  ){
+
+    return date
+      .toLocaleDateString(
+        'en-GB',
+        {
+          day:'numeric',
+          month:'long',
+          year:'numeric'
+        }
+      );
+
+  }
+
+
+  /* ============================================================
+     EARLIEST BOOKABLE DATE
+     ============================================================ */
+
+  let earliestBookableDateString =
+    FALLBACK_EARLIEST_BOOKABLE_DATE;
+
+  let earliestBookableDate =
+    dateFromString(
+      FALLBACK_EARLIEST_BOOKABLE_DATE
+    );
+
+
+  async function fetchEarliestBookableDate(){
+
+    if(
+      !SUPABASE_CONFIGURED
+    ){
+
+      return FALLBACK_EARLIEST_BOOKABLE_DATE;
+
+    }
+
+
+    try{
+
+      const res =
+        await fetch(
+          `${SUPABASE_URL}/rest/v1/rpc/get_earliest_bookable_date`,
+          {
+            method:'POST',
+
+            headers:{
+              apikey:
+                SUPABASE_ANON_KEY,
+
+              Authorization:
+                `Bearer ${SUPABASE_ANON_KEY}`,
+
+              'Content-Type':
+                'application/json'
+            },
+
+            body:
+              '{}'
+          }
+        );
+
+
+      if(
+        !res.ok
+      ){
+
+        throw new Error(
+          `Supabase returned ${res.status}`
+        );
+
+      }
+
+
+      const result =
+        await res.json();
+
+
+      const value =
+        typeof result === 'string'
+          ? result
+          : String(
+              result || ''
+            );
+
+
+      if(
+        !dateFromString(
+          value
+        )
+      ){
+
+        throw new Error(
+          'Invalid earliest bookable date returned.'
+        );
+
+      }
+
+
+      return value;
+
+    }
+    catch(error){
+
+      console.warn(
+        'Could not load earliest bookable date. Using safe fallback.',
+        error
+      );
+
+
+      return FALLBACK_EARLIEST_BOOKABLE_DATE;
+
+    }
+
+  }
+
+
+  /* ============================================================
+     BLOCKED / BOOKED DATES
+     ============================================================ */
+
+  let blockedDates =
+    new Set();
+
 
   async function fetchBlockedDates(){
-  if(!SUPABASE_CONFIGURED){
-    return new Set(DEMO_BLOCKED_DATES);
-  }
 
-  try{
-    const url = `${SUPABASE_URL}/rest/v1/rpc/${AVAILABILITY_RPC}`;
+    if(
+      !SUPABASE_CONFIGURED
+    ){
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    });
-
-    if(!res.ok){
-      const errorText = await res.text();
-      throw new Error(
-        `Availability check failed (${res.status}): ${errorText}`
+      return new Set(
+        DEMO_BLOCKED_DATES
       );
+
     }
 
-    const rows = await res.json();
 
-    return new Set(
-      rows.map(row => row.event_date)
+    try{
+
+      const url =
+        `${SUPABASE_URL}/rest/v1/${BOOKINGS_TABLE}` +
+        `?select=${BOOKING_DATE_COLUMN}`;
+
+
+      const res =
+        await fetch(
+          url,
+          {
+            headers:{
+              apikey:
+                SUPABASE_ANON_KEY,
+
+              Authorization:
+                `Bearer ${SUPABASE_ANON_KEY}`
+            }
+          }
+        );
+
+
+      if(
+        !res.ok
+      ){
+
+        throw new Error(
+          `Supabase returned ${res.status}`
+        );
+
+      }
+
+
+      const rows =
+        await res.json();
+
+
+      if(
+        !Array.isArray(
+          rows
+        )
+      ){
+
+        throw new Error(
+          'Invalid blocked-date response.'
+        );
+
+      }
+
+
+      return new Set(
+        rows
+          .map(
+            row =>
+              row[
+                BOOKING_DATE_COLUMN
+              ]
+          )
+          .filter(
+            Boolean
+          )
+      );
+
+    }
+    catch(error){
+
+      console.warn(
+        'Could not load blocked dates.',
+        error
+      );
+
+
+      return new Set();
+
+    }
+
+  }
+
+
+  /* ============================================================
+     CALENDAR
+     ============================================================ */
+
+  const todayDate =
+    new Date();
+
+
+  todayDate.setHours(
+    0,
+    0,
+    0,
+    0
+  );
+
+
+  let viewYear =
+    todayDate.getFullYear();
+
+  let viewMonth =
+    todayDate.getMonth();
+
+  let selectedDate =
+    null;
+
+
+  const MONTH_NAMES = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+
+
+  function minimumCalendarDate(){
+
+    if(
+      earliestBookableDate >
+      todayDate
+    ){
+
+      return earliestBookableDate;
+
+    }
+
+    return todayDate;
+
+  }
+
+
+  function minimumCalendarMonthIndex(){
+
+    const date =
+      minimumCalendarDate();
+
+
+    return (
+      date.getFullYear() * 12 +
+      date.getMonth()
     );
 
-  } catch(e){
-    console.error(
-      'Could not load unavailable dates from Supabase.',
-      e
+  }
+
+
+  function currentCalendarMonthIndex(){
+
+    return (
+      viewYear * 12 +
+      viewMonth
     );
 
-    return new Set();
   }
-}
 
-  // ---- Calendar rendering ----
-  const todayDate = new Date();
-  todayDate.setHours(0,0,0,0);
-  let viewYear = todayDate.getFullYear();
-  let viewMonth = todayDate.getMonth();
-  let selectedDate = null; // 'YYYY-MM-DD'
-
-  const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-  function fmtDate(y, m, d){
-    return y + '-' + String(m+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-  }
 
   function renderCalendar(){
-    document.getElementById('calTitle').textContent = MONTH_NAMES[viewMonth] + ' ' + viewYear;
 
-    const firstOfMonth = new Date(viewYear, viewMonth, 1);
-    let startWeekday = firstOfMonth.getDay(); // 0=Sun
-    startWeekday = startWeekday === 0 ? 6 : startWeekday - 1; // convert to Mon-first
+    document
+      .getElementById(
+        'calTitle'
+      )
+      .textContent =
+        MONTH_NAMES[
+          viewMonth
+        ] +
+        ' ' +
+        viewYear;
 
-    const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-    const grid = document.getElementById('calGrid');
-    grid.innerHTML = '';
 
-    for(let i = 0; i < startWeekday; i++){
-      const empty = document.createElement('div');
-      empty.className = 'cal-day cal-empty';
-      grid.appendChild(empty);
+    const firstOfMonth =
+      new Date(
+        viewYear,
+        viewMonth,
+        1
+      );
+
+
+    let startWeekday =
+      firstOfMonth.getDay();
+
+
+    startWeekday =
+      startWeekday === 0
+        ? 6
+        : startWeekday - 1;
+
+
+    const daysInMonth =
+      new Date(
+        viewYear,
+        viewMonth + 1,
+        0
+      )
+      .getDate();
+
+
+    const grid =
+      document.getElementById(
+        'calGrid'
+      );
+
+
+    grid.innerHTML =
+      '';
+
+
+    for(
+      let i = 0;
+      i < startWeekday;
+      i++
+    ){
+
+      const empty =
+        document.createElement(
+          'div'
+        );
+
+      empty.className =
+        'cal-day cal-empty';
+
+      grid.appendChild(
+        empty
+      );
+
     }
 
-    for(let day = 1; day <= daysInMonth; day++){
-      const dateStr = fmtDate(viewYear, viewMonth, day);
-      const cellDate = new Date(viewYear, viewMonth, day);
-      const cell = document.createElement('button');
-      cell.type = 'button';
-      cell.className = 'cal-day';
-      cell.textContent = day;
 
-      const isPast = cellDate < todayDate;
-      const isBlocked = blockedDates.has(dateStr);
+    for(
+      let day = 1;
+      day <= daysInMonth;
+      day++
+    ){
 
-      if(cellDate.getTime() === todayDate.getTime()) cell.classList.add('cal-today');
-      if(dateStr === selectedDate) cell.classList.add('cal-selected');
+      const dateStr =
+        fmtDate(
+          viewYear,
+          viewMonth,
+          day
+        );
 
-      if(isPast){
-        cell.classList.add('cal-disabled');
-        cell.disabled = true;
-      } else if(isBlocked){
-        cell.classList.add('cal-blocked');
-        cell.disabled = true;
-        cell.title = 'Already booked';
-      } else {
-        cell.addEventListener('click', () => {
-          selectedDate = dateStr;
-          renderCalendar();
-          const formatted = cellDate.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-          document.getElementById('calSelected').textContent = 'Selected: ' + formatted;
-          updateSummary();
-        });
+
+      const cellDate =
+        new Date(
+          viewYear,
+          viewMonth,
+          day
+        );
+
+
+      cellDate.setHours(
+        0,
+        0,
+        0,
+        0
+      );
+
+
+      const cell =
+        document.createElement(
+          'button'
+        );
+
+
+      cell.type =
+        'button';
+
+      cell.className =
+        'cal-day';
+
+      cell.textContent =
+        day;
+
+
+      const isPast =
+        cellDate <
+        todayDate;
+
+
+      const isBeforeOpening =
+        dateStr <
+        earliestBookableDateString;
+
+
+      const isBlocked =
+        blockedDates.has(
+          dateStr
+        );
+
+
+      if(
+        cellDate.getTime() ===
+        todayDate.getTime()
+      ){
+
+        cell.classList.add(
+          'cal-today'
+        );
+
       }
 
-      grid.appendChild(cell);
+
+      if(
+        dateStr ===
+        selectedDate
+      ){
+
+        cell.classList.add(
+          'cal-selected'
+        );
+
+      }
+
+
+      if(
+        isPast
+      ){
+
+        cell.classList.add(
+          'cal-disabled'
+        );
+
+        cell.disabled =
+          true;
+
+        cell.title =
+          'This date has passed';
+
+      }
+
+      else if(
+        isBeforeOpening
+      ){
+
+        cell.classList.add(
+          'cal-not-open'
+        );
+
+        cell.disabled =
+          true;
+
+        cell.title =
+          `Bookings open from ${longDate(earliestBookableDate)}`;
+
+      }
+
+      else if(
+        isBlocked
+      ){
+
+        cell.classList.add(
+          'cal-blocked'
+        );
+
+        cell.disabled =
+          true;
+
+        cell.title =
+          'Already booked';
+
+      }
+
+      else{
+
+        cell.addEventListener(
+          'click',
+          () => {
+
+            selectedDate =
+              dateStr;
+
+
+            renderCalendar();
+
+
+            const formatted =
+              cellDate
+                .toLocaleDateString(
+                  'en-GB',
+                  {
+                    weekday:'long',
+                    day:'numeric',
+                    month:'long',
+                    year:'numeric'
+                  }
+                );
+
+
+            document
+              .getElementById(
+                'calSelected'
+              )
+              .textContent =
+                'Selected: ' +
+                formatted;
+
+
+            updateSummary();
+
+          }
+        );
+
+      }
+
+
+      grid.appendChild(
+        cell
+      );
+
     }
 
-    const prevBtn = document.getElementById('calPrev');
-    const isCurrentMonth = viewYear === todayDate.getFullYear() && viewMonth === todayDate.getMonth();
-    prevBtn.disabled = isCurrentMonth;
+
+    const prevBtn =
+      document.getElementById(
+        'calPrev'
+      );
+
+
+    prevBtn.disabled =
+      currentCalendarMonthIndex() <=
+      minimumCalendarMonthIndex();
+
   }
 
-  document.getElementById('calPrev').addEventListener('click', () => {
-    viewMonth--;
-    if(viewMonth < 0){ viewMonth = 11; viewYear--; }
-    renderCalendar();
-  });
-  document.getElementById('calNext').addEventListener('click', () => {
-    viewMonth++;
-    if(viewMonth > 11){ viewMonth = 0; viewYear++; }
-    renderCalendar();
-  });
 
-  (async function initCalendar(){
-    blockedDates = await fetchBlockedDates();
-    renderCalendar();
-  })();
+  document
+    .getElementById(
+      'calPrev'
+    )
+    .addEventListener(
+      'click',
+      () => {
 
-  document.getElementById('checkBtn').addEventListener('click', async function(e){
-    e.preventDefault();
-    const venue = document.getElementById('cVenue').value.trim();
-    const postcode = document.getElementById('cPostcode').value.trim();
-    const date = selectedDate;
-    const errorEl = document.getElementById('formError');
-    const btn = this;
+        if(
+          currentCalendarMonthIndex() <=
+          minimumCalendarMonthIndex()
+        ){
 
-    if(!venue || !postcode || !date){
-      errorEl.textContent = 'Please fill in venue name, postcode, and pick a date on the calendar.';
-      errorEl.style.display = 'block';
-      return;
-    }
-    errorEl.style.display = 'none';
+          return;
 
-    // Postcode fee is normally already resolved live as the person types
-    // (see the debounced listener above). This is just a safety net for
-    // the rare case someone clicks before that debounce has fired.
-    if(!feeReady){
-      btn.classList.add('loading');
-      await updateAreaFee();
-      btn.classList.remove('loading');
-    }
+        }
 
-    if(!postcodeValid){
-      // updateAreaFee() already set the specific inline error under the
-      // postcode field (invalid format, out of coverage, or not in our
-      // data), so we just stop here rather than continuing with an unpriced
-      // booking.
-      document.getElementById('postcodeField').scrollIntoView({ behavior:'smooth', block:'center' });
-      return;
-    }
 
-    // The calendar already prevents selecting a booked date, so there's
-    // nothing left to check, just carry everything through to the package
-    // builder.
-    sessionStorage.setItem('oggBooking', JSON.stringify({
-      venueName: venue,
-      venuePostcode: postcode,
-      postcodeDistrict: extractDistrict(postcode),
-      weddingDate: date,
-      travelFee: travelFee
-    }));
+        viewMonth--;
 
-    const params = new URLSearchParams(window.location.search);
-    const pkg = params.get('package');
-    window.location.href = pkg ? ('booking?package=' + encodeURIComponent(pkg)) : 'booking';
-  });
 
-  // Pre-fill from a previous visit, if any
-  (function(){
-    const saved = sessionStorage.getItem('oggBooking');
-    if(!saved) return;
-    try{
-      const data = JSON.parse(saved);
-      if(data.venueName) document.getElementById('cVenue').value = data.venueName;
-      if(data.venuePostcode) document.getElementById('cPostcode').value = data.venuePostcode;
-      if(data.weddingDate){
-        selectedDate = data.weddingDate;
-        const [y, m] = data.weddingDate.split('-').map(Number);
-        viewYear = y;
-        viewMonth = m - 1;
-        const formatted = new Date(y, m - 1, Number(data.weddingDate.split('-')[2])).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-        document.getElementById('calSelected').textContent = 'Selected: ' + formatted;
+        if(
+          viewMonth < 0
+        ){
+
+          viewMonth =
+            11;
+
+          viewYear--;
+
+        }
+
+
+        renderCalendar();
+
       }
-      if(data.venuePostcode) updateAreaFee();
+    );
+
+
+  document
+    .getElementById(
+      'calNext'
+    )
+    .addEventListener(
+      'click',
+      () => {
+
+        viewMonth++;
+
+
+        if(
+          viewMonth > 11
+        ){
+
+          viewMonth =
+            0;
+
+          viewYear++;
+
+        }
+
+
+        renderCalendar();
+
+      }
+    );
+
+
+  /* ============================================================
+     RESTORE PREVIOUS DATE / VENUE
+     ============================================================ */
+
+  function restoreSavedBooking(){
+
+    const saved =
+      sessionStorage.getItem(
+        'oggBooking'
+      );
+
+
+    if(
+      !saved
+    ){
+
+      return;
+
+    }
+
+
+    try{
+
+      const data =
+        JSON.parse(
+          saved
+        );
+
+
+      if(
+        data.venueName
+      ){
+
+        document
+          .getElementById(
+            'cVenue'
+          )
+          .value =
+            data.venueName;
+
+      }
+
+
+      if(
+        data.venuePostcode
+      ){
+
+        document
+          .getElementById(
+            'cPostcode'
+          )
+          .value =
+            data.venuePostcode;
+
+      }
+
+
+      const savedDate =
+        String(
+          data.weddingDate ||
+          ''
+        );
+
+
+      const savedDateObject =
+        dateFromString(
+          savedDate
+        );
+
+
+      const savedDateStillValid =
+        savedDateObject &&
+        savedDateObject >= todayDate &&
+        savedDate >= earliestBookableDateString &&
+        !blockedDates.has(
+          savedDate
+        );
+
+
+      if(
+        savedDateStillValid
+      ){
+
+        selectedDate =
+          savedDate;
+
+
+        viewYear =
+          savedDateObject
+            .getFullYear();
+
+
+        viewMonth =
+          savedDateObject
+            .getMonth();
+
+
+        document
+          .getElementById(
+            'calSelected'
+          )
+          .textContent =
+            'Selected: ' +
+            savedDateObject
+              .toLocaleDateString(
+                'en-GB',
+                {
+                  weekday:'long',
+                  day:'numeric',
+                  month:'long',
+                  year:'numeric'
+                }
+              );
+
+      }
+
+
+      if(
+        data.venuePostcode
+      ){
+
+        updateAreaFee();
+
+      }
+
+
       updateSummary();
-    } catch(e){}
-  })();
+
+    }
+    catch(error){
+
+      console.warn(
+        'Could not restore previous booking details.',
+        error
+      );
+
+    }
+
+  }
+
+
+  /* ============================================================
+     INITIALISE CALENDAR
+     ============================================================ */
+
+  async function initCalendar(){
+
+    earliestBookableDateString =
+      await fetchEarliestBookableDate();
+
+
+    earliestBookableDate =
+      dateFromString(
+        earliestBookableDateString
+      ) ||
+      dateFromString(
+        FALLBACK_EARLIEST_BOOKABLE_DATE
+      );
+
+
+    const bookingOpenNote =
+      document.getElementById(
+        'bookingOpenNote'
+      );
+
+
+    if(
+      earliestBookableDate >
+      todayDate
+    ){
+
+      bookingOpenNote.innerHTML =
+        '<strong>Bookings are currently open from ' +
+        longDate(
+          earliestBookableDate
+        ) +
+        '.</strong> Earlier wedding dates are not available to book.';
+
+    }
+    else{
+
+      bookingOpenNote.style.display =
+        'none';
+
+    }
+
+
+    const firstVisibleDate =
+      minimumCalendarDate();
+
+
+    viewYear =
+      firstVisibleDate
+        .getFullYear();
+
+
+    viewMonth =
+      firstVisibleDate
+        .getMonth();
+
+
+    blockedDates =
+      await fetchBlockedDates();
+
+
+    restoreSavedBooking();
+
+
+    renderCalendar();
+
+  }
+
+
+  initCalendar();
+
+
+  /* ============================================================
+     CONTINUE TO PACKAGE BUILDER
+     ============================================================ */
+
+  document
+    .getElementById(
+      'checkBtn'
+    )
+    .addEventListener(
+      'click',
+      async function(event){
+
+        event.preventDefault();
+
+
+        const venue =
+          document
+            .getElementById(
+              'cVenue'
+            )
+            .value
+            .trim();
+
+
+        const postcode =
+          document
+            .getElementById(
+              'cPostcode'
+            )
+            .value
+            .trim();
+
+
+        const date =
+          selectedDate;
+
+
+        const errorEl =
+          document.getElementById(
+            'formError'
+          );
+
+
+        const btn =
+          this;
+
+
+        if(
+          !venue ||
+          !postcode ||
+          !date
+        ){
+
+          errorEl.textContent =
+            'Please fill in venue name, postcode, and pick an available wedding date.';
+
+          errorEl.style.display =
+            'block';
+
+          return;
+
+        }
+
+
+        if(
+          date <
+          earliestBookableDateString
+        ){
+
+          errorEl.textContent =
+            `Bookings are currently only available from ${longDate(earliestBookableDate)}.`;
+
+          errorEl.style.display =
+            'block';
+
+          return;
+
+        }
+
+
+        if(
+          blockedDates.has(
+            date
+          )
+        ){
+
+          errorEl.textContent =
+            'That date is no longer available. Please choose another date.';
+
+          errorEl.style.display =
+            'block';
+
+          selectedDate =
+            null;
+
+          renderCalendar();
+
+          return;
+
+        }
+
+
+        errorEl.style.display =
+          'none';
+
+
+        if(
+          !feeReady
+        ){
+
+          btn.classList.add(
+            'loading'
+          );
+
+
+          btn.textContent =
+            'Checking…';
+
+
+          await updateAreaFee();
+
+
+          btn.classList.remove(
+            'loading'
+          );
+
+
+          btn.textContent =
+            'Create Your Package →';
+
+        }
+
+
+        if(
+          !postcodeValid
+        ){
+
+          document
+            .getElementById(
+              'postcodeField'
+            )
+            .scrollIntoView(
+              {
+                behavior:'smooth',
+                block:'center'
+              }
+            );
+
+          return;
+
+        }
+
+
+        /*
+          Store the validated date, venue and travel fee for booking.html.
+        */
+
+        sessionStorage.setItem(
+          'oggBooking',
+          JSON.stringify(
+            {
+              venueName:
+                venue,
+
+              venuePostcode:
+                postcode,
+
+              postcodeDistrict:
+                extractDistrict(
+                  postcode
+                ),
+
+              weddingDate:
+                date,
+
+              travelFee:
+                travelFee
+            }
+          )
+        );
+
+
+        const params =
+          new URLSearchParams(
+            window.location.search
+          );
+
+
+        const pkg =
+          params.get(
+            'package'
+          );
+
+
+        window.location.href =
+          pkg
+
+            ? (
+                'booking.html?package=' +
+                encodeURIComponent(
+                  pkg
+                )
+              )
+
+            : 'booking.html';
+
+      }
+    );
+
 </script>
+
 </body>
 </html>
