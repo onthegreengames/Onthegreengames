@@ -356,19 +356,22 @@
 <p class="step-sub">Just your name and email are needed to book.</p>
 
 <div class="field-row">
-<div class="field">
+<div class="field" id="firstNameField">
 <label>First name</label>
 <input autocomplete="given-name" id="fFirstName" placeholder="First name" type="text"/>
+<div class="field-error" id="firstNameError"></div>
 </div>
-<div class="field">
+<div class="field" id="lastNameField">
 <label>Last name</label>
 <input autocomplete="family-name" id="fLastName" placeholder="Last name" type="text"/>
+<div class="field-error" id="lastNameError"></div>
 </div>
 </div>
 
-<div class="field">
+<div class="field" id="emailField">
 <label>Email</label>
 <input autocomplete="email" id="fEmail" placeholder="you@email.com" type="email"/>
+<div class="field-error" id="emailError"></div>
 </div>
 
 <button aria-controls="fullDetailsPanel" aria-expanded="false" class="details-toggle" id="fullDetailsToggle" type="button">
@@ -426,17 +429,19 @@ You can add as much or as little information as you have now. Everything in this
 </div>
 </div>
 
-<div class="field">
+<div class="field" id="customerPostcodeField">
 <label>Postcode</label>
 <input autocomplete="postal-code" id="fCustomerPostcode" placeholder="e.g. CH1 2AB" type="text"/>
+<div class="field-error" id="customerPostcodeError"></div>
 </div>
 
 <div class="group-label">Wedding details</div>
 
 <div class="field-row">
-<div class="field">
+<div class="field" id="guestCountField">
 <label>Estimated number of guests</label>
 <input id="fGuestCount" min="0" placeholder="e.g. 100" step="1" type="number"/>
+<div class="field-error" id="guestCountError"></div>
 </div>
 <div class="field">
 <label>Preferred delivery / setup time</label>
@@ -598,6 +603,107 @@ You can add as much or as little information as you have now. Everything in this
     const currentlyOpen = fullDetailsToggle.getAttribute('aria-expanded') === 'true';
     fullDetailsToggle.setAttribute('aria-expanded', String(!currentlyOpen));
     fullDetailsPanel.hidden = currentlyOpen;
+  });
+
+  // ---- Field-level validation: inline errors + scroll-to-problem ----
+  function setFieldError(fieldId, errorId, msg){
+    const fieldEl = document.getElementById(fieldId);
+    const errEl = document.getElementById(errorId);
+    fieldEl.classList.add('has-error');
+    fieldEl.classList.remove('is-valid');
+    errEl.textContent = msg;
+    errEl.classList.add('show');
+  }
+
+  function clearFieldError(fieldId, errorId){
+    const fieldEl = document.getElementById(fieldId);
+    document.getElementById(errorId).classList.remove('show');
+    fieldEl.classList.remove('has-error');
+  }
+
+  // Fields that live inside the collapsible "fill out all details" panel.
+  // If one of these has an error, the panel needs opening before we can
+  // scroll to it, otherwise the error would be invisible.
+  const PANEL_FIELD_IDS = ['customerPostcodeField', 'guestCountField'];
+
+  function validateBookingForm(){
+    let firstProblemFieldId = null;
+
+    const firstName = document.getElementById('fFirstName').value.trim();
+    const lastName = document.getElementById('fLastName').value.trim();
+    const email = document.getElementById('fEmail').value.trim();
+    const customerPostcode = document.getElementById('fCustomerPostcode').value.trim();
+    const guestCountRaw = document.getElementById('fGuestCount').value;
+
+    if(!firstName){
+      setFieldError('firstNameField', 'firstNameError', 'Please enter your first name.');
+      firstProblemFieldId = firstProblemFieldId || 'firstNameField';
+    } else {
+      clearFieldError('firstNameField', 'firstNameError');
+    }
+
+    if(!lastName){
+      setFieldError('lastNameField', 'lastNameError', 'Please enter your last name.');
+      firstProblemFieldId = firstProblemFieldId || 'lastNameField';
+    } else {
+      clearFieldError('lastNameField', 'lastNameError');
+    }
+
+    if(!email){
+      setFieldError('emailField', 'emailError', 'Please add an email address so we can confirm your booking.');
+      firstProblemFieldId = firstProblemFieldId || 'emailField';
+    } else if(!/^\S+@\S+\.\S+$/.test(email)){
+      setFieldError('emailField', 'emailError', "That doesn't look like a valid email address.");
+      firstProblemFieldId = firstProblemFieldId || 'emailField';
+    } else {
+      clearFieldError('emailField', 'emailError');
+    }
+
+    if(customerPostcode){
+      const compact = customerPostcode.toUpperCase().replace(/\s+/g, '');
+      if(!/^[A-Z0-9]{5,7}$/.test(compact)){
+        setFieldError('customerPostcodeField', 'customerPostcodeError', 'Please check this postcode, or leave it blank for now.');
+        firstProblemFieldId = firstProblemFieldId || 'customerPostcodeField';
+      } else {
+        clearFieldError('customerPostcodeField', 'customerPostcodeError');
+      }
+    } else {
+      clearFieldError('customerPostcodeField', 'customerPostcodeError');
+    }
+
+    const guestCount = guestCountRaw === '' ? null : Number(guestCountRaw);
+    if(guestCount !== null && (!Number.isInteger(guestCount) || guestCount < 0)){
+      setFieldError('guestCountField', 'guestCountError', 'Please enter a valid number of guests.');
+      firstProblemFieldId = firstProblemFieldId || 'guestCountField';
+    } else {
+      clearFieldError('guestCountField', 'guestCountError');
+    }
+
+    if(firstProblemFieldId){
+      if(PANEL_FIELD_IDS.includes(firstProblemFieldId) && fullDetailsPanel.hidden){
+        fullDetailsToggle.setAttribute('aria-expanded', 'true');
+        fullDetailsPanel.hidden = false;
+      }
+      document.getElementById(firstProblemFieldId).scrollIntoView({ behavior:'smooth', block:'center' });
+      return false;
+    }
+    return true;
+  }
+
+  document.getElementById('fFirstName').addEventListener('input', function(){
+    if(this.value.trim()) clearFieldError('firstNameField', 'firstNameError');
+  });
+  document.getElementById('fLastName').addEventListener('input', function(){
+    if(this.value.trim()) clearFieldError('lastNameField', 'lastNameError');
+  });
+  document.getElementById('fEmail').addEventListener('input', function(){
+    if(this.value.trim()) clearFieldError('emailField', 'emailError');
+  });
+  document.getElementById('fCustomerPostcode').addEventListener('input', function(){
+    if(!this.value.trim()) clearFieldError('customerPostcodeField', 'customerPostcodeError');
+  });
+  document.getElementById('fGuestCount').addEventListener('input', function(){
+    clearFieldError('guestCountField', 'guestCountError');
   });
 
   let travelFee = 0;
@@ -1185,6 +1291,10 @@ You can add as much or as little information as you have now. Everything in this
       summaryError.textContent =
         'Full payment is required for bookings made less than 30 days before the wedding.';
       summaryError.classList.add('show');
+      return;
+    }
+
+    if(!activePendingBookingId && !validateBookingForm()){
       return;
     }
 
