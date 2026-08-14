@@ -34,4 +34,15 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
+
+  // Subtle shadow on the sticky nav once the page has actually scrolled,
+  // so it doesn't look like a flat bar sitting on top of the content.
+  var navWrap = document.querySelector('.nav-wrap');
+  if (navWrap) {
+    var toggleShadow = function () {
+      navWrap.classList.toggle('scrolled', window.scrollY > 4);
+    };
+    window.addEventListener('scroll', toggleShadow, { passive: true });
+    toggleShadow();
+  }
 });

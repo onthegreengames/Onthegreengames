@@ -96,6 +96,18 @@ nav{
   font-weight:500;
 }
 
+.nav-wrap{
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:var(--cream);
+  transition:box-shadow .2s ease;
+}
+
+.nav-wrap.scrolled{
+  box-shadow:0 8px 24px -16px rgba(27,42,32,0.28);
+}
+
 .nav-links a:not(.btn){
   color:var(--ink);
   opacity:0.8;
