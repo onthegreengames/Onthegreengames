@@ -1105,7 +1105,6 @@ details.faq-item p{
   display:grid;
   grid-template-columns:1.5fr 1fr;
   gap:40px;
-  align-items:start;
 }
 
 .builder-step{
