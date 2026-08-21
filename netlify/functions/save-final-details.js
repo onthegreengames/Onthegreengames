@@ -203,10 +203,6 @@ function normaliseDetails(input) {
     throw createError('Please provide valid delivery and collection times.');
   }
 
-  if (details.collection_time > '20:00') {
-    throw createError('The latest available collection time is 8pm.');
-  }
-
   if (details.collection_time <= details.delivery_time) {
     throw createError('Collection time must be later than the delivery/setup time.');
   }
