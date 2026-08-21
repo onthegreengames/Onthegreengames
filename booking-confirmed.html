@@ -15,7 +15,8 @@
   <meta name="robots" content="noindex,nofollow"/>
   <title>Booking Confirmed | On The Green Games</title>
 
-  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link rel="icon" type="image/png" href="/favicon.png">
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
   <link crossorigin href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="styles.css" rel="stylesheet"/>
@@ -154,35 +155,30 @@
 </head>
 <body>
   <div class="wrap nav-wrap">
-    <nav>
-      <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
-      <button aria-expanded="false" aria-label="Toggle menu" class="nav-toggle" id="navToggle" type="button">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="nav-links" id="navLinks">
-        <a href="index.html">Home</a>
-        <div class="nav-dropdown">
-          <button aria-expanded="false" class="nav-dropdown-trigger" id="exploreTrigger" type="button">Explore <span class="chev"></span></button>
-          <div class="mega-panel" id="explorePanel">
-            <a class="mega-item" href="mini-golf.html">
-              <div class="mega-item-title">Mini Golf</div>
-              <div class="mega-item-desc">9-hole wedding mini golf, delivered and set up for you.</div>
-            </a>
-            <a class="mega-item" href="giant-games.html">
-              <div class="mega-item-title">Giant Games</div>
-              <div class="mega-item-desc">Seven giant garden games available for all-day wedding hire.</div>
-            </a>
-            <a class="mega-item" href="gallery.html">
-              <div class="mega-item-title">Gallery</div>
-              <div class="mega-item-desc">Wedding mini golf and garden games setups in action.</div>
-            </a>
-          </div>
-        </div>
-        <a href="packages.html">Packages</a>
-        <a href="booking-info.html">Booking Info</a>
-      </div>
-    </nav>
-  </div>
+<nav>
+<a class="logo" href="/"><img src="/favicon.png" alt="On The Green Games" class="logo-image"> ON THE GREEN GAMES</a>
+<button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" type="button"><span></span><span></span><span></span></button>
+<div class="nav-links" id="navLinks">
+<a href="/">Home</a>
+<div class="nav-dropdown">
+<button class="nav-dropdown-trigger" id="exploreTrigger" aria-expanded="false" type="button">Explore <span class="chev"></span></button>
+<div class="mega-panel" id="explorePanel">
+<a href="/mini-golf" class="mega-item">
+<div class="mega-item-title">Mini Golf</div>
+<div class="mega-item-desc">9-hole wedding mini golf, delivered and set up for you.</div>
+</a>
+<a href="/giant-games" class="mega-item">
+<div class="mega-item-title">Giant Games</div>
+<div class="mega-item-desc">Seven giant garden games available for all-day wedding hire.</div>
+</a>
+</div>
+</div>
+<a href="/packages">Packages</a>
+<a href="/booking-info">FAQs</a>
+<a class="btn" href="/check-date">Check Your Date →</a>
+</div>
+</nav>
+</div>
 
   <main class="confirmation-page">
     <div class="wrap confirmation-shell">
@@ -234,8 +230,8 @@
 
           <div class="confirmation-actions">
             <a class="btn gold" href="#" id="payBalanceBtn" hidden>Pay remaining balance now →</a>
-            <a class="btn" href="index.html">Return home</a>
-            <a class="btn" href="booking-info.html">Booking information</a>
+            <a class="btn" href="/">Return home</a>
+            <a class="btn" href="/booking-info">FAQs</a>
           </div>
         </div>
 
@@ -247,7 +243,7 @@
           <div class="confirmation-status" style="margin-top:26px;">Your payment has not been lost or charged again. Keep this page open for a moment, or refresh it shortly.</div>
           <div class="confirmation-actions">
             <button class="btn gold" id="retryButton" type="button">Check again →</button>
-            <a class="btn" href="index.html">Return home</a>
+            <a class="btn" href="/">Return home</a>
           </div>
         </div>
 
@@ -258,7 +254,7 @@
           <div class="confirmation-status error" id="errorMessage" style="margin-top:26px;"></div>
           <div class="confirmation-actions">
             <button class="btn gold" id="errorRetryButton" type="button">Try again →</button>
-            <a class="btn" href="index.html">Return home</a>
+            <a class="btn" href="/">Return home</a>
           </div>
         </div>
       </div>
@@ -266,16 +262,20 @@
   </main>
 
   <footer>
-    <div class="wrap foot-row">
-      <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
-      <div class="foot-links">
-        <a href="index.html">Home</a>
-        <a href="packages.html">Packages</a>
-        <a href="booking-info.html">Booking Info</a>
-      </div>
-      <div class="foot-note">© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
-    </div>
-  </footer>
+<div class="wrap foot-row">
+<a class="logo" href="/"><img src="/favicon.png" alt="On The Green Games" class="logo-image"> ON THE GREEN GAMES</a>
+<div class="foot-links">
+<a href="/">Home</a>
+<a href="/mini-golf">Mini Golf</a>
+<a href="/giant-games">Giant Games</a>
+<a href="/packages">Packages</a>
+<a href="/booking-info">FAQs</a>
+<a href="/terms">Terms</a>
+<a href="/privacy">Privacy</a>
+</div>
+<div class="foot-note">Questions? <a href="mailto:bookings@onthegreengames.co.uk">bookings@onthegreengames.co.uk</a><br>© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
+</div>
+</footer>
 
   <script src="nav.js"></script>
   <script>

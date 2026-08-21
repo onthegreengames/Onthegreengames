@@ -14,15 +14,15 @@
 
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<meta content="Check your wedding date and venue postcode for mini golf and giant garden games hire, including live availability and any applicable travel fee." name="description"/>
+<meta content="Live availability & venue travel fee postcode for mini golf and giant garden games hire, including live availability and any applicable travel fee." name="description"/>
 <meta content="noindex,follow" name="robots"/>
-<link href="https://onthegreengames.co.uk/check-date.html" rel="canonical"/>
+<link href="https://onthegreengames.co.uk/check-date" rel="canonical"/>
 
 <meta content="website" property="og:type"/>
 <meta content="On The Green Games" property="og:site_name"/>
 <meta content="Check Wedding Games Hire Availability | On The Green Games" property="og:title"/>
 <meta content="Check your wedding date and venue postcode for mini golf and giant garden games hire, including live availability and any applicable travel fee." property="og:description"/>
-<meta content="https://onthegreengames.co.uk/check-date.html" property="og:url"/>
+<meta content="https://onthegreengames.co.uk/check-date" property="og:url"/>
 
 <meta content="summary" name="twitter:card"/>
 <meta content="Check Wedding Games Hire Availability | On The Green Games" name="twitter:title"/>
@@ -30,6 +30,7 @@
 
 <title>Check Wedding Games Hire Availability | On The Green Games</title>
 
+<link rel="icon" type="image/png" href="/favicon.png">
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -348,51 +349,26 @@
 
 <div class="wrap nav-wrap">
 <nav>
-<a class="logo" href="index.html">
-<span class="logo-mark"></span>
-ON THE GREEN GAMES
-</a>
-
-<button aria-expanded="false" aria-label="Toggle menu" class="nav-toggle" id="navToggle" type="button">
-<span></span>
-<span></span>
-<span></span>
-</button>
-
+<a class="logo" href="/"><img src="/favicon.png" alt="On The Green Games" class="logo-image"> ON THE GREEN GAMES</a>
+<button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" type="button"><span></span><span></span><span></span></button>
 <div class="nav-links" id="navLinks">
-
-<a href="index.html">Home</a>
-
+<a href="/">Home</a>
 <div class="nav-dropdown">
-
-<button aria-expanded="false" class="nav-dropdown-trigger" id="exploreTrigger" type="button">
-Explore <span class="chev"></span>
-</button>
-
+<button class="nav-dropdown-trigger" id="exploreTrigger" aria-expanded="false" type="button">Explore <span class="chev"></span></button>
 <div class="mega-panel" id="explorePanel">
-
-<a class="mega-item" href="mini-golf.html">
+<a href="/mini-golf" class="mega-item">
 <div class="mega-item-title">Mini Golf</div>
 <div class="mega-item-desc">9-hole wedding mini golf, delivered and set up for you.</div>
 </a>
-
-<a class="mega-item" href="giant-games.html">
+<a href="/giant-games" class="mega-item">
 <div class="mega-item-title">Giant Games</div>
 <div class="mega-item-desc">Seven giant garden games available for all-day wedding hire.</div>
 </a>
-
-<a class="mega-item" href="gallery.html">
-<div class="mega-item-title">Gallery</div>
-<div class="mega-item-desc">Wedding mini golf and garden games setups in action.</div>
-</a>
-
 </div>
 </div>
-
-<a href="packages.html">Packages</a>
-<a href="booking-info.html">Booking Info</a>
-<a class="btn" href="check-date.html">Check Availability →</a>
-
+<a href="/packages">Packages</a>
+<a href="/booking-info">FAQs</a>
+<a class="btn" href="/check-date">Check Your Date →</a>
 </div>
 </nav>
 </div>
@@ -405,17 +381,31 @@ Check your wedding date and venue
 </div>
 
 <h1>
-Check Wedding Mini Golf &amp; Garden Games Availability
+Check Your Wedding Date
 </h1>
 
 <p class="lede">
-Enter your wedding venue and date to check live availability and calculate any travel fee for the postcode. We regularly cover the North West, North Wales and the South Lakes, and can travel to wider areas such as Birmingham where the additional journey charge is practical. Nothing is booked at this stage; you will continue to the package builder next.
+See live availability and your exact venue travel charge instantly. Nothing is reserved at this stage; you’ll choose and customise your package next.
 </p>
 
 </div>
 
 
 <div class="wrap" style="padding-bottom:100px;">
+
+<div class="journey-progress" aria-label="Booking progress">
+  <span class="active">1. Date &amp; venue</span>
+  <span>2. Customise</span>
+  <span>3. Details &amp; payment</span>
+</div>
+
+<div class="selection-banner" id="selectedChoiceBanner">
+  <div>
+    <strong id="selectedChoiceTitle"></strong>
+    <span id="selectedChoiceMeta"></span>
+  </div>
+  <a id="selectedChoiceChange" href="/packages">Change selection</a>
+</div>
 
 <div class="check-wrap">
 
@@ -574,7 +564,7 @@ Travel fee for this area
 <span
 class="amount"
 id="checkMileageAmount">
-£0
+—
 </span>
 
 </div>
@@ -587,7 +577,7 @@ class="btn gold"
 href="#"
 id="checkBtn"
 style="width:100%; justify-content:center; margin-top:24px;">
-Create Your Package →
+Continue to Customise →
 </a>
 
 
@@ -604,36 +594,19 @@ Please fill in venue name, postcode and your wedding date first.
 
 
 <footer>
-
 <div class="wrap foot-row">
-
-<a class="logo" href="index.html">
-<span class="logo-mark"></span>
-ON THE GREEN GAMES
-</a>
-
+<a class="logo" href="/"><img src="/favicon.png" alt="On The Green Games" class="logo-image"> ON THE GREEN GAMES</a>
 <div class="foot-links">
-
-<a href="index.html">
-Home
-</a>
-
-<a href="packages.html">
-Packages
-</a>
-
-<a href="booking-info.html">
-Booking Info
-</a>
-
+<a href="/">Home</a>
+<a href="/mini-golf">Mini Golf</a>
+<a href="/giant-games">Giant Games</a>
+<a href="/packages">Packages</a>
+<a href="/booking-info">FAQs</a>
+<a href="/terms">Terms</a>
+<a href="/privacy">Privacy</a>
 </div>
-
-<div class="foot-note">
-© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.
+<div class="foot-note">Questions? <a href="mailto:bookings@onthegreengames.co.uk">bookings@onthegreengames.co.uk</a><br>© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
 </div>
-
-</div>
-
 </footer>
 
 
@@ -2090,6 +2063,45 @@ Booking Info
 
 
   /* ============================================================
+     SELECTED PRODUCT / PACKAGE FROM THE PAGE THE CUSTOMER USED
+     ============================================================ */
+
+  const CHECKER_SELECTIONS = {
+    par:    { title:'Par — Mini Golf + 3 Games', meta:'£550 before any applicable travel fee', change:'/packages' },
+    birdie: { title:'Birdie — Mini Golf + 5 Games', meta:'£650 before any applicable travel fee', change:'/packages' },
+    eagle:  { title:'Eagle — Mini Golf + 7 Games', meta:'£750 before any applicable travel fee', change:'/packages' },
+    games3: { title:'3 Games — Any 3 giant games', meta:'£200 before any applicable travel fee', change:'/giant-games' },
+    games5: { title:'5 Games — Any 5 giant games', meta:'£325 before any applicable travel fee', change:'/giant-games' },
+    games7: { title:'7 Games — All 7 giant games', meta:'£400 before any applicable travel fee', change:'/giant-games' }
+  };
+
+  function showSelectedChoice(){
+    const params = new URLSearchParams(window.location.search);
+    const packageKey = params.get('package');
+    const selectionKey = params.get('selection');
+
+    let selected = packageKey ? CHECKER_SELECTIONS[packageKey] : null;
+
+    if(!selected && selectionKey === 'minigolf'){
+      selected = {
+        title:'Mini Golf Only — 9-hole course',
+        meta:'£400 before any applicable travel fee',
+        change:'/mini-golf'
+      };
+    }
+
+    if(!selected) return;
+
+    document.getElementById('selectedChoiceTitle').textContent = selected.title;
+    document.getElementById('selectedChoiceMeta').textContent = selected.meta;
+    document.getElementById('selectedChoiceChange').href = selected.change;
+    document.getElementById('selectedChoiceBanner').classList.add('show');
+  }
+
+  showSelectedChoice();
+
+
+  /* ============================================================
      CONTINUE TO PACKAGE BUILDER
      ============================================================ */
 
@@ -2217,7 +2229,7 @@ Booking Info
 
 
           btn.textContent =
-            'Create Your Package →';
+            'Continue to Customise →';
 
         }
 
@@ -2282,17 +2294,34 @@ Booking Info
             'package'
           );
 
+        const selection =
+          params.get(
+            'selection'
+          );
+
+        const nextParams =
+          new URLSearchParams();
+
+        if(pkg){
+          nextParams.set(
+            'package',
+            pkg
+          );
+        }
+
+        if(selection){
+          nextParams.set(
+            'selection',
+            selection
+          );
+        }
+
+        const query =
+          nextParams.toString();
 
         window.location.href =
-          pkg
-
-            ? (
-                'booking.html?package=' +
-                encodeURIComponent(
-                  pkg
-                )
-              )
-
+          query
+            ? 'booking.html?' + query
             : 'booking.html';
 
       }

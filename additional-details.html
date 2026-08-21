@@ -8,7 +8,8 @@
   <meta name="description" content="Review and update the final wedding-day details for your On The Green Games booking."/>
   <title>Final Wedding Details | On The Green Games</title>
 
-  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link rel="icon" type="image/png" href="/favicon.png">
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <link href="styles.css" rel="stylesheet"/>
@@ -386,26 +387,36 @@
 </head>
 
 <body>
-  <div class="wrap">
-    <nav>
-      <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
-      <button aria-expanded="false" aria-label="Toggle menu" class="nav-toggle" id="navToggle" type="button">
-        <span></span><span></span><span></span>
-      </button>
-      <div class="nav-links" id="navLinks">
-        <a href="index.html">Home</a>
-        <a href="packages.html">Packages</a>
-        <a href="games.html">Games</a>
-        <a href="booking-info.html">Booking Info</a>
-        <a class="btn" href="check-date.html">Check Availability →</a>
-      </div>
-    </nav>
-  </div>
+  <div class="wrap nav-wrap">
+<nav>
+<a class="logo" href="/"><img src="/favicon.png" alt="On The Green Games" class="logo-image"> ON THE GREEN GAMES</a>
+<button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" type="button"><span></span><span></span><span></span></button>
+<div class="nav-links" id="navLinks">
+<a href="/">Home</a>
+<div class="nav-dropdown">
+<button class="nav-dropdown-trigger" id="exploreTrigger" aria-expanded="false" type="button">Explore <span class="chev"></span></button>
+<div class="mega-panel" id="explorePanel">
+<a href="/mini-golf" class="mega-item">
+<div class="mega-item-title">Mini Golf</div>
+<div class="mega-item-desc">9-hole wedding mini golf, delivered and set up for you.</div>
+</a>
+<a href="/giant-games" class="mega-item">
+<div class="mega-item-title">Giant Games</div>
+<div class="mega-item-desc">Seven giant garden games available for all-day wedding hire.</div>
+</a>
+</div>
+</div>
+<a href="/packages">Packages</a>
+<a href="/booking-info">FAQs</a>
+<a class="btn" href="/check-date">Check Your Date →</a>
+</div>
+</nav>
+</div>
 
   <div class="wrap page-hero">
     <div class="eyebrow">Your booking</div>
     <h1>Final Wedding Details</h1>
-    <p class="lede">Review the practical details for your wedding day and tell us everything we need for a smooth delivery, setup and collection.</p>
+    <p class="lede">Review the practical details for your wedding day and tell us everything we need for a smooth delivery, setup and collection. Collection arrangements are confirmed individually for each booking.</p>
   </div>
 
   <main class="wrap final-details-shell">
@@ -437,7 +448,7 @@
         <section class="section-block">
           <div class="section-label">Timings</div>
           <h2>When should we arrive?</h2>
-          <p class="section-intro">Confirm the delivery/setup and collection times agreed with your venue. Our latest collection time is 8pm.</p>
+          <p class="section-intro">Confirm your delivery/setup timing and the collection arrangement discussed for your booking. If collection is still being finalised, enter your preferred time and we’ll confirm it with you.</p>
 
           <div class="field-row">
             <div class="field">
@@ -446,8 +457,8 @@
             </div>
 
             <div class="field">
-              <label for="collectionTime">Collection time</label>
-              <input id="collectionTime" name="collection_time" type="time" max="20:00" required/>
+              <label for="collectionTime">Agreed / preferred collection time</label>
+              <input id="collectionTime" name="collection_time" type="time" required/>
             </div>
           </div>
         </section>
@@ -573,16 +584,20 @@
   </main>
 
   <footer>
-    <div class="wrap foot-row">
-      <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
-      <div class="foot-links">
-        <a href="index.html">Home</a>
-        <a href="packages.html">Packages</a>
-        <a href="booking-info.html">Booking Info</a>
-      </div>
-      <div class="foot-note">© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
-    </div>
-  </footer>
+<div class="wrap foot-row">
+<a class="logo" href="/"><img src="/favicon.png" alt="On The Green Games" class="logo-image"> ON THE GREEN GAMES</a>
+<div class="foot-links">
+<a href="/">Home</a>
+<a href="/mini-golf">Mini Golf</a>
+<a href="/giant-games">Giant Games</a>
+<a href="/packages">Packages</a>
+<a href="/booking-info">FAQs</a>
+<a href="/terms">Terms</a>
+<a href="/privacy">Privacy</a>
+</div>
+<div class="foot-note">Questions? <a href="mailto:bookings@onthegreengames.co.uk">bookings@onthegreengames.co.uk</a><br>© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
+</div>
+</footer>
 
   <script src="nav.js"></script>
   <script>
@@ -803,10 +818,6 @@
       function validate(details){
         if(!details.delivery_time || !details.collection_time){
           throw new Error('Please confirm both the delivery/setup time and collection time.');
-        }
-
-        if(details.collection_time > '20:00'){
-          throw new Error('The latest available collection time is 8pm.');
         }
 
         if(details.collection_time <= details.delivery_time){
