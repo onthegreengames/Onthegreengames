@@ -295,7 +295,7 @@ nav{
 /* ---------- PAGE HERO (secondary pages) ---------- */
 
 .page-hero{
-  padding:50px 0 60px;
+  padding:42px 0 44px;
 }
 
 .page-hero .eyebrow{
@@ -713,7 +713,7 @@ section{
 
 .final-cta{
   text-align:center;
-  padding:100px 0 110px;
+  padding:64px 0 72px;
 }
 
 .final-cta h2{
@@ -749,8 +749,8 @@ section{
 
 footer{
   border-top:1px solid var(--green-line);
-  padding:40px 0;
-  margin-top:20px;
+  padding:34px 0;
+  margin-top:0;
 }
 
 footer .foot-row{
@@ -1612,7 +1612,7 @@ details.faq-item p{
   /* ---------- PAGE HERO ---------- */
 
   .page-hero{
-    padding:36px 20px 46px;
+    padding:30px 20px 34px;
     width:100%;
     max-width:1180px;
   }
@@ -1788,7 +1788,7 @@ details.faq-item p{
   /* ---------- FINAL CTA ---------- */
 
   .final-cta{
-    padding:65px 20px 70px;
+    padding:46px 20px 52px;
   }
 
   .final-cta h2{
@@ -1870,7 +1870,7 @@ details.faq-item p{
    ============================================================ */
 
 .hero{
-  padding:56px 32px 86px;
+  padding:48px 32px 60px;
 }
 
 .hero-grid{
@@ -1913,7 +1913,39 @@ details.faq-item p{
 }
 
 .compact-section{
-  padding:64px 0;
+  padding:36px 0;
+}
+
+.compact-section .section-head{
+  margin-bottom:26px;
+}
+
+.coverage-head{
+  max-width:820px;
+  margin-bottom:0 !important;
+}
+
+.faq-groups{
+  display:grid;
+  gap:28px;
+}
+
+.faq-group-title{
+  font-size:30px;
+  line-height:1.15;
+  margin:0 0 18px;
+}
+
+.faq-group .eyebrow{
+  margin-bottom:10px;
+}
+
+.faq-legal-callout{
+  margin-top:28px;
+}
+
+.package-reassurance{
+  margin-top:18px;
 }
 
 .choice-grid{
@@ -1999,7 +2031,7 @@ details.faq-item p{
 }
 
 .online-booking-note{
-  margin-top:24px;
+  margin-top:18px;
   border:1px solid var(--green-line);
   background:rgba(255,253,246,0.6);
   border-radius:14px;
@@ -2382,7 +2414,7 @@ footer .foot-note a{
 
 @media (max-width:880px){
   .hero{
-    padding:36px 20px 58px;
+    padding:32px 20px 42px;
   }
 
   .hero-grid,
@@ -2409,7 +2441,24 @@ footer .foot-note a{
   }
 
   .compact-section{
-    padding:48px 0;
+    padding:28px 0;
+  }
+
+  .compact-section .section-head{
+    margin-bottom:20px;
+  }
+
+  .faq-groups{
+    gap:24px;
+  }
+
+  .faq-group-title{
+    font-size:26px;
+    margin-bottom:14px;
+  }
+
+  .faq-legal-callout{
+    margin-top:24px;
   }
 
   .trust-strip > div + div,

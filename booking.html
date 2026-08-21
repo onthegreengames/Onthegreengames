@@ -270,7 +270,7 @@
 <div class="wrap page-hero">
 <div class="eyebrow">Customise your wedding entertainment</div>
 <h1>Build Your Wedding Mini Golf &amp; Garden Games Package</h1>
-<p class="lede">Choose a package or build your own combination. Your selections, extras and venue travel fee update live, and you can amend the booking before the wedding with no amendment fees.</p>
+<p class="lede">Choose a package or build your own combination. Your selections, extras and venue travel fee update live as you build.</p>
 </div>
 <div class="wrap" id="build" style="padding-bottom:100px;">
 <div class="journey-progress" aria-label="Booking progress">
@@ -283,7 +283,7 @@
 <div class="builder-step">
 <div class="step-label">Start here</div>
 <h3>Choose your package</h3>
-<p class="step-sub">All-day hire, delivery, setup and collection are included. Collection arrangements are agreed for your booking based on your venue, travel time and wedding schedule, while any venue travel fee is shown separately.</p>
+<p class="step-sub">Choose a fixed package below, or switch to Build Your Own. Your venue travel fee is shown separately.</p>
 <div class="group-label">With mini golf</div>
 <div class="foundation-options" id="golfPackages">
 <label class="opt-card" data-value="par">
@@ -346,7 +346,7 @@
 <div class="builder-step" id="buildOwnStep">
 <div class="step-label">Build Your Own</div>
 <h3>Choose exactly what you want</h3>
-<p class="step-sub">Add nine-hole mini golf for £400 and any of our seven giant garden games for £70 each. All-day hire, delivery, setup and collection are included; package-saving prompts appear as you build, with any venue travel fee shown separately.</p>
+<p class="step-sub">Add nine-hole mini golf for £400 and any of our seven giant garden games for £70 each. We’ll prompt you if a fixed package would cost less.</p>
 <div class="package-incentive" id="packageIncentive">
 <span id="packageIncentiveText"></span>
 <button id="packageIncentiveButton" type="button"></button>
@@ -355,7 +355,7 @@
 <input id="customGolfToggle" type="checkbox"/>
 <span class="t-left">
 <h4>Add 9-hole mini golf — £400</h4>
-<p>Includes all-day hire, delivery, full setup, scorecards, pencils, putters, balls and collection.</p>
+<p>Includes the full 9-hole course and all playing equipment.</p>
 </span>
 <span class="switch"></span>
 </label>
@@ -587,7 +587,7 @@ You can add as much or as little information as you have now. Everything in this
 <a class="btn" href="#" id="payFullBtn">Book now &amp; pay in full <span class="payment-amount" id="fullButtonAmount">£0</span></a>
 <a class="btn gold" href="#" id="resumePaymentBtn" style="display:none;">Return to secure payment →</a>
 </div>
-<div class="summary-note" id="paymentSummaryNote">Pay securely through Stripe. A 25% deposit secures your date, with the remaining balance due 30 days before your wedding. You can also pay in full now. All-day hire is included, and your booking remains flexible before the wedding with no amendment fees.</div>
+<div class="summary-note" id="paymentSummaryNote">Pay securely through Stripe. A 25% deposit secures your date, with the remaining balance due 30 days before your wedding. You can also pay in full now.</div>
 <div class="summary-error" id="summaryError"></div>
 <div class="summary-success" id="summarySuccess"></div>
 </div>
@@ -840,12 +840,12 @@ You can add as much or as little information as you have now. Everything in this
       payDepositBtn.style.display = 'none';
       paymentChoiceLabel.textContent = 'Full payment required for this date';
       paymentSummaryNote.textContent =
-        'Your wedding is less than 30 days away, so full payment is required at booking. Pay securely through Stripe. All-day hire is included, and your booking remains flexible before the wedding with no amendment fees.';
+        'Your wedding is less than 30 days away, so full payment is required at booking. Pay securely through Stripe.';
     } else {
       payDepositBtn.style.display = '';
       paymentChoiceLabel.textContent = "Choose how you'd like to pay";
       paymentSummaryNote.textContent =
-        'Pay securely through Stripe. A 25% deposit secures your date, with the remaining balance due 30 days before your wedding. You can also pay in full now. All-day hire is included, and your booking remains flexible before the wedding with no amendment fees.';
+        'Pay securely through Stripe. A 25% deposit secures your date, with the remaining balance due 30 days before your wedding. You can also pay in full now.';
     }
 
     return shortNotice;
@@ -1017,6 +1017,20 @@ You can add as much or as little information as you have now. Everything in this
       }
       selectionComplete = includesMiniGolf || selectedGames.length > 0;
     }
+
+    // Keep the CURRENT product/package selection when the customer goes back
+    // to change their venue or date, rather than the selection they first arrived with.
+    const currentDateQuery = new URLSearchParams();
+    if(packageMode && packageKey){
+      currentDateQuery.set('package', packageKey);
+    } else if(includesMiniGolf && selectedGames.length === 0){
+      currentDateQuery.set('selection', 'minigolf');
+    }
+    const currentDateHref = '/check-date' + (currentDateQuery.toString() ? `?${currentDateQuery.toString()}` : '');
+    const currentChangeDateLink = document.getElementById('changeDateLink');
+    const currentCheckDateFirstLink = document.getElementById('checkDateFirstLink');
+    if(currentChangeDateLink) currentChangeDateLink.href = currentDateHref;
+    if(currentCheckDateFirstLink) currentCheckDateFirstLink.href = currentDateHref;
 
     updateHostAvailability(includesMiniGolf);
 
@@ -1464,18 +1478,6 @@ You can add as much or as little information as you have now. Everything in this
     packageInputs.forEach(input => { input.checked = false; });
     customGolfToggle.checked = true;
   }
-
-  // If the customer goes back to change the venue/date, keep the product or
-  // package they already chose so the journey still feels continuous.
-  const dateQuery = new URLSearchParams();
-  if(pkgParam && PACKAGES[pkgParam]) dateQuery.set('package', pkgParam);
-  if(selectionParam === 'minigolf') dateQuery.set('selection', 'minigolf');
-  const dateHref = '/check-date' + (dateQuery.toString() ? `?${dateQuery.toString()}` : '');
-
-  const changeDateLink = document.getElementById('changeDateLink');
-  const checkDateFirstLink = document.getElementById('checkDateFirstLink');
-  if(changeDateLink) changeDateLink.href = dateHref;
-  if(checkDateFirstLink) checkDateFirstLink.href = dateHref;
 
   recalc();
 
