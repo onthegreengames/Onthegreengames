@@ -182,6 +182,62 @@
     flex:none;
   }
 
+  /* ---- Mobile sticky price bar ---- */
+  .mobile-price-bar{
+    display:none;
+  }
+
+  @media (max-width:880px){
+    .mobile-price-bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      position:fixed;
+      left:0;
+      right:0;
+      bottom:0;
+      z-index:90;
+      background:var(--cream-card);
+      border-top:1px solid var(--green-line);
+      box-shadow:0 -12px 28px -18px rgba(27,42,32,0.35);
+      padding:14px 20px calc(14px + env(safe-area-inset-bottom, 0px));
+      transform:translateY(0);
+      transition:transform .2s ease;
+    }
+    .mobile-price-bar.mpb-hidden{
+      transform:translateY(110%);
+    }
+    .mpb-total{
+      display:flex;
+      flex-direction:column;
+      line-height:1.25;
+      min-width:0;
+    }
+    .mpb-label{
+      font-size:11.5px;
+      font-weight:600;
+      color:rgba(27,42,32,0.55);
+    }
+    .mpb-amount{
+      font-family:'Fraunces';
+      font-weight:600;
+      font-size:20px;
+      color:var(--green-deep);
+    }
+    .mpb-btn{
+      flex:none;
+      padding:12px 18px;
+      font-size:13.5px;
+      white-space:nowrap;
+    }
+    /* Leave room at the bottom of the page so the fixed bar never covers
+       the real summary card or the final page content underneath it. */
+    body{
+      padding-bottom:78px;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -538,6 +594,15 @@ You can add as much or as little information as you have now. Everything in this
 </div>
 </div>
 </div>
+
+<div class="mobile-price-bar" id="mobilePriceBar">
+  <div class="mpb-total">
+    <span class="mpb-label">Your total so far</span>
+    <span class="mpb-amount" id="mpbAmount">£0</span>
+  </div>
+  <a href="#summaryCard" class="btn gold mpb-btn" id="mpbBtn">Review &amp; pay →</a>
+</div>
+
 <footer>
 <div class="wrap foot-row">
 <a class="logo" href="index.html"><span class="logo-mark"></span> ON THE GREEN GAMES</a>
@@ -967,6 +1032,8 @@ You can add as much or as little information as you have now. Everything in this
     }
 
     document.getElementById('totalAmount').textContent = money(total);
+    const mpbAmount = document.getElementById('mpbAmount');
+    if(mpbAmount) mpbAmount.textContent = money(total);
     document.getElementById('summaryLines').innerHTML = lines.map(line =>
       `<div class="summary-line"><span>${line[0]}</span><span>${money(line[1])}</span></div>`
     ).join('');
@@ -1455,6 +1522,25 @@ You can add as much or as little information as you have now. Everything in this
       window.addEventListener('scroll', onScroll, { passive:true });
       window.addEventListener('resize', () => { measure(); onScroll(); });
       onScroll();
+    }
+  })();
+
+  // Mobile sticky price bar: only relevant below the 880px breakpoint where
+  // the real summary card stops being sticky. Hides itself once the real
+  // card (with the actual pay buttons) is genuinely on screen, so the
+  // customer is never looking at two totals stacked on top of each other.
+  (function(){
+    const bar = document.getElementById('mobilePriceBar');
+    const card = document.getElementById('summaryCard');
+    if(!bar || !card) return;
+
+    if('IntersectionObserver' in window){
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          bar.classList.toggle('mpb-hidden', entry.isIntersecting);
+        });
+      }, { threshold: 0.15 });
+      observer.observe(card);
     }
   })();
 </script>
