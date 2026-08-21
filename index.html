@@ -20,7 +20,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="styles.css" rel="stylesheet"/>
 <style>
-  .hero{ padding:56px 0 90px; }
+  .hero{ padding:56px 32px 90px; }
+  @media (max-width:880px){ .hero{ padding:36px 20px 60px; } }
   .hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center; }
   @media (max-width:880px){ .hero-grid{ grid-template-columns:1fr; } }
   .hero h1{ font-size:52px; line-height:1.08; }
