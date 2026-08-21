@@ -22,6 +22,7 @@
 <style>
   .hero{ padding:56px 0 90px; }
   .hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center; }
+  @media (max-width:880px){ .hero-grid{ grid-template-columns:1fr; } }
   .hero h1{ font-size:52px; line-height:1.08; }
   .hero p.lede{ font-size:17.5px; line-height:1.6; color:rgba(27,42,32,0.72); max-width:480px; margin:26px 0 34px; }
   @media (max-width:880px){ .hero h1{ font-size:34px; } }
