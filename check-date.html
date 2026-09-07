@@ -1330,96 +1330,82 @@ Please fill in venue name, postcode and your wedding date first.
     new Set();
 
 
-  async function fetchBlockedDates(){
+async function fetchBlockedDates(){
 
-    if(
-      !SUPABASE_CONFIGURED
-    ){
+  if(!SUPABASE_CONFIGURED){
+    return new Set(DEMO_BLOCKED_DATES);
+  }
 
-      return new Set(
-        DEMO_BLOCKED_DATES
+  try{
+
+    // Ask the safe public RPC for blocked dates only.
+    // No booking/customer information is exposed to the browser.
+    const startDate =
+      earliestBookableDateString;
+
+    const endDate = (() => {
+      const date = new Date(
+        earliestBookableDate.getFullYear(),
+        earliestBookableDate.getMonth() + 12,
+        0
       );
 
-    }
+      return fmtDate(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      );
+    })();
 
-
-    try{
-
-      const url =
-        `${SUPABASE_URL}/rest/v1/${BOOKINGS_TABLE}` +
-        `?select=${BOOKING_DATE_COLUMN}`;
-
-
-      const res =
-        await fetch(
-          url,
-          {
-            headers:{
-              apikey:
-                SUPABASE_ANON_KEY,
-
-              Authorization:
-                `Bearer ${SUPABASE_ANON_KEY}`
-            }
-          }
-        );
-
-
-      if(
-        !res.ok
-      ){
-
-        throw new Error(
-          `Supabase returned ${res.status}`
-        );
-
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/rpc/get_blocked_booking_dates`,
+      {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          p_start_date: startDate,
+          p_end_date: endDate
+        })
       }
+    );
 
-
-      const rows =
-        await res.json();
-
-
-      if(
-        !Array.isArray(
-          rows
-        )
-      ){
-
-        throw new Error(
-          'Invalid blocked-date response.'
-        );
-
-      }
-
-
-      return new Set(
-        rows
-          .map(
-            row =>
-              row[
-                BOOKING_DATE_COLUMN
-              ]
-          )
-          .filter(
-            Boolean
-          )
+    if(!res.ok){
+      throw new Error(
+        `Supabase returned ${res.status}`
       );
-
     }
-    catch(error){
 
-      console.warn(
-        'Could not load blocked dates.',
-        error
+    const rows = await res.json();
+
+    if(!Array.isArray(rows)){
+      throw new Error(
+        'Invalid blocked-date response.'
       );
-
-
-      return new Set();
-
     }
+
+    return new Set(
+      rows
+        .map(row => row?.event_date)
+        .filter(Boolean)
+    );
 
   }
+  catch(error){
+
+    console.warn(
+      'Could not load blocked dates.',
+      error
+    );
+
+    return new Set();
+
+  }
+
+}
 
 
   /* ============================================================
