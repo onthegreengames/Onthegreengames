@@ -87,22 +87,63 @@
   </div>
 </section>
 
+```html
 <footer>
-<div class="wrap foot-row">
-<a class="logo" href="/"><img src="/favicon.png" alt="On The Green Games" class="logo-image"> ON THE GREEN GAMES</a>
-<div class="foot-links">
-<a href="/">Home</a>
-<a href="/mini-golf">Mini Golf</a>
-<a href="/giant-games">Giant Games</a>
-<a href="/packages">Packages</a>
-<a href="/booking-info">FAQs</a>
-<a href="/terms">Terms</a>
-<a href="/privacy">Privacy</a>
-<button type="button" class="cookie-settings-link" data-cookie-settings>Cookie settings</button>
-</div>
-<div class="foot-note">Questions? <a href="mailto:bookings@onthegreengames.co.uk">bookings@onthegreengames.co.uk</a><br>© On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
-</div>
+  <div class="wrap foot-row">
+    <a class="logo" href="/">
+      <img src="/favicon.png" alt="On The Green Games" class="logo-image">
+      ON THE GREEN GAMES
+    </a>
+
+    <div class="foot-links">
+      <a href="/">Home</a>
+      <a href="/mini-golf">Mini Golf</a>
+      <a href="/giant-games">Giant Games</a>
+      <a href="/packages">Packages</a>
+      <a href="/booking-info">FAQs</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+      <button type="button" class="cookie-settings-link" data-cookie-settings>Cookie settings</button>
+    </div>
+
+    <div class="foot-note">
+      Questions? <a href="mailto:bookings@onthegreengames.co.uk">bookings@onthegreengames.co.uk</a>
+      <br>
+      <a href="tel:07906616629">07906 616629</a>
+    </div>
+
+    <div class="foot-business">
+      <span>On The Green Games</span> · Registered in England &amp; Wales
+      <br>
+      Business number: 17454123
+      <br>
+      Registered address: 24 Queens Drive, Helsby, WA6 0AZ
+    </div>
+
+    <div class="foot-note">
+      © On The Green Games. Wedding games hire across the North West, North Wales &amp; the South Lakes.
+      Wider UK coverage available.
+    </div>
+  </div>
 </footer>
+```
+
+I’ve also made the phone number clickable on mobile with `tel:`, while keeping the business information visually separate from the navigation and marketing text.
+
+One small CSS addition would make the new business-details block blend perfectly with the existing footer rather than relying on browser defaults:
+
+```css
+.foot-business {
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: inherit;
+  opacity: 0.85;
+  margin-top: 0.25rem;
+}
+```
+
+That gives you a footer hierarchy of **navigation → contact details → registered business details → copyright/service area**, which should look much cleaner than putting everything into one paragraph.
+
 <script src="/nav.js"></script>
 </body>
 </html>
