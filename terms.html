@@ -87,7 +87,6 @@
   </div>
 </section>
 
-```html
 <footer>
   <div class="wrap foot-row">
     <a class="logo" href="/">
@@ -126,23 +125,6 @@
     </div>
   </div>
 </footer>
-```
-
-I’ve also made the phone number clickable on mobile with `tel:`, while keeping the business information visually separate from the navigation and marketing text.
-
-One small CSS addition would make the new business-details block blend perfectly with the existing footer rather than relying on browser defaults:
-
-```css
-.foot-business {
-  font-size: 0.85rem;
-  line-height: 1.7;
-  color: inherit;
-  opacity: 0.85;
-  margin-top: 0.25rem;
-}
-```
-
-That gives you a footer hierarchy of **navigation → contact details → registered business details → copyright/service area**, which should look much cleaner than putting everything into one paragraph.
 
 <script src="/nav.js"></script>
 </body>
