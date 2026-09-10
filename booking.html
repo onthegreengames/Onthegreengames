@@ -77,6 +77,29 @@
     text-transform:uppercase; color:#fff; text-align:center;
   }
 
+  /* ---- Terms & marketing agreement checkboxes on the summary card ---- */
+  .booking-agreements{
+    display:flex; flex-direction:column; gap:11px; margin-top:16px;
+    padding-top:14px; border-top:1px solid var(--green-line);
+  }
+  .agree-row{
+    display:flex; align-items:flex-start; gap:9px;
+    font-size:12.5px; line-height:1.5; color:rgba(27,42,32,0.78);
+    cursor:pointer;
+  }
+  .agree-row input{
+    width:17px; height:17px; margin-top:1px; flex:none;
+  }
+  .agree-row a{
+    color:var(--green-deep); font-weight:600;
+    text-decoration:underline; text-underline-offset:2px;
+  }
+  .agree-error{
+    display:none; margin:-3px 0 0 26px;
+    font-size:12px; font-weight:600; color:#8f321f;
+  }
+  .agree-error.show{ display:block; }
+
   .details-toggle{
     width:100%;
     display:flex;
@@ -560,7 +583,7 @@ You can add as much or as little information as you have now. Everything in this
 <div class="group-label">Keep in touch</div>
 <label class="marketing-option">
 <input id="fMarketingOptIn" type="checkbox"/>
-<span>I'm happy for On The Green Games to occasionally send me news and offers by email.</span>
+<span>I'm happy for On The Green Games to occasionally send me news and offers by email. See our <a href="https://onthegreengames.co.uk/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</span>
 </label>
 
 </div>
@@ -576,6 +599,19 @@ You can add as much or as little information as you have now. Everything in this
 <span class="amount" id="totalAmount">£0</span>
 </div>
 <div class="summary-badge" id="packageBadge"></div>
+
+<div class="booking-agreements" id="bookingAgreements">
+<label class="agree-row" for="fAgreeTerms">
+<input id="fAgreeTerms" type="checkbox"/>
+<span>I have read and agree to the <a href="https://onthegreengames.co.uk/terms" rel="noopener" target="_blank">Terms &amp; Conditions</a>.</span>
+</label>
+<div class="agree-error" id="agreeTermsError">Please confirm you agree to the Terms &amp; Conditions before continuing.</div>
+<label class="agree-row" for="fAgreeMarketingSummary">
+<input id="fAgreeMarketingSummary" type="checkbox"/>
+<span>Keep me updated with occasional news and offers by email. See our <a href="https://onthegreengames.co.uk/privacy" rel="noopener" target="_blank">Privacy Policy</a>.</span>
+</label>
+</div>
+
 <div class="payment-choice-label" id="paymentChoiceLabel">Choose how you'd like to pay</div>
 <div class="payment-actions" id="paymentActions">
 <a class="btn gold" href="#" id="payDepositBtn">Book now &amp; pay 25% deposit <span class="payment-amount" id="depositButtonAmount">£0</span></a>
@@ -664,10 +700,31 @@ You can add as much or as little information as you have now. Everything in this
   const fullDetailsToggle = document.getElementById('fullDetailsToggle');
   const fullDetailsPanel = document.getElementById('fullDetailsPanel');
 
+  // Terms agreement (required) + marketing preference (optional), both shown
+  // on the summary card next to the pay buttons. The marketing checkbox here
+  // is kept in sync with the one in the full details panel so either one
+  // reflects the customer's actual choice, whichever they happened to tick.
+  const fAgreeTerms = document.getElementById('fAgreeTerms');
+  const agreeTermsError = document.getElementById('agreeTermsError');
+  const fAgreeMarketingSummary = document.getElementById('fAgreeMarketingSummary');
+  const fMarketingOptIn = document.getElementById('fMarketingOptIn');
+
   fullDetailsToggle.addEventListener('click', function(){
     const currentlyOpen = fullDetailsToggle.getAttribute('aria-expanded') === 'true';
     fullDetailsToggle.setAttribute('aria-expanded', String(!currentlyOpen));
     fullDetailsPanel.hidden = currentlyOpen;
+  });
+
+  fAgreeTerms.addEventListener('change', function(){
+    if(this.checked) agreeTermsError.classList.remove('show');
+    recalc();
+  });
+
+  fAgreeMarketingSummary.addEventListener('change', function(){
+    fMarketingOptIn.checked = this.checked;
+  });
+  fMarketingOptIn.addEventListener('change', function(){
+    fAgreeMarketingSummary.checked = this.checked;
   });
 
   // ---- Field-level validation: inline errors + scroll-to-problem ----
@@ -742,6 +799,13 @@ You can add as much or as little information as you have now. Everything in this
       firstProblemFieldId = firstProblemFieldId || 'guestCountField';
     } else {
       clearFieldError('guestCountField', 'guestCountError');
+    }
+
+    if(!fAgreeTerms.checked){
+      agreeTermsError.classList.add('show');
+      firstProblemFieldId = firstProblemFieldId || 'bookingAgreements';
+    } else {
+      agreeTermsError.classList.remove('show');
     }
 
     if(firstProblemFieldId){
@@ -1073,7 +1137,13 @@ You can add as much or as little information as you have now. Everything in this
     }
 
     const shortNotice = updatePaymentOptionsForDate();
-    const paymentDisabled = paymentCompleteReturn || (!activePendingBookingId && (!selectionComplete || !meetsMinimum || !bookingContext));
+
+    // Payment is blocked until the customer has ticked the Terms & Conditions
+    // agreement, regardless of anything else being ready.
+    const termsAgreed = fAgreeTerms.checked;
+
+    const paymentDisabled = paymentCompleteReturn || !termsAgreed ||
+      (!activePendingBookingId && (!selectionComplete || !meetsMinimum || !bookingContext));
 
     payFullBtn.classList.toggle('disabled', paymentDisabled);
     payFullBtn.setAttribute('aria-disabled', String(paymentDisabled));
@@ -1203,6 +1273,8 @@ You can add as much or as little information as you have now. Everything in this
           setup_notes:formData.setupNotes || null,
           weather_contingency:formData.weatherContingency || null,
           special_requests:formData.specialRequests || null,
+          terms_accepted:formData.termsAccepted,
+          terms_accepted_at:formData.termsAcceptedAt,
           source:'website'
         }
       })
@@ -1305,7 +1377,7 @@ You can add as much or as little information as you have now. Everything in this
     const setupNotes = document.getElementById('fSetupNotes').value.trim();
     const weatherContingency = document.getElementById('fWeatherContingency').value.trim();
     const specialRequests = document.getElementById('fSpecialRequests').value.trim();
-    const marketingOptIn = document.getElementById('fMarketingOptIn').checked;
+    const marketingOptIn = fMarketingOptIn.checked;
 
     const guestCount = guestCountRaw === '' ? null : Number(guestCountRaw);
 
@@ -1335,6 +1407,10 @@ You can add as much or as little information as you have now. Everything in this
       throw new Error('Please check your date and venue before booking.');
     }
 
+    if(!fAgreeTerms.checked){
+      throw new Error('Please confirm you agree to the Terms & Conditions before continuing.');
+    }
+
     return {
       firstName,
       lastName,
@@ -1358,7 +1434,9 @@ You can add as much or as little information as you have now. Everything in this
       setupNotes,
       weatherContingency,
       specialRequests,
-      marketingOptIn
+      marketingOptIn,
+      termsAccepted:true,
+      termsAcceptedAt:new Date().toISOString()
     };
   }
 
@@ -1367,6 +1445,12 @@ You can add as much or as little information as you have now. Everything in this
     summarySuccess.classList.remove('show');
 
     if(paymentCompleteReturn) return;
+
+    if(!activePendingBookingId && !fAgreeTerms.checked){
+      agreeTermsError.classList.add('show');
+      document.getElementById('bookingAgreements').scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
 
     if(paymentType === 'deposit' && isShortNoticeBooking()){
       summaryError.textContent =
