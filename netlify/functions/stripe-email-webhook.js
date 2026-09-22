@@ -350,9 +350,13 @@ function bookedItemsRows(data) {
       ? 'Included'
       : money(item.total_price);
 
+    const itemLabel = Number(item.quantity || 1) > 1
+      ? `${Number(item.quantity)} × ${item.product_name_snapshot}`
+      : item.product_name_snapshot;
+
     rows.push(`
       <tr>
-        <td style="padding:9px 0;border-bottom:1px solid #e9e4d8;">${escapeHtml(item.product_name_snapshot)}</td>
+        <td style="padding:9px 0;border-bottom:1px solid #e9e4d8;">${escapeHtml(itemLabel)}</td>
         <td style="padding:9px 0;border-bottom:1px solid #e9e4d8;text-align:right;">${amount}</td>
       </tr>`);
   });

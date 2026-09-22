@@ -303,102 +303,93 @@
 <div class="builder-step">
 <div class="step-label">Start here</div>
 <h3>Choose your package</h3>
-<p class="step-sub">Choose a ready-made games collection, our 3-hole mini golf package, or build your own combination.</p>
 <div class="group-label">Games collections</div>
-<div class="foundation-options two-col" id="gamesPackages">
+<div class="foundation-options" id="gamesPackages">
 <label class="opt-card" data-value="classic_collection">
 <input name="package" type="radio" value="classic_collection"/>
 <div class="opt-name">Classic Collection</div>
 <div class="opt-price">£200</div>
-<div class="opt-desc">All 4 Classic games. Mini golf can be added from £150.</div>
+<div class="opt-desc">All 4 Classic games.</div>
 </label>
 <label class="opt-card" data-value="the_mix">
 <input name="package" type="radio" value="the_mix"/>
 <div class="opt-name">The Mix</div>
 <div class="opt-price">£325</div>
-<div class="opt-desc">Choose 2 Premium + 2 Classic games. Mini golf can be added.</div>
+<div class="opt-desc">Choose 2 Premium + 2 Classic games.</div>
 </label>
 <label class="opt-card" data-value="premium_collection">
 <input name="package" type="radio" value="premium_collection"/>
 <div class="opt-name">Premium Collection</div>
 <div class="opt-price">£350</div>
-<div class="opt-desc">All 3 Premium games. Mini golf can be added from £150.</div>
+<div class="opt-desc">All 3 Premium games.</div>
 </label>
 <label class="opt-card" data-value="complete_collection">
 <input name="package" type="radio" value="complete_collection"/>
 <div class="opt-name">Complete Collection</div>
 <div class="opt-price">£475</div>
-<div class="opt-desc">All 7 games. Mini golf can be added from £150.</div>
+<div class="opt-desc">All 7 giant garden games.</div>
 </label>
 </div>
-<div class="group-label">Mini golf only</div>
+<div class="group-label">Mini golf</div>
 <div class="foundation-options" id="golfPackages">
 <label class="opt-card" data-value="mini_golf_3">
 <input name="package" type="radio" value="mini_golf_3"/>
 <div class="opt-name">3-Hole Mini Golf</div>
 <div class="opt-price">£400</div>
-<div class="opt-desc">All 3 portable mini golf holes with playing equipment.</div>
+<div class="opt-desc">3 portable mini-golf holes as a standalone hire.</div>
 </label>
 </div>
 <button class="build-own-link" id="buildOwnBtn" type="button">Build your own instead →</button>
 </div>
-
 <div class="builder-step" id="packageGamesStep" style="display:none;">
-<div class="step-label">Package games</div>
-<h3 id="packageGamesHeading">Your games</h3>
+<div class="step-label">Included games</div>
+<h3>Your games</h3>
 <p class="step-sub" id="gamesStepSub"></p>
 <div class="games-counter" id="gamesCounter"></div>
 <div id="gamesList">
-<div class="group-label">Premium games</div>
-<label class="game-row"><input class="package-game-cb" data-code="giant_connect_4" data-name="Giant Connect 4" data-tier="premium" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Connect 4</span></span></label>
-<label class="game-row"><input class="package-game-cb" data-code="giant_noughts_and_crosses" data-name="Giant Noughts &amp; Crosses" data-tier="premium" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Noughts &amp; Crosses</span></span></label>
-<label class="game-row"><input class="package-game-cb" data-code="cornhole" data-name="Cornhole" data-tier="premium" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Cornhole</span></span></label>
-<div class="group-label">Classic games</div>
-<label class="game-row"><input class="package-game-cb" data-code="giant_jenga" data-name="Giant Jenga" data-tier="classic" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Jenga</span></span></label>
-<label class="game-row"><input class="package-game-cb" data-code="wooden_ring_toss" data-name="Wooden Ring Toss" data-tier="classic" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Wooden Ring Toss</span></span></label>
-<label class="game-row"><input class="package-game-cb" data-code="giant_dominoes" data-name="Giant Dominoes" data-tier="classic" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Dominoes</span></span></label>
-<label class="game-row"><input class="package-game-cb" data-code="limbo" data-name="Limbo" data-tier="classic" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Limbo</span></span></label>
+<label class="game-row"><input class="package-game-cb" data-code="giant_connect_4" data-tier="premium" data-name="Giant Connect 4" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Connect 4</span></span><span class="game-price">Premium</span></label>
+<label class="game-row"><input class="package-game-cb" data-code="giant_noughts_and_crosses" data-tier="premium" data-name="Giant Noughts &amp; Crosses" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Noughts &amp; Crosses</span></span><span class="game-price">Premium</span></label>
+<label class="game-row"><input class="package-game-cb" data-code="cornhole" data-tier="premium" data-name="Cornhole" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Cornhole</span></span><span class="game-price">Premium</span></label>
+<label class="game-row"><input class="package-game-cb" data-code="giant_jenga" data-tier="classic" data-name="Giant Jenga" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Jenga</span></span><span class="game-price">Classic</span></label>
+<label class="game-row"><input class="package-game-cb" data-code="wooden_ring_toss" data-tier="classic" data-name="Wooden Ring Toss" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Wooden Ring Toss</span></span><span class="game-price">Classic</span></label>
+<label class="game-row"><input class="package-game-cb" data-code="giant_dominoes" data-tier="classic" data-name="Giant Dominoes" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Dominoes</span></span><span class="game-price">Classic</span></label>
+<label class="game-row"><input class="package-game-cb" data-code="limbo" data-tier="classic" data-name="Limbo" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Limbo</span></span><span class="game-price">Classic</span></label>
 </div>
 </div>
-
 <div class="builder-step" id="packageGolfStep" style="display:none;">
-<div class="step-label">Optional upgrade</div>
+<div class="step-label">Optional add-on</div>
 <h3>Add mini golf</h3>
-<p class="step-sub">Add 1, 2 or all 3 mini golf holes to any games collection.</p>
-<div class="radio-pair" id="packageGolfPair">
-<label class="radio-opt selected" data-value="0"><input name="packageGolfHoles" type="radio" value="0" checked/>Games only<br><small>+£0</small></label>
-<label class="radio-opt" data-value="1"><input name="packageGolfHoles" type="radio" value="1"/>1 hole<br><small>+£150</small></label>
-<label class="radio-opt" data-value="2"><input name="packageGolfHoles" type="radio" value="2"/>2 holes<br><small>+£275</small></label>
-<label class="radio-opt" data-value="3"><input name="packageGolfHoles" type="radio" value="3"/>3 holes<br><small>+£375</small></label>
+<p class="step-sub">Add 1, 2 or all 3 holes to any games collection.</p>
+<div class="foundation-options">
+<label class="opt-card"><input name="packageGolfHoles" type="radio" value="0" checked/><div class="opt-name">No mini golf</div><div class="opt-price">£0</div></label>
+<label class="opt-card"><input name="packageGolfHoles" type="radio" value="1"/><div class="opt-name">1 hole</div><div class="opt-price">+£150</div></label>
+<label class="opt-card"><input name="packageGolfHoles" type="radio" value="2"/><div class="opt-name">2 holes</div><div class="opt-price">+£275</div></label>
+<label class="opt-card"><input name="packageGolfHoles" type="radio" value="3"/><div class="opt-name">3 holes</div><div class="opt-price">+£375</div></label>
 </div>
 </div>
-
 <div class="builder-step" id="buildOwnStep">
 <div class="step-label">Build Your Own</div>
 <h3>Choose exactly what you want</h3>
-<p class="step-sub">Classic games are £50 each, Premium games are £125 each and mini golf is £200 per hole. Minimum order £300 before travel.</p>
 <div class="package-incentive" id="packageIncentive">
 <span id="packageIncentiveText"></span>
 <button id="packageIncentiveButton" type="button"></button>
 </div>
-<div class="group-label">Mini golf</div>
-<div class="radio-pair" id="customGolfPair">
-<label class="radio-opt selected" data-value="0"><input name="customGolfHoles" type="radio" value="0" checked/>No golf<br><small>£0</small></label>
-<label class="radio-opt" data-value="1"><input name="customGolfHoles" type="radio" value="1"/>1 hole<br><small>£200</small></label>
-<label class="radio-opt" data-value="2"><input name="customGolfHoles" type="radio" value="2"/>2 holes<br><small>£400</small></label>
-<label class="radio-opt" data-value="3"><input name="customGolfHoles" type="radio" value="3"/>3 holes<br><small>£600</small></label>
+<div class="group-label">Mini golf · £200 per hole</div>
+<div class="foundation-options" id="customGolfOptions">
+<label class="opt-card"><input name="customGolfHoles" type="radio" value="0" checked/><div class="opt-name">No mini golf</div><div class="opt-price">£0</div></label>
+<label class="opt-card"><input name="customGolfHoles" type="radio" value="1"/><div class="opt-name">1 hole</div><div class="opt-price">£200</div></label>
+<label class="opt-card"><input name="customGolfHoles" type="radio" value="2"/><div class="opt-name">2 holes</div><div class="opt-price">£400</div></label>
+<label class="opt-card"><input name="customGolfHoles" type="radio" value="3"/><div class="opt-name">3 holes</div><div class="opt-price">£600</div></label>
 </div>
 <div class="games-counter" id="customGamesCounter">0 games selected — £0</div>
 <div id="customGamesList">
-<div class="group-label">Premium games — £125 each</div>
-<label class="game-row"><input class="custom-game-cb" data-code="giant_connect_4" data-name="Giant Connect 4" data-price="125" data-tier="premium" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Connect 4</span></span><span class="g-price">£125</span></label>
-<label class="game-row"><input class="custom-game-cb" data-code="giant_noughts_and_crosses" data-name="Giant Noughts &amp; Crosses" data-price="125" data-tier="premium" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Noughts &amp; Crosses</span></span><span class="g-price">£125</span></label>
-<label class="game-row"><input class="custom-game-cb" data-code="cornhole" data-name="Cornhole" data-price="125" data-tier="premium" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Cornhole</span></span><span class="g-price">£125</span></label>
-<div class="group-label">Classic games — £50 each</div>
-<label class="game-row"><input class="custom-game-cb" data-code="giant_jenga" data-name="Giant Jenga" data-price="50" data-tier="classic" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Jenga</span></span><span class="g-price">£50</span></label>
-<label class="game-row"><input class="custom-game-cb" data-code="wooden_ring_toss" data-name="Wooden Ring Toss" data-price="50" data-tier="classic" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Wooden Ring Toss</span></span><span class="g-price">£50</span></label>
-<label class="game-row"><input class="custom-game-cb" data-code="giant_dominoes" data-name="Giant Dominoes" data-price="50" data-tier="classic" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Dominoes</span></span><span class="g-price">£50</span></label>
-<label class="game-row"><input class="custom-game-cb" data-code="limbo" data-name="Limbo" data-price="50" data-tier="classic" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Limbo</span></span><span class="g-price">£50</span></label>
+<label class="game-row"><input class="custom-game-cb" data-code="giant_connect_4" data-tier="premium" data-name="Giant Connect 4" data-price="125" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Connect 4</span></span><span class="game-price">£125</span></label>
+<label class="game-row"><input class="custom-game-cb" data-code="giant_noughts_and_crosses" data-tier="premium" data-name="Giant Noughts &amp; Crosses" data-price="125" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Noughts &amp; Crosses</span></span><span class="game-price">£125</span></label>
+<label class="game-row"><input class="custom-game-cb" data-code="cornhole" data-tier="premium" data-name="Cornhole" data-price="125" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Cornhole</span></span><span class="game-price">£125</span></label>
+<label class="game-row"><input class="custom-game-cb" data-code="giant_jenga" data-tier="classic" data-name="Giant Jenga" data-price="50" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Jenga</span></span><span class="game-price">£50</span></label>
+<label class="game-row"><input class="custom-game-cb" data-code="wooden_ring_toss" data-tier="classic" data-name="Wooden Ring Toss" data-price="50" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Wooden Ring Toss</span></span><span class="game-price">£50</span></label>
+<label class="game-row"><input class="custom-game-cb" data-code="giant_dominoes" data-tier="classic" data-name="Giant Dominoes" data-price="50" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Giant Dominoes</span></span><span class="game-price">£50</span></label>
+<label class="game-row"><input class="custom-game-cb" data-code="limbo" data-tier="classic" data-name="Limbo" data-price="50" type="checkbox"/><span class="g-left"><span class="checkbox"></span><span class="g-name">Limbo</span></span><span class="game-price">£50</span></label>
 </div>
 </div>
 <div class="builder-step" id="dateRecapStep" style="display:none;">
@@ -572,7 +563,7 @@ You can add as much or as little information as you have now. Everything in this
 <div class="field">
 <label>Wet weather / backup plan</label>
 <textarea id="fWeatherContingency" placeholder="If you're planning an outdoor setup, let us know if your venue has an indoor backup space or any other wet weather arrangements..." rows="3"></textarea>
-<p class="field-help">If you are planning an outdoor setup, please tell us about any suitable indoor or covered backup space. We will agree the setup and collection arrangements with you before the wedding and adapt where practical and safe.</p>
+<p class="field-help">The setup location is agreed for your booking and normally remains in place for the hire, so please tell us about any suitable indoor backup space if you are planning an outdoor setup.</p>
 </div>
 
 <div class="field">
@@ -652,89 +643,72 @@ You can add as much or as little information as you have now. Everything in this
 </footer>
 <script src="nav.js"></script>
 <script>
-  const GAME_CODES = {
-    premium: [
-      'giant_connect_4',
-      'giant_noughts_and_crosses',
-      'cornhole'
-    ],
-    classic: [
-      'giant_jenga',
-      'wooden_ring_toss',
-      'giant_dominoes',
-      'limbo'
-    ]
-  };
-
   const PACKAGES = {
     classic_collection: {
       label:'Classic Collection',
       price:200,
-      classicCount:4,
-      premiumCount:0,
-      fixedGames:[...GAME_CODES.classic],
+      games:4,
+      premium:0,
+      classic:4,
+      fixedGames:true,
       allowsGolf:true
     },
     the_mix: {
       label:'The Mix',
       price:325,
-      classicCount:2,
-      premiumCount:2,
-      fixedGames:null,
+      games:4,
+      premium:2,
+      classic:2,
+      fixedGames:false,
       allowsGolf:true
     },
     premium_collection: {
       label:'Premium Collection',
       price:350,
-      classicCount:0,
-      premiumCount:3,
-      fixedGames:[...GAME_CODES.premium],
+      games:3,
+      premium:3,
+      classic:0,
+      fixedGames:true,
       allowsGolf:true
     },
     complete_collection: {
       label:'Complete Collection',
       price:475,
-      classicCount:4,
-      premiumCount:3,
-      fixedGames:[...GAME_CODES.premium, ...GAME_CODES.classic],
+      games:7,
+      premium:3,
+      classic:4,
+      fixedGames:true,
       allowsGolf:true
     },
     mini_golf_3: {
       label:'3-Hole Mini Golf',
       price:400,
-      classicCount:0,
-      premiumCount:0,
-      fixedGames:[],
-      allowsGolf:false,
-      fixedGolfHoles:3
+      games:0,
+      premium:0,
+      classic:0,
+      fixedGames:true,
+      golfHoles:3,
+      allowsGolf:false
     }
   };
 
-  const PACKAGE_GOLF_ADDONS = {
-    0:0,
-    1:150,
-    2:275,
-    3:375
-  };
-
-  const BYO_GOLF_PER_HOLE = 200;
+  const PACKAGE_GOLF_PRICES = { 0:0, 1:150, 2:275, 3:375 };
   const CLASSIC_GAME_PRICE = 50;
   const PREMIUM_GAME_PRICE = 125;
+  const CUSTOM_GOLF_HOLE_PRICE = 200;
   const MIN_SPEND = 300;
 
-  // Browser totals are for UX only. create-booking-v3 recalculates and validates
-  // the selection in Supabase before a booking is written.
+  // The server/database remains authoritative. Browser calculations are only
+  // for the live customer summary and are revalidated by create_booking_v3.
   const BOOKING_FUNCTION_URL = '/.netlify/functions/create-booking-v3';
   const CHECKOUT_FUNCTION_URL = '/.netlify/functions/create-checkout-session';
 
   const packageGames = Array.from(document.querySelectorAll('.package-game-cb'));
   const customGames = Array.from(document.querySelectorAll('.custom-game-cb'));
   const packageInputs = Array.from(document.querySelectorAll('input[name="package"]'));
-  const packageCards = Array.from(document.querySelectorAll('.opt-card[data-value]'));
+  const packageCards = Array.from(document.querySelectorAll('input[name="package"]')).map(input => input.closest('.opt-card'));
   const packageGolfInputs = Array.from(document.querySelectorAll('input[name="packageGolfHoles"]'));
-  const packageGolfOpts = Array.from(document.querySelectorAll('#packageGolfPair .radio-opt'));
   const customGolfInputs = Array.from(document.querySelectorAll('input[name="customGolfHoles"]'));
-  const customGolfOpts = Array.from(document.querySelectorAll('#customGolfPair .radio-opt'));
   const setupOpts = Array.from(document.querySelectorAll('#setupPair .radio-opt'));
   const payDepositBtn = document.getElementById('payDepositBtn');
   const payFullBtn = document.getElementById('payFullBtn');
@@ -921,17 +895,9 @@ You can add as much or as little information as you have now. Everything in this
     return checked ? Number(checked.value) : 0;
   }
 
-  function packageGolfHoles(){
-    return selectedRadioNumber(packageGolfInputs);
-  }
-
-  function customGolfHoles(){
-    return selectedRadioNumber(customGolfInputs);
-  }
-
   function money(value){
     return '£' + Number(value).toLocaleString('en-GB', {
-      minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+      minimumFractionDigits: Number.isInteger(Number(value)) ? 0 : 2,
       maximumFractionDigits: 2
     });
   }
@@ -941,18 +907,8 @@ You can add as much or as little information as you have now. Everything in this
     if(!match) return null;
 
     const now = new Date();
-    const todayUtc = Date.UTC(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate()
-    );
-
-    const eventUtc = Date.UTC(
-      Number(match[1]),
-      Number(match[2]) - 1,
-      Number(match[3])
-    );
-
+    const todayUtc = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+    const eventUtc = Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
     return Math.round((eventUtc - todayUtc) / 86400000);
   }
 
@@ -981,19 +937,9 @@ You can add as much or as little information as you have now. Everything in this
   }
 
   function updateCardStyles(){
-    packageCards.forEach(card => {
-      const input = card.querySelector('input[name="package"]');
-      if(input) card.classList.toggle('selected', input.checked);
-    });
-
-    packageGolfOpts.forEach(card => {
-      const input = card.querySelector('input');
-      card.classList.toggle('selected', input.checked);
-    });
-
-    customGolfOpts.forEach(card => {
-      const input = card.querySelector('input');
-      card.classList.toggle('selected', input.checked);
+    document.querySelectorAll('.opt-card').forEach(card => {
+      const input = card.querySelector('input[type="radio"], input[type="checkbox"]');
+      if(input) card.classList.toggle('selected', Boolean(input.checked));
     });
 
     setupOpts.forEach(card => {
@@ -1002,203 +948,168 @@ You can add as much or as little information as you have now. Everything in this
     });
   }
 
-  function choosePackage(packageKey, golfHoles = null){
+  function choosePackage(packageKey){
     const input = document.querySelector(`input[name="package"][value="${packageKey}"]`);
     if(!input) return;
     input.checked = true;
-    preparePackageSelection(packageKey);
-
-    const pkg = PACKAGES[packageKey];
-    if(golfHoles !== null && pkg && !pkg.fixedGolfHoles){
-      packageGolfInputs.forEach(golfInput => {
-        golfInput.checked = Number(golfInput.value) === Number(golfHoles);
-      });
-    }
-
     recalc();
     document.querySelector('.builder-step').scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
   function switchToBuildOwn(){
     packageInputs.forEach(input => { input.checked = false; });
-    packageGames.forEach(game => {
-      game.checked = false;
-      game.disabled = false;
-      game.closest('.game-row').classList.remove('disabled');
-      game.closest('.game-row').style.display = '';
-    });
     recalc();
     buildOwnStep.scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
-  function preparePackageSelection(packageKey){
-    const pkg = PACKAGES[packageKey];
-    if(!pkg) return;
+  function packageGolfHoles(){
+    return selectedRadioNumber(packageGolfInputs);
+  }
 
+  function customGolfHoles(){
+    return selectedRadioNumber(customGolfInputs);
+  }
+
+  function resetPackageGameState(){
     packageGames.forEach(game => {
-      const fixed = Array.isArray(pkg.fixedGames);
-      const shouldInclude = fixed && pkg.fixedGames.includes(game.dataset.code);
-
-      game.checked = shouldInclude;
-      game.disabled = fixed;
-      game.closest('.game-row').classList.toggle('disabled', fixed && !shouldInclude);
-      game.closest('.game-row').style.display = '';
+      game.checked = false;
+      game.disabled = false;
+      game.closest('.game-row')?.classList.remove('disabled');
     });
-
-    // Keep the customer's chosen golf upgrade when switching between games
-    // collections, but the mini-golf-only package always owns exactly 3 holes.
-    if(pkg.fixedGolfHoles){
-      packageGolfInputs.forEach(input => {
-        input.checked = Number(input.value) === pkg.fixedGolfHoles;
-      });
-    }
   }
 
   function updatePackageGamesUI(pkg){
-    if(pkg.fixedGolfHoles){
-      packageGamesStep.style.display = 'none';
-      return { selected:[], complete:true, classicCount:0, premiumCount:0 };
+    if(!pkg || pkg.games === 0){
+      resetPackageGameState();
+      return [];
     }
 
-    packageGamesStep.style.display = 'block';
-
-    const fixed = Array.isArray(pkg.fixedGames);
-
-    if(fixed){
-      packageGames.forEach(game => {
-        const shouldInclude = pkg.fixedGames.includes(game.dataset.code);
-        game.checked = shouldInclude;
-        game.disabled = true;
-        game.closest('.game-row').classList.toggle('disabled', !shouldInclude);
-      });
-    }
-
-    let selected = packageGames.filter(game => game.checked);
-    const classicCount = selected.filter(game => game.dataset.tier === 'classic').length;
-    const premiumCount = selected.filter(game => game.dataset.tier === 'premium').length;
-
-    if(!fixed){
+    if(pkg.fixedGames){
       packageGames.forEach(game => {
         const tier = game.dataset.tier;
-        const selectedInTier = tier === 'classic' ? classicCount : premiumCount;
-        const limit = tier === 'classic' ? pkg.classicCount : pkg.premiumCount;
-        const shouldDisable = !game.checked && selectedInTier >= limit;
-        game.disabled = shouldDisable;
-        game.closest('.game-row').classList.toggle('disabled', shouldDisable);
+        const shouldInclude =
+          (pkg.premium > 0 && tier === 'premium') ||
+          (pkg.classic > 0 && tier === 'classic');
+
+        game.checked = shouldInclude;
+        game.disabled = true;
+        game.closest('.game-row')?.classList.toggle('disabled', !shouldInclude);
       });
+
+      const selected = packageGames.filter(game => game.checked);
+      document.getElementById('gamesStepSub').textContent =
+        `${pkg.label} includes ${pkg.games === 7 ? 'all 7 games' : `all ${pkg.games} ${pkg.premium ? 'Premium' : 'Classic'} games`}.`;
+
+      const counter = document.getElementById('gamesCounter');
+      counter.textContent = `${selected.length} of ${pkg.games} included`;
+      counter.classList.add('complete');
+      return selected;
     }
 
-    selected = packageGames.filter(game => game.checked);
+    // The Mix: exactly 2 Premium + 2 Classic.
+    packageGames.forEach(game => { game.disabled = false; });
 
-    const finalClassicCount = selected.filter(game => game.dataset.tier === 'classic').length;
-    const finalPremiumCount = selected.filter(game => game.dataset.tier === 'premium').length;
+    const selectedPremium = packageGames.filter(game => game.checked && game.dataset.tier === 'premium');
+    const selectedClassic = packageGames.filter(game => game.checked && game.dataset.tier === 'classic');
 
-    const complete =
-      finalClassicCount === pkg.classicCount &&
-      finalPremiumCount === pkg.premiumCount;
+    if(selectedPremium.length > pkg.premium){
+      selectedPremium.slice(pkg.premium).forEach(game => { game.checked = false; });
+    }
+    if(selectedClassic.length > pkg.classic){
+      selectedClassic.slice(pkg.classic).forEach(game => { game.checked = false; });
+    }
+
+    const premiumNow = packageGames.filter(game => game.checked && game.dataset.tier === 'premium');
+    const classicNow = packageGames.filter(game => game.checked && game.dataset.tier === 'classic');
+
+    packageGames.forEach(game => {
+      const tierLimitReached = game.dataset.tier === 'premium'
+        ? premiumNow.length >= pkg.premium
+        : classicNow.length >= pkg.classic;
+      const shouldDisable = !game.checked && tierLimitReached;
+      game.disabled = shouldDisable;
+      game.closest('.game-row')?.classList.toggle('disabled', shouldDisable);
+    });
+
+    document.getElementById('gamesStepSub').textContent =
+      'Choose exactly 2 Premium games and 2 Classic games.';
 
     const counter = document.getElementById('gamesCounter');
-    counter.textContent = pkg.label === 'The Mix'
-      ? `Premium ${finalPremiumCount} of ${pkg.premiumCount} • Classic ${finalClassicCount} of ${pkg.classicCount}`
-      : `${selected.length} game${selected.length === 1 ? '' : 's'} included`;
+    counter.textContent = `${premiumNow.length} of 2 Premium · ${classicNow.length} of 2 Classic`;
+    const complete = premiumNow.length === 2 && classicNow.length === 2;
     counter.classList.toggle('complete', complete);
 
-    if(pkg.label === 'The Mix'){
-      document.getElementById('gamesStepSub').textContent =
-        'Choose exactly 2 Premium games and 2 Classic games.';
-    } else {
-      document.getElementById('gamesStepSub').textContent =
-        `These ${selected.length} games are included in the ${pkg.label}.`;
-    }
+    return packageGames.filter(game => game.checked);
+  }
+
+  function customGameTotals(selected){
+    let classic = 0;
+    let premium = 0;
+
+    selected.forEach(game => {
+      if(game.dataset.tier === 'premium') premium += 1;
+      else classic += 1;
+    });
 
     return {
-      selected,
-      complete,
-      classicCount:finalClassicCount,
-      premiumCount:finalPremiumCount
+      classic,
+      premium,
+      price: classic * CLASSIC_GAME_PRICE + premium * PREMIUM_GAME_PRICE
     };
   }
 
-  function gamePrice(game){
-    return game.dataset.tier === 'premium'
-      ? PREMIUM_GAME_PRICE
-      : CLASSIC_GAME_PRICE;
-  }
+  function exactPackageRecommendation(selected, golfHoles){
+    const totals = customGameTotals(selected);
+    const byoSubtotal = totals.price + golfHoles * CUSTOM_GOLF_HOLE_PRICE;
 
-  function updateCustomUI(){
-    const selected = customGames.filter(game => game.checked);
-    const gamesTotal = selected.reduce((sum, game) => sum + gamePrice(game), 0);
-    const counter = document.getElementById('customGamesCounter');
-    counter.textContent = `${selected.length} game${selected.length === 1 ? '' : 's'} selected — ${money(gamesTotal)}`;
-    counter.classList.toggle('complete', selected.length > 0);
-
-    return selected;
-  }
-
-  function packageTotalForGolf(pkg, golfHoles){
-    if(pkg.fixedGolfHoles){
-      return pkg.price;
-    }
-    return pkg.price + (PACKAGE_GOLF_ADDONS[golfHoles] || 0);
-  }
-
-  function getCustomRecommendation(selectedGames, golfHoles, byoSubtotal){
-    const selectedCodes = new Set(selectedGames.map(game => game.dataset.code));
-    const classicCount = selectedGames.filter(game => game.dataset.tier === 'classic').length;
-    const premiumCount = selectedGames.filter(game => game.dataset.tier === 'premium').length;
-
-    if(selectedGames.length === 0 && golfHoles >= 2){
-      if(golfHoles === 2){
-        return {
-          key:'mini_golf_3',
-          text:'Choose 3-Hole Mini Golf and get all 3 holes for the same £400.',
-          golfHoles:3
-        };
-      }
-
-      if(golfHoles === 3){
-        return {
-          key:'mini_golf_3',
-          text:'Switch to 3-Hole Mini Golf and save £200.',
-          golfHoles:3
-        };
-      }
+    if(selected.length === 0 && golfHoles === 3){
+      return {
+        key:'mini_golf_3',
+        saving: byoSubtotal - PACKAGES.mini_golf_3.price
+      };
     }
 
-    const candidateKeys = [
+    const candidates = [
       'classic_collection',
       'the_mix',
       'premium_collection',
       'complete_collection'
     ];
 
-    for(const key of candidateKeys){
+    for(const key of candidates){
       const pkg = PACKAGES[key];
-      let matches = false;
+      if(totals.classic !== pkg.classic || totals.premium !== pkg.premium) continue;
 
-      if(key === 'the_mix'){
-        matches = classicCount === 2 && premiumCount === 2;
-      } else if(Array.isArray(pkg.fixedGames)){
-        matches =
-          selectedCodes.size === pkg.fixedGames.length &&
-          pkg.fixedGames.every(code => selectedCodes.has(code));
-      }
-
-      if(!matches) continue;
-
-      const packageTotal = packageTotalForGolf(pkg, golfHoles);
-      const saving = byoSubtotal - packageTotal;
-
-      if(saving > 0){
-        return {
-          key,
-          text:`Switch to the ${pkg.label} and save ${money(saving)}.`,
-          golfHoles
-        };
-      }
+      const packageSubtotal = pkg.price + (PACKAGE_GOLF_PRICES[golfHoles] || 0);
+      const saving = byoSubtotal - packageSubtotal;
+      if(saving > 0) return { key, saving };
     }
 
     return null;
+  }
+
+  function updateCustomUI(){
+    const selected = customGames.filter(game => game.checked);
+    const totals = customGameTotals(selected);
+    const golfHoles = customGolfHoles();
+    const counter = document.getElementById('customGamesCounter');
+
+    counter.textContent = `${selected.length} game${selected.length === 1 ? '' : 's'} selected — ${money(totals.price)}`;
+    counter.classList.toggle('complete', selected.length > 0);
+
+    const recommendation = exactPackageRecommendation(selected, golfHoles);
+    if(recommendation){
+      incentiveText.textContent =
+        `The ${PACKAGES[recommendation.key].label} gives you this selection for ${money(recommendation.saving)} less.`;
+      incentiveButton.textContent = `Choose ${PACKAGES[recommendation.key].label}`;
+      incentiveButton.dataset.package = recommendation.key;
+      incentiveEl.classList.add('show');
+    } else {
+      incentiveEl.classList.remove('show');
+      incentiveButton.dataset.package = '';
+    }
+
+    return selected;
   }
 
   function recalc(){
@@ -1210,6 +1121,8 @@ You can add as much or as little information as you have now. Everything in this
     const pkg = packageKey ? PACKAGES[packageKey] : null;
     const packageMode = Boolean(pkg);
 
+    packageGamesStep.style.display = packageMode && pkg.games > 0 ? 'block' : 'none';
+    packageGolfStep.style.display = packageMode && pkg.allowsGolf ? 'block' : 'none';
     buildOwnStep.style.display = packageMode ? 'none' : 'block';
     buildOwnBtn.style.display = packageMode ? 'inline-flex' : 'none';
 
@@ -1220,81 +1133,60 @@ You can add as much or as little information as you have now. Everything in this
     let selectionComplete = false;
 
     if(packageMode){
-      const packageGameState = updatePackageGamesUI(pkg);
-      selectedGames = packageGameState.selected;
-      selectionComplete = packageGameState.complete;
+      selectedGames = updatePackageGamesUI(pkg);
+      miniGolfHoles = pkg.golfHoles || (pkg.allowsGolf ? packageGolfHoles() : 0);
+      subtotal = pkg.price;
+      lines.push([pkg.label, pkg.price]);
 
-      if(pkg.fixedGolfHoles){
-        miniGolfHoles = pkg.fixedGolfHoles;
-        packageGolfStep.style.display = 'none';
-        subtotal = pkg.price;
-        lines.push([pkg.label, pkg.price]);
+      if(pkg.allowsGolf && miniGolfHoles > 0){
+        const golfPrice = PACKAGE_GOLF_PRICES[miniGolfHoles] || 0;
+        subtotal += golfPrice;
+        lines.push([`${miniGolfHoles} mini golf hole${miniGolfHoles === 1 ? '' : 's'}`, golfPrice]);
+      }
+
+      if(pkg.games === 0){
+        selectionComplete = miniGolfHoles === 3;
+      } else if(pkg.fixedGames){
+        selectionComplete = selectedGames.length === pkg.games;
       } else {
-        packageGolfStep.style.display = 'block';
-        miniGolfHoles = packageGolfHoles();
-        const golfAddon = PACKAGE_GOLF_ADDONS[miniGolfHoles] || 0;
-        subtotal = pkg.price + golfAddon;
-        lines.push([pkg.label, pkg.price]);
-        if(miniGolfHoles > 0){
-          lines.push([
-            `${miniGolfHoles} mini golf hole${miniGolfHoles === 1 ? '' : 's'}`,
-            golfAddon
-          ]);
-        }
+        const totals = customGameTotals(selectedGames);
+        selectionComplete = totals.premium === pkg.premium && totals.classic === pkg.classic;
       }
     } else {
-      packageGamesStep.style.display = 'none';
-      packageGolfStep.style.display = 'none';
-
       selectedGames = updateCustomUI();
       miniGolfHoles = customGolfHoles();
+      const totals = customGameTotals(selectedGames);
+
+      if(totals.premium){
+        const amount = totals.premium * PREMIUM_GAME_PRICE;
+        subtotal += amount;
+        lines.push([`${totals.premium} Premium game${totals.premium === 1 ? '' : 's'}`, amount]);
+      }
+
+      if(totals.classic){
+        const amount = totals.classic * CLASSIC_GAME_PRICE;
+        subtotal += amount;
+        lines.push([`${totals.classic} Classic game${totals.classic === 1 ? '' : 's'}`, amount]);
+      }
 
       if(miniGolfHoles > 0){
-        const golfPrice = miniGolfHoles * BYO_GOLF_PER_HOLE;
-        subtotal += golfPrice;
-        lines.push([
-          `${miniGolfHoles} mini golf hole${miniGolfHoles === 1 ? '' : 's'}`,
-          golfPrice
-        ]);
+        const amount = miniGolfHoles * CUSTOM_GOLF_HOLE_PRICE;
+        subtotal += amount;
+        lines.push([`${miniGolfHoles} mini golf hole${miniGolfHoles === 1 ? '' : 's'}`, amount]);
       }
 
-      selectedGames.forEach(game => {
-        const price = gamePrice(game);
-        subtotal += price;
-        lines.push([game.dataset.name, price]);
-      });
-
-      selectionComplete = miniGolfHoles > 0 || selectedGames.length > 0;
-
-      const recommendation = getCustomRecommendation(
-        selectedGames,
-        miniGolfHoles,
-        subtotal
-      );
-
-      if(recommendation){
-        incentiveText.textContent = recommendation.text;
-        incentiveButton.textContent = `Choose ${PACKAGES[recommendation.key].label}`;
-        incentiveButton.dataset.package = recommendation.key;
-        incentiveButton.dataset.golfHoles = String(recommendation.golfHoles ?? miniGolfHoles);
-        incentiveEl.classList.add('show');
-      } else {
-        incentiveEl.classList.remove('show');
-        incentiveButton.dataset.package = '';
-        incentiveButton.dataset.golfHoles = '';
-      }
+      selectionComplete = selectedGames.length > 0 || miniGolfHoles > 0;
     }
 
     const currentDateQuery = new URLSearchParams();
     if(packageMode && packageKey){
       currentDateQuery.set('package', packageKey);
-    } else {
-      currentDateQuery.set('selection', 'build_your_own');
+    } else if(selectedGames.length === 0 && miniGolfHoles === 3){
+      currentDateQuery.set('selection', 'minigolf');
     }
 
     const currentDateHref = '/check-date' +
       (currentDateQuery.toString() ? `?${currentDateQuery.toString()}` : '');
-
     const currentChangeDateLink = document.getElementById('changeDateLink');
     const currentCheckDateFirstLink = document.getElementById('checkDateFirstLink');
     if(currentChangeDateLink) currentChangeDateLink.href = currentDateHref;
@@ -1311,32 +1203,24 @@ You can add as much or as little information as you have now. Everything in this
     document.getElementById('totalAmount').textContent = money(total);
     const mpbAmount = document.getElementById('mpbAmount');
     if(mpbAmount) mpbAmount.textContent = money(total);
-
     document.getElementById('summaryLines').innerHTML = lines.map(line =>
-      `<div class="summary-line"><span>${escapeHtml(line[0])}</span><span>${money(line[1])}</span></div>`
+      `<div class="summary-line"><span>${line[0]}</span><span>${money(line[1])}</span></div>`
     ).join('');
 
     const badgeEl = document.getElementById('packageBadge');
-
     if(packageMode && !selectionComplete){
-      const currentSelected = packageGames.filter(game => game.checked);
-      const classicCount = currentSelected.filter(game => game.dataset.tier === 'classic').length;
-      const premiumCount = currentSelected.filter(game => game.dataset.tier === 'premium').length;
-      const missingClassic = Math.max(0, pkg.classicCount - classicCount);
-      const missingPremium = Math.max(0, pkg.premiumCount - premiumCount);
-
-      const parts = [];
-      if(missingPremium) parts.push(`${missingPremium} Premium`);
-      if(missingClassic) parts.push(`${missingClassic} Classic`);
-
-      badgeEl.textContent = `Choose ${parts.join(' + ')} more game${missingClassic + missingPremium === 1 ? '' : 's'} to complete ${pkg.label}.`;
+      if(packageKey === 'the_mix'){
+        badgeEl.textContent = 'Choose exactly 2 Premium and 2 Classic games to complete The Mix.';
+      } else {
+        badgeEl.textContent = 'Complete your package selection to continue.';
+      }
       badgeEl.classList.add('show');
     } else if(!packageMode && !selectionComplete){
-      badgeEl.textContent = 'Choose a package or Build Your Own items to continue.';
+      badgeEl.textContent = 'Choose at least one game or mini golf hole to continue.';
       badgeEl.classList.add('show');
-    } else if(!packageMode && selectionComplete && !meetsMinimum){
+    } else if(!packageMode && !meetsMinimum){
       const remaining = MIN_SPEND - subtotal;
-      badgeEl.textContent = `Build Your Own minimum is £300 before travel — add ${money(remaining)} more to continue.`;
+      badgeEl.textContent = `Build Your Own has a £300 minimum (excluding travel fee) — add ${money(remaining)} more to continue.`;
       badgeEl.classList.add('show');
     } else if(!bookingContext){
       badgeEl.textContent = 'Check your date and venue before booking.';
@@ -1365,13 +1249,12 @@ You can add as much or as little information as you have now. Everything in this
     document.getElementById('fullButtonAmount').textContent = money(displayedTotal);
 
     const setup = document.querySelector('input[name="setup"]:checked')?.value || 'unsure';
-
     window._bookingData = {
       selectionType: packageMode ? 'package' : 'build_your_own',
       packageCode: packageKey,
       packageName: pkg ? pkg.label : null,
       miniGolfHoles,
-      gameCodes: selectedGames.map(game => game.dataset.code),
+      selectedGameCodes: selectedGames.map(game => game.dataset.code),
       selectedGames: selectedGames.map(game => game.dataset.name),
       setup,
       subtotal,
@@ -1381,11 +1264,7 @@ You can add as much or as little information as you have now. Everything in this
     };
   }
 
-  packageInputs.forEach(input => input.addEventListener('change', function(){
-    preparePackageSelection(this.value);
-    recalc();
-  }));
-
+  packageInputs.forEach(input => input.addEventListener('change', recalc));
   packageGames.forEach(game => game.addEventListener('change', recalc));
   customGames.forEach(game => game.addEventListener('change', recalc));
   packageGolfInputs.forEach(input => input.addEventListener('change', recalc));
@@ -1393,12 +1272,7 @@ You can add as much or as little information as you have now. Everything in this
   setupOpts.forEach(opt => opt.querySelector('input').addEventListener('change', recalc));
   buildOwnBtn.addEventListener('click', switchToBuildOwn);
   incentiveButton.addEventListener('click', () => {
-    if(incentiveButton.dataset.package){
-      const golfHoles = incentiveButton.dataset.golfHoles === ''
-        ? null
-        : Number(incentiveButton.dataset.golfHoles);
-      choosePackage(incentiveButton.dataset.package, golfHoles);
-    }
+    if(incentiveButton.dataset.package) choosePackage(incentiveButton.dataset.package);
   });
 
   // ---- Venue, date and flat travel fee from check-date.html ----
@@ -1479,7 +1353,7 @@ You can add as much or as little information as you have now. Everything in this
           event_date:bookingContext.weddingDate,
           selection_type:bookingData.selectionType,
           package_code:bookingData.packageCode,
-          game_codes:bookingData.gameCodes,
+          game_codes:bookingData.selectedGameCodes,
           mini_golf_holes:bookingData.miniGolfHoles,
           event_host:false,
           setup_preference:bookingData.setup,
@@ -1763,26 +1637,17 @@ You can add as much or as little information as you have now. Everything in this
   });
 
   // Preselect from the product/package link the customer used before checking
-  // their date. Legacy selection=minigolf links are mapped to the new £400
-  // 3-Hole Mini Golf package.
+  // their date. With no recognised query parameter, Build Your Own is shown.
   const params = new URLSearchParams(window.location.search);
   const pkgParam = params.get('package');
   const selectionParam = params.get('selection');
 
   if(pkgParam && PACKAGES[pkgParam]){
     const input = document.querySelector(`input[name="package"][value="${pkgParam}"]`);
-    if(input){
-      input.checked = true;
-      preparePackageSelection(pkgParam);
-    }
+    if(input) input.checked = true;
   } else if(selectionParam === 'minigolf'){
     const input = document.querySelector('input[name="package"][value="mini_golf_3"]');
-    if(input){
-      input.checked = true;
-      preparePackageSelection('mini_golf_3');
-    }
-  } else {
-    packageInputs.forEach(input => { input.checked = false; });
+    if(input) input.checked = true;
   }
 
   recalc();

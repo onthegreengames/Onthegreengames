@@ -2048,31 +2048,11 @@ async function fetchBlockedDates(){
      ============================================================ */
 
   const CHECKER_SELECTIONS = {
-    classic_collection: {
-      title:'Classic Collection — All 4 Classic games',
-      meta:'£200 before mini golf upgrades and any applicable travel fee',
-      change:'/packages'
-    },
-    the_mix: {
-      title:'The Mix — 2 Premium + 2 Classic games',
-      meta:'£325 before mini golf upgrades and any applicable travel fee',
-      change:'/packages'
-    },
-    premium_collection: {
-      title:'Premium Collection — All 3 Premium games',
-      meta:'£350 before mini golf upgrades and any applicable travel fee',
-      change:'/packages'
-    },
-    complete_collection: {
-      title:'Complete Collection — All 7 games',
-      meta:'£475 before mini golf upgrades and any applicable travel fee',
-      change:'/packages'
-    },
-    mini_golf_3: {
-      title:'3-Hole Mini Golf',
-      meta:'£400 before any applicable travel fee',
-      change:'/mini-golf'
-    }
+    classic_collection: { title:'Classic Collection — All 4 Classic games', meta:'£200 before mini-golf add-ons and any applicable travel fee', change:'/packages' },
+    the_mix: { title:'The Mix — 2 Premium + 2 Classic games', meta:'£325 before mini-golf add-ons and any applicable travel fee', change:'/packages' },
+    premium_collection: { title:'Premium Collection — All 3 Premium games', meta:'£350 before mini-golf add-ons and any applicable travel fee', change:'/packages' },
+    complete_collection: { title:'Complete Collection — All 7 games', meta:'£475 before mini-golf add-ons and any applicable travel fee', change:'/packages' },
+    mini_golf_3: { title:'3-Hole Mini Golf', meta:'£400 before any applicable travel fee', change:'/mini-golf' }
   };
 
   function showSelectedChoice(){
@@ -2083,14 +2063,10 @@ async function fetchBlockedDates(){
     let selected = packageKey ? CHECKER_SELECTIONS[packageKey] : null;
 
     if(!selected && selectionKey === 'minigolf'){
-      selected = CHECKER_SELECTIONS.mini_golf_3;
-    }
-
-    if(!selected && selectionKey === 'build_your_own'){
       selected = {
-        title:'Build Your Own',
-        meta:'Choose games and 0–3 mini golf holes after checking your date. £300 minimum before travel.',
-        change:'/packages'
+        title:'3-Hole Mini Golf',
+        meta:'£400 before any applicable travel fee',
+        change:'/mini-golf'
       };
     }
 
