@@ -31,7 +31,7 @@
   .games-counter.complete{ background:rgba(192,145,60,0.15); color:var(--green-deep); }
   .game-row.disabled{ opacity:0.4; cursor:not-allowed; pointer-events:none; }
   .toggle-row.disabled{ opacity:0.4; pointer-events:none; }
-  .btn.disabled{ opacity:0.45; pointer-events:none; }
+  .btn.disabled{ opacity:0.45; cursor:not-allowed; }
   .opt-card .opt-tag{
     font-size:10.5px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase;
     color:var(--gold); margin-bottom:6px;
@@ -628,8 +628,7 @@ You can add as much or as little information as you have now. Everything in this
 <a href="/privacy">Privacy</a>
 <button type="button" class="cookie-settings-link" data-cookie-settings>Cookie settings</button>
 </div>
-<div class="foot-note">Questions? <a href="mailto:bookings@onthegreengames.co.uk">bookings@onthegreengames.co.uk</a><br><a href="tel:+447906616629">07906 616629</a></div>
-<div class="foot-business"><span>On The Green Games Ltd</span> · Registered in England &amp; Wales<br>Company number: 17451423<br>Registered office: 24 Queens Drive, Helsby, WA6 0AZ</div>
+<div class="foot-note">Questions? <a href="mailto:bookings@onthegreengames.co.uk">bookings@onthegreengames.co.uk</a></div>
 <div class="foot-note">© On The Green Games Ltd. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
 </div>
 </footer>
@@ -856,6 +855,7 @@ You can add as much or as little information as you have now. Everything in this
   let activePendingBookingId = null;
   let activePendingSnapshot = null;
   let paymentCompleteReturn = paymentReturnState === 'success';
+  let paymentInProgress = false;
 
   if(paymentReturnState === 'cancelled'){
     activePendingBookingId = sessionStorage.getItem('oggPendingBookingId');
@@ -1218,11 +1218,13 @@ You can add as much or as little information as you have now. Everything in this
       (!activePendingBookingId && (!selectionComplete || !meetsMinimum || !bookingContext));
 
     payFullBtn.classList.toggle('disabled', paymentDisabled);
-    payFullBtn.setAttribute('aria-disabled', String(paymentDisabled));
+    // Visually dim incomplete states, but keep the control actionable so a
+    // click can explain exactly what the customer still needs to complete.
+    payFullBtn.setAttribute('aria-disabled', String(paymentCompleteReturn));
 
     const depositDisabled = paymentDisabled || shortNotice;
     payDepositBtn.classList.toggle('disabled', depositDisabled);
-    payDepositBtn.setAttribute('aria-disabled', String(depositDisabled));
+    payDepositBtn.setAttribute('aria-disabled', String(paymentCompleteReturn));
 
     const displayedTotal = activePendingSnapshot?.total ?? total;
     const displayedDeposit = activePendingSnapshot?.depositDue ?? (Math.round(total * 25) / 100);
@@ -1241,7 +1243,9 @@ You can add as much or as little information as you have now. Everything in this
       subtotal,
       travelFee,
       total,
-      depositDue: Math.round(total * 25) / 100
+      depositDue: Math.round(total * 25) / 100,
+      selectionComplete,
+      meetsMinimum
     };
   }
 
@@ -1372,6 +1376,7 @@ You can add as much or as little information as you have now. Everything in this
   }
 
   function setPaymentButtonsLoading(paymentType){
+    paymentInProgress = true;
     paymentButtons.forEach(button => {
       button.classList.add('disabled');
       button.setAttribute('aria-disabled', 'true');
@@ -1387,6 +1392,7 @@ You can add as much or as little information as you have now. Everything in this
   }
 
   function restorePaymentButtonLabels(){
+    paymentInProgress = false;
     const total = activePendingSnapshot?.total ?? window._bookingData?.total ?? 0;
     const depositDue = activePendingSnapshot?.depositDue ?? window._bookingData?.depositDue ?? 0;
 
@@ -1511,6 +1517,8 @@ You can add as much or as little information as you have now. Everything in this
   }
 
   async function startPayment(paymentType){
+    if(paymentInProgress) return;
+
     summaryError.classList.remove('show');
     summarySuccess.classList.remove('show');
 
@@ -1518,8 +1526,35 @@ You can add as much or as little information as you have now. Everything in this
 
     if(!activePendingBookingId && !fAgreeTerms.checked){
       agreeTermsError.classList.add('show');
+      summaryError.textContent = 'Please confirm you agree to the Terms & Conditions before continuing to payment.';
+      summaryError.classList.add('show');
       document.getElementById('bookingAgreements').scrollIntoView({ behavior:'smooth', block:'center' });
       return;
+    }
+
+    if(!activePendingBookingId){
+      const bookingData = window._bookingData || {};
+
+      if(!bookingData.selectionComplete){
+        summaryError.textContent = 'Please complete your package or Build Your Own selection before continuing to payment.';
+        summaryError.classList.add('show');
+        document.querySelector('.builder-step')?.scrollIntoView({ behavior:'smooth', block:'start' });
+        return;
+      }
+
+      if(!bookingData.meetsMinimum){
+        summaryError.textContent = 'Build Your Own has a £300 minimum before any travel fee. Please add more items before continuing to payment.';
+        summaryError.classList.add('show');
+        document.getElementById('packageBadge')?.scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+      }
+
+      if(!bookingContext){
+        summaryError.textContent = 'Please check your wedding date and venue before continuing to payment.';
+        summaryError.classList.add('show');
+        document.getElementById('noDateStep')?.scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+      }
     }
 
     if(paymentType === 'deposit' && isShortNoticeBooking()){
@@ -1605,13 +1640,11 @@ You can add as much or as little information as you have now. Everything in this
 
   payDepositBtn.addEventListener('click', function(event){
     event.preventDefault();
-    if(payDepositBtn.classList.contains('disabled')) return;
     startPayment('deposit');
   });
 
   payFullBtn.addEventListener('click', function(event){
     event.preventDefault();
-    if(payFullBtn.classList.contains('disabled')) return;
     startPayment('full');
   });
 

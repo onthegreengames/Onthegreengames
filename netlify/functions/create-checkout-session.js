@@ -476,7 +476,7 @@ async function createStripeCheckout(checkout) {
 
   params.set(
     'cancel_url',
-    `${siteUrl}/booking.html?payment=cancelled`
+    `${siteUrl}/booking?payment=cancelled`
   );
 
   params.set(
