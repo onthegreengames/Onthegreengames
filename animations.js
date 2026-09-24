@@ -59,73 +59,146 @@ document.addEventListener('DOMContentLoaded', function () {
     return rails.filter(function (rail, index) { return rails.indexOf(rail) === index; });
   }
 
-  if (mobileQuery.matches && !reducedMotion && 'IntersectionObserver' in window) {
+  /* ------------------------------------------------------------------
+     Phone swipe rails.
+     Cards in a rail no longer fade in and out individually as they scroll
+     sideways (that hid the peeking next card, so rows looked like a single
+     card). Instead each rail staggers its cards in from the right once, the
+     first time it enters the viewport, then stays put. Every rail gets
+     position dots and a "Swipe" hint, plus a one-off nudge so it's obvious
+     the row moves.
+     ------------------------------------------------------------------ */
+  var railIdCounter = 0;
+
+  function railCards(rail) {
+    return Array.prototype.slice.call(rail.children).filter(function (el) {
+      return el.nodeType === 1;
+    });
+  }
+
+  function ensureDots(rail) {
+    if (!rail.id) rail.id = 'swipeRail' + (++railIdCounter);
+    var dots = document.querySelector('.mobile-swipe-dots[data-for="' + rail.id + '"]');
+    var count = railCards(rail).length;
+    if (!dots) {
+      dots = document.createElement('div');
+      dots.className = 'mobile-swipe-dots';
+      dots.setAttribute('data-for', rail.id);
+      rail.insertAdjacentElement('afterend', dots);
+    }
+    // Rebuild the dots so the count always matches the cards.
+    dots.innerHTML = '';
+    for (var i = 0; i < count; i++) {
+      var dot = document.createElement('span');
+      if (i === 0) dot.className = 'is-active';
+      dots.appendChild(dot);
+    }
+    var hint = document.createElement('em');
+    hint.className = 'swipe-hint';
+    hint.setAttribute('aria-hidden', 'true');
+    hint.innerHTML = 'Swipe <b>→</b>';
+    dots.appendChild(hint);
+    return dots;
+  }
+
+  function nearestIndex(rail, cards) {
+    var left = rail.scrollLeft;
+    var best = 0;
+    var bestDist = Infinity;
+    cards.forEach(function (card, i) {
+      var d = Math.abs(card.offsetLeft - rail.firstElementChild.offsetLeft - left);
+      if (d < bestDist) { bestDist = d; best = i; }
+    });
+    // At the very end of the rail, the last card counts as active.
+    if (left + rail.clientWidth >= rail.scrollWidth - 4) best = cards.length - 1;
+    return best;
+  }
+
+  function initRail(rail, options) {
+    var cards = railCards(rail);
+    if (cards.length < 2) return;
+    var dots = ensureDots(rail);
+    var dotItems = Array.prototype.slice.call(dots.querySelectorAll('span'));
+    var interacted = false;
+
+    function update() {
+      var index = nearestIndex(rail, cards);
+      dotItems.forEach(function (dot, i) { dot.classList.toggle('is-active', i === index); });
+      dots.classList.toggle('at-end', index === cards.length - 1);
+    }
+
+    function markInteracted() {
+      if (interacted) return;
+      interacted = true;
+      rail.classList.remove('rail-nudge');
+      dots.classList.add('hint-done');
+    }
+
+    rail.addEventListener('scroll', function () {
+      update();
+      // Small shifts happen on their own as the snap settles; only a real swipe counts.
+      if (rail.scrollLeft > 40) markInteracted();
+    }, { passive: true });
+    rail.addEventListener('touchstart', markInteracted, { passive: true });
+    rail.addEventListener('pointerdown', markInteracted, { passive: true });
+
+    // Tapping a dot jumps to that card.
+    dotItems.forEach(function (dot, i) {
+      dot.addEventListener('click', function () {
+        markInteracted();
+        rail.scrollTo({
+          left: cards[i].offsetLeft - cards[0].offsetLeft,
+          behavior: reducedMotion ? 'auto' : 'smooth'
+        });
+      });
+    });
+    update();
+
+    if (options.animateCards) {
+      cards.forEach(function (card, i) {
+        card.removeAttribute('data-reveal');
+        card.classList.add('rail-card');
+        card.style.setProperty('--rail-i', Math.min(i, 3));
+      });
+    }
+
+    function enter() {
+      rail.classList.add('rail-in');
+      if (reducedMotion || options.nudge === false) return;
+      // One gentle nudge after the cards have settled, only if the visitor
+      // hasn't already started swiping.
+      window.setTimeout(function () {
+        if (interacted) return;
+        rail.classList.add('rail-nudge');
+        window.setTimeout(function () { rail.classList.remove('rail-nudge'); }, 1100);
+      }, options.animateCards ? 750 : 250);
+    }
+
+    if (reducedMotion || !('IntersectionObserver' in window)) {
+      rail.classList.add('rail-in');
+      return;
+    }
+    var railObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.35) {
+          railObserver.disconnect();
+          enter();
+        }
+      });
+    }, { threshold: [0, 0.35, 0.6] });
+    railObserver.observe(rail);
+  }
+
+  if (mobileQuery.matches) {
     var rails = uniqueRails();
     var pageRevealItems = allRevealItems.filter(function (el) {
-      return !el.closest('.scorecard, .choice-grid, .swipe-mobile');
+      return !rails.some(function (rail) { return rail.contains(el) && rail !== el; });
     });
     makeViewportRevealObserver(pageRevealItems);
-
-    rails.forEach(function (rail) {
-      var cards = Array.prototype.slice.call(rail.querySelectorAll('[data-reveal]'));
-      if (!cards.length) return;
-      var cutoff = 0.34;
-      var lastLeft = rail.scrollLeft;
-      var railDirection = 'right';
-
-      rail.addEventListener('scroll', function () {
-        var left = rail.scrollLeft;
-        if (Math.abs(left - lastLeft) > 1) {
-          railDirection = left > lastLeft ? 'right' : 'left';
-          lastLeft = left;
-        }
-      }, { passive: true });
-
-      var railObserver = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          var visible = entry.isIntersecting && entry.intersectionRatio >= cutoff;
-          if (visible) {
-            setHiddenDirection(entry.target, scrollDirection === 'up' ? 'top' : 'bottom');
-            entry.target.classList.add('is-visible');
-          } else {
-            setHiddenDirection(entry.target, railDirection === 'right' ? 'top' : 'bottom');
-            entry.target.classList.remove('is-visible');
-          }
-        });
-      }, {
-        root: rail,
-        threshold: [0, cutoff, 0.6, 0.9],
-        rootMargin: '0px -4% 0px -4%'
-      });
-      cards.forEach(function (card) {
-        setHiddenDirection(card, 'bottom');
-        railObserver.observe(card);
-      });
-      revealObservers.push(railObserver);
-    });
+    rails.forEach(function (rail) { initRail(rail, { animateCards: true }); });
   } else {
     makeViewportRevealObserver(allRevealItems);
   }
-
-  // Update the compact swipe-position dots used on mobile card rails.
-  function initSwipeDots() {
-    if (!mobileQuery.matches) return;
-    document.querySelectorAll('.mobile-swipe-dots').forEach(function (dots) {
-      var railId = dots.getAttribute('data-for');
-      var rail = document.getElementById(railId);
-      if (!rail) return;
-      var dotItems = Array.prototype.slice.call(dots.children);
-      function update() {
-        var first = rail.firstElementChild;
-        var cardWidth = first ? first.getBoundingClientRect().width + 16 : 1;
-        var index = Math.max(0, Math.min(dotItems.length - 1, Math.round(rail.scrollLeft / cardWidth)));
-        dotItems.forEach(function (dot, i) { dot.classList.toggle('is-active', i === index); });
-      }
-      rail.addEventListener('scroll', update, { passive: true });
-      update();
-    });
-  }
-  initSwipeDots();
 
   // Homepage only: one-time staged How It Works sequence. After completion it becomes a normal scroll-animated section.
   var section = document.getElementById('howItWorks');
@@ -189,6 +262,8 @@ document.addEventListener('DOMContentLoaded', function () {
       setHiddenDirection(grid, scrollDirection === 'up' ? 'top' : 'bottom');
       grid.classList.add('is-visible');
       completedGridObserver = makeViewportRevealObserver([grid]);
+      // On phones the finished steps become a swipe rail, so give it dots and a hint too.
+      if (mobileQuery.matches) initRail(grid, { animateCards: false });
     }
     function finishSequence() {
       if (sequenceComplete || !grid) return;
@@ -255,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!mobileQuery.matches || (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft')) return;
       if (rail.closest('#howItWorks') && !rail.closest('#howItWorks').classList.contains('is-complete')) return;
       e.preventDefault();
-      var card = rail.querySelector('.hole, .choice-card, .process-step, [data-reveal]');
+      var card = rail.querySelector('.hole, .choice-card, .process-step, .rail-card, [data-reveal]');
       var amount = card ? card.getBoundingClientRect().width + 16 : rail.clientWidth * 0.86;
       rail.scrollBy({ left: e.key === 'ArrowRight' ? amount : -amount, behavior: 'smooth' });
     });

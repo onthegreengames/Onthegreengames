@@ -222,6 +222,11 @@ nav{
   line-height:1.4;
 }
 
+/* Full-width item on the second row of the two-column mega panel */
+.mega-item--wide{
+  grid-column:1 / -1;
+}
+
 
 /* ---------- MOBILE NAV TOGGLE ---------- */
 
@@ -3836,3 +3841,96 @@ html.js [data-reveal].is-visible{
 .games-offer-card .art-wrap{padding:0;background:#eef0e8;min-height:190px;}
 .games-offer-card .art-wrap img{width:100%;height:190px;object-fit:cover;filter:none;}
 .games-offer-card.featured .art-wrap{background:#eef0e8;}
+
+
+/* ================= PHONE SWIPE RAILS: AFFORDANCE + MOTION =================
+   Loaded last so it overrides the earlier rail blocks.
+   - Rails bleed to the right edge of the screen so the next card visibly peeks in.
+   - Cards stagger in from the right once (no per-card fade on sideways scroll).
+   - Dots on every rail, tappable, plus a small "Swipe" hint that fades after use.
+   - One gentle nudge the first time a rail comes into view. */
+@media (max-width:760px){
+  .swipe-mobile{
+    margin-left:-3px;
+    margin-right:-20px;
+    padding-left:3px;
+    padding-right:20px;
+    scroll-padding-left:3px;
+  }
+
+  html.js .rail-card{
+    opacity:0;
+    transform:translate3d(36px,0,0);
+    transition:
+      opacity .45s ease,
+      transform .6s cubic-bezier(.22,1,.36,1);
+    transition-delay:calc(var(--rail-i,0) * 90ms);
+  }
+  html.js .rail-in .rail-card{
+    opacity:1;
+    transform:none;
+  }
+
+  .rail-nudge > *{
+    animation:rail-nudge 1s cubic-bezier(.45,0,.2,1) 1;
+  }
+
+  .mobile-swipe-dots{
+    position:relative;
+    align-items:center;
+    min-height:20px;
+  }
+  .mobile-swipe-dots span{
+    cursor:pointer;
+    transition:background .2s ease, width .25s ease;
+  }
+  .mobile-swipe-dots span.is-active{
+    width:18px;
+    border-radius:3px;
+  }
+
+  .swipe-hint{
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translateY(-50%);
+    font-style:normal;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--green-deep);
+    opacity:.7;
+    transition:opacity .35s ease;
+    pointer-events:none;
+  }
+  .swipe-hint b{
+    display:inline-block;
+    font-weight:600;
+    animation:swipe-hint-arrow 1.4s ease-in-out 3;
+  }
+  .mobile-swipe-dots.hint-done .swipe-hint,
+  .mobile-swipe-dots.at-end .swipe-hint{
+    opacity:0;
+  }
+
+  /* The How It Works steps only become a rail once the intro sequence finishes. */
+  #howItWorks:not(.is-complete) .mobile-swipe-dots{ display:none; }
+}
+
+@keyframes rail-nudge{
+  0%, 100%{ transform:translate3d(0,0,0); }
+  35%{ transform:translate3d(-42px,0,0); }
+  60%{ transform:translate3d(-42px,0,0); }
+}
+
+@keyframes swipe-hint-arrow{
+  0%, 100%{ transform:translateX(0); }
+  50%{ transform:translateX(4px); }
+}
+
+@media (prefers-reduced-motion:reduce){
+  html.js .rail-card{ opacity:1; transform:none; transition:none; }
+  .rail-nudge > *,
+  .swipe-hint b{ animation:none !important; }
+}
