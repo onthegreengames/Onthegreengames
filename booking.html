@@ -77,7 +77,7 @@
     text-transform:uppercase; color:#fff; text-align:center;
   }
 
-  /* ---- Terms & marketing agreement checkboxes on the summary card ---- */
+  /* ---- Terms agreement checkbox on the summary card ---- */
   .booking-agreements{
     display:flex; flex-direction:column; gap:11px; margin-top:16px;
     padding-top:14px; border-top:1px solid var(--green-line);
@@ -188,20 +188,13 @@
     color:var(--ink);
     font:inherit;
   }
-  .marketing-option{
-    display:flex;
-    align-items:flex-start;
-    gap:10px;
-    font-size:12.5px;
-    line-height:1.5;
-    color:rgba(27,42,32,0.72);
-    cursor:pointer;
+
+  /* ---- Booking page only: top nav scrolls away with the page ---- */
+  .nav-wrap.nav-static{
+    position:relative;
   }
-  .marketing-option input{
-    width:17px;
-    height:17px;
-    margin-top:1px;
-    flex:none;
+  .nav-wrap.nav-static.scrolled{
+    box-shadow:none;
   }
 
   /* ---- Mobile sticky price bar ---- */
@@ -264,7 +257,7 @@
 </head>
 <body>
 <script src="/animations.js"></script>
-<div class="wrap nav-wrap">
+<div class="wrap nav-wrap nav-static">
 <nav>
 <a class="logo" href="/"><img src="/favicon.png" alt="On The Green Games" class="logo-image"> ON THE GREEN GAMES</a>
 <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false" type="button"><span></span><span></span><span></span></button>
@@ -572,11 +565,6 @@ You can add as much or as little information as you have now. Everything in this
 <textarea id="fSpecialRequests" placeholder="Anything specific you'd like us to accommodate..." rows="3"></textarea>
 </div>
 
-<div class="group-label">Keep in touch</div>
-<label class="marketing-option">
-<input id="fMarketingOptIn" type="checkbox"/>
-<span>I'm happy for On The Green Games to occasionally send me news and offers by email. See our <a href="https://onthegreengames.co.uk/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</span>
-</label>
 
 </div>
 </div>
@@ -598,10 +586,6 @@ You can add as much or as little information as you have now. Everything in this
 <span>I have read and agree to the <a href="https://onthegreengames.co.uk/terms" rel="noopener" target="_blank">Terms &amp; Conditions</a>.</span>
 </label>
 <div class="agree-error" id="agreeTermsError">Please confirm you agree to the Terms &amp; Conditions before continuing.</div>
-<label class="agree-row" for="fAgreeMarketingSummary">
-<input id="fAgreeMarketingSummary" type="checkbox"/>
-<span>Keep me updated with occasional news and offers by email. See our <a href="https://onthegreengames.co.uk/privacy" rel="noopener" target="_blank">Privacy Policy</a>.</span>
-</label>
 </div>
 
 <div class="payment-choice-label" id="paymentChoiceLabel">Choose how you'd like to pay</div>
@@ -731,14 +715,9 @@ You can add as much or as little information as you have now. Everything in this
   const fullDetailsToggle = document.getElementById('fullDetailsToggle');
   const fullDetailsPanel = document.getElementById('fullDetailsPanel');
 
-  // Terms agreement (required) + marketing preference (optional), both shown
-  // on the summary card next to the pay buttons. The marketing checkbox here
-  // is kept in sync with the one in the full details panel so either one
-  // reflects the customer's actual choice, whichever they happened to tick.
+  // Terms agreement (required), shown on the summary card next to the pay buttons.
   const fAgreeTerms = document.getElementById('fAgreeTerms');
   const agreeTermsError = document.getElementById('agreeTermsError');
-  const fAgreeMarketingSummary = document.getElementById('fAgreeMarketingSummary');
-  const fMarketingOptIn = document.getElementById('fMarketingOptIn');
 
   fullDetailsToggle.addEventListener('click', function(){
     const currentlyOpen = fullDetailsToggle.getAttribute('aria-expanded') === 'true';
@@ -751,12 +730,6 @@ You can add as much or as little information as you have now. Everything in this
     recalc();
   });
 
-  fAgreeMarketingSummary.addEventListener('change', function(){
-    fMarketingOptIn.checked = this.checked;
-  });
-  fMarketingOptIn.addEventListener('change', function(){
-    fAgreeMarketingSummary.checked = this.checked;
-  });
 
   // ---- Field-level validation: inline errors + scroll-to-problem ----
   function setFieldError(fieldId, errorId, msg){
@@ -1339,7 +1312,7 @@ You can add as much or as little information as you have now. Everything in this
           county:formData.customerCounty || null,
           postcode:formData.customerPostcode || null,
           preferred_contact_method:formData.preferredContactMethod || null,
-          marketing_opt_in:formData.marketingOptIn
+          marketing_opt_in:false
         },
         venue:{
           venue_name:bookingContext.venueName,
@@ -1469,7 +1442,6 @@ You can add as much or as little information as you have now. Everything in this
     const setupNotes = document.getElementById('fSetupNotes').value.trim();
     const weatherContingency = document.getElementById('fWeatherContingency').value.trim();
     const specialRequests = document.getElementById('fSpecialRequests').value.trim();
-    const marketingOptIn = fMarketingOptIn.checked;
 
     const guestCount = guestCountRaw === '' ? null : Number(guestCountRaw);
 
@@ -1526,7 +1498,6 @@ You can add as much or as little information as you have now. Everything in this
       setupNotes,
       weatherContingency,
       specialRequests,
-      marketingOptIn,
       termsAccepted:true,
       termsAcceptedAt:new Date().toISOString()
     };
