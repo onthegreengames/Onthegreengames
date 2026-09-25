@@ -3934,3 +3934,39 @@ html.js [data-reveal].is-visible{
   .rail-nudge > *,
   .swipe-hint b{ animation:none !important; }
 }
+
+
+/* ================= AREA COVERAGE MAPS ================= */
+.hero-visual-card.area-map-card{
+  min-height:0;
+  background:var(--cream-card);
+}
+.hero-visual-card.area-map-card img.area-map-hero{
+  width:100%;
+  height:auto;
+  aspect-ratio:1 / 1;
+  object-fit:cover;
+  display:block;
+}
+.hero-visual-card.area-map-card .hero-caption{
+  position:static;
+  margin:0;
+  padding:14px 18px 16px;
+  border-radius:0;
+  background:rgba(18,46,34,.96);
+  color:#fff;
+}
+.area-card-map{
+  width:calc(100% + 56px);
+  max-width:none;
+  height:auto;
+  aspect-ratio:1 / 1;
+  object-fit:cover;
+  display:block;
+  margin:-28px -28px 24px;
+  border-bottom:1px solid var(--green-line);
+  border-radius:17px 17px 0 0;
+}
+@media (max-width:880px){
+  .hero-visual-card.area-map-card img.area-map-hero{height:auto;}
+}
