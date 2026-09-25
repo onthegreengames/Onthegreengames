@@ -1234,16 +1234,15 @@ You can add as much or as little information as you have now. Everything in this
     const shortNotice = updatePaymentOptionsForDate();
     const termsAgreed = fAgreeTerms.checked;
 
-    const paymentDisabled = paymentCompleteReturn || !termsAgreed ||
-      (!activePendingBookingId && (!selectionComplete || !meetsMinimum || !bookingContext));
-
-    payFullBtn.classList.toggle('disabled', paymentDisabled);
-    // Visually dim incomplete states, but keep the control actionable so a
-    // click can explain exactly what the customer still needs to complete.
+    // Keep the payment controls looking active while the booking is incomplete.
+    // Validation happens when the customer clicks, just like the required
+    // first-name, last-name and email fields. The only genuinely disabled
+    // state is after a completed payment return (or temporarily while a
+    // checkout request is already in progress, handled elsewhere).
+    payFullBtn.classList.toggle('disabled', paymentCompleteReturn);
     payFullBtn.setAttribute('aria-disabled', String(paymentCompleteReturn));
 
-    const depositDisabled = paymentDisabled || shortNotice;
-    payDepositBtn.classList.toggle('disabled', depositDisabled);
+    payDepositBtn.classList.toggle('disabled', paymentCompleteReturn);
     payDepositBtn.setAttribute('aria-disabled', String(paymentCompleteReturn));
 
     const displayedTotal = activePendingSnapshot?.total ?? total;
