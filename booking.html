@@ -359,11 +359,12 @@
 <h3>Add mini golf</h3>
 <p class="step-sub">Add 1, 2 or all 3 holes to any games collection.</p>
 <div class="foundation-options">
-<label class="opt-card"><input name="packageGolfHoles" type="radio" value="0" checked/><div class="opt-name">No mini golf</div><div class="opt-price">£0</div></label>
+<label class="opt-card"><input name="packageGolfHoles" type="radio" value="0"/><div class="opt-name">No mini golf</div><div class="opt-price">£0</div></label>
 <label class="opt-card"><input name="packageGolfHoles" type="radio" value="1"/><div class="opt-name">1 hole</div><div class="opt-price">+£150</div></label>
 <label class="opt-card"><input name="packageGolfHoles" type="radio" value="2"/><div class="opt-name">2 holes</div><div class="opt-price">+£275</div></label>
 <label class="opt-card"><input name="packageGolfHoles" type="radio" value="3"/><div class="opt-name">3 holes</div><div class="opt-price">+£375</div></label>
 </div>
+<div class="field-error" id="packageGolfError"></div>
 </div>
 <div class="builder-step" id="buildOwnStep">
 <div class="step-label">Build Your Own</div>
@@ -699,6 +700,7 @@ You can add as much or as little information as you have now. Everything in this
   const packageInputs = Array.from(document.querySelectorAll('input[name="package"]'));
   const packageCards = Array.from(document.querySelectorAll('input[name="package"]')).map(input => input.closest('.opt-card'));
   const packageGolfInputs = Array.from(document.querySelectorAll('input[name="packageGolfHoles"]'));
+  const packageGolfError = document.getElementById('packageGolfError');
   const customGolfInputs = Array.from(document.querySelectorAll('input[name="customGolfHoles"]'));
   const setupOpts = Array.from(document.querySelectorAll('#setupPair .radio-opt'));
   const payDepositBtn = document.getElementById('payDepositBtn');
@@ -947,6 +949,19 @@ You can add as much or as little information as you have now. Everything in this
     return selectedRadioNumber(packageGolfInputs);
   }
 
+  function packageGolfChoiceMade(){
+    return packageGolfInputs.some(input => input.checked);
+  }
+
+  function showPackageGolfError(){
+    packageGolfError.textContent = 'Please choose a mini golf option, including No mini golf if you do not want to add any.';
+    packageGolfError.classList.add('show');
+  }
+
+  function clearPackageGolfError(){
+    packageGolfError.classList.remove('show');
+  }
+
   function customGolfHoles(){
     return selectedRadioNumber(customGolfInputs);
   }
@@ -1115,6 +1130,7 @@ You can add as much or as little information as you have now. Everything in this
 
     if(packageMode){
       selectedGames = updatePackageGamesUI(pkg);
+      const golfChoiceMade = !pkg.allowsGolf || packageGolfChoiceMade();
       miniGolfHoles = pkg.golfHoles || (pkg.allowsGolf ? packageGolfHoles() : 0);
       subtotal = pkg.price;
       lines.push([pkg.label, pkg.price]);
@@ -1128,10 +1144,14 @@ You can add as much or as little information as you have now. Everything in this
       if(pkg.games === 0){
         selectionComplete = miniGolfHoles === 3;
       } else if(pkg.fixedGames){
-        selectionComplete = selectedGames.length === pkg.games;
+        selectionComplete = selectedGames.length === pkg.games && golfChoiceMade;
       } else {
         const totals = customGameTotals(selectedGames);
-        selectionComplete = totals.premium === pkg.premium && totals.classic === pkg.classic;
+        selectionComplete = totals.premium === pkg.premium && totals.classic === pkg.classic && golfChoiceMade;
+      }
+
+      if(golfChoiceMade){
+        clearPackageGolfError();
       }
     } else {
       selectedGames = updateCustomUI();
@@ -1252,7 +1272,10 @@ You can add as much or as little information as you have now. Everything in this
   packageInputs.forEach(input => input.addEventListener('change', recalc));
   packageGames.forEach(game => game.addEventListener('change', recalc));
   customGames.forEach(game => game.addEventListener('change', recalc));
-  packageGolfInputs.forEach(input => input.addEventListener('change', recalc));
+  packageGolfInputs.forEach(input => input.addEventListener('change', () => {
+    clearPackageGolfError();
+    recalc();
+  }));
   customGolfInputs.forEach(input => input.addEventListener('change', recalc));
   setupOpts.forEach(opt => opt.querySelector('input').addEventListener('change', recalc));
   buildOwnBtn.addEventListener('click', switchToBuildOwn);
@@ -1534,6 +1557,16 @@ You can add as much or as little information as you have now. Everything in this
 
     if(!activePendingBookingId){
       const bookingData = window._bookingData || {};
+      const selectedPackageKey = currentPackageKey();
+      const selectedPackage = selectedPackageKey ? PACKAGES[selectedPackageKey] : null;
+
+      if(selectedPackage?.allowsGolf && !packageGolfChoiceMade()){
+        showPackageGolfError();
+        summaryError.textContent = 'Please choose a mini golf option before continuing to payment.';
+        summaryError.classList.add('show');
+        packageGolfStep.scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+      }
 
       if(!bookingData.selectionComplete){
         summaryError.textContent = 'Please complete your package or Build Your Own selection before continuing to payment.';
