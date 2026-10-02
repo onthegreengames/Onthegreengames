@@ -343,11 +343,19 @@
 
   /* Desktop-only layout.
      The main card now matches the full journey-progress width.
-     Calendar uses the left 75%; venue/details/notice/result/CTA use the right 25%.
+     Calendar uses the left 60%; venue/details/notice/result/CTA use the right 40%.
      Mobile/tablet styles and markup are left untouched. */
   @media (min-width:1001px){
     .page-hero{
       padding:18px 0 14px;
+    }
+
+    /* Join the progress bar directly onto the main card on desktop. */
+    .journey-progress{
+      margin-bottom:0 !important;
+      border-radius:22px 22px 0 0;
+      border-bottom:0;
+      overflow:hidden;
     }
 
     .check-wrap{
@@ -357,8 +365,11 @@
     }
 
     .check-card{
+      border-radius:0 0 22px 22px;
+      border-top-left-radius:0;
+      border-top-right-radius:0;
       display:grid;
-      grid-template-columns:minmax(0, 65fr) minmax(0, 35fr);
+      grid-template-columns:minmax(0, 60fr) minmax(0, 40fr);
       grid-template-rows:auto auto auto 1fr;
       align-items:start;
       gap:16px 28px;
@@ -386,7 +397,7 @@
       display:none;
     }
 
-    /* Calendar occupies the full left-hand 75% column and starts at the top. */
+    /* Calendar occupies the full left-hand 60% column and starts at the top. */
     .cal-widget{
       grid-column:1;
       grid-row:1 / span 4;
