@@ -341,33 +341,44 @@
     }
   }
 
-  /* Desktop-only: fit the date/venue step without a page scroll by laying
-     the details, calendar and availability/continue CTA out side by side.
+  /* Desktop-only: fit the date/venue step without a page scroll, with
+     venue details on the left and a larger calendar plus the
+     availability/continue CTA stacked together on the right.
      Scoped behind this min-width query so mobile and tablet keep the
      original single-column stacked layout untouched. */
   @media (min-width:1001px){
     .page-hero{
-      padding:26px 0 20px;
+      padding:18px 0 14px;
     }
 
     .check-wrap{
-      max-width:1100px;
+      max-width:900px;
     }
 
     .check-card{
       display:grid;
-      grid-template-columns:0.92fr 1.12fr 0.96fr;
-      align-items:stretch;
-      gap:36px;
-      padding:36px;
+      grid-template-columns:0.84fr 1.16fr;
+      grid-template-rows:auto 1fr;
+      grid-template-areas:
+        "details calendar"
+        "details result";
+      align-items:start;
+      gap:6px 28px;
+      padding:24px;
     }
 
-    .check-col-details,
+    .check-col-details{
+      grid-area:details;
+      min-width:0;
+    }
+
     .check-col-calendar{
+      grid-area:calendar;
       min-width:0;
     }
 
     .check-col-result{
+      grid-area:result;
       display:flex;
       flex-direction:column;
       justify-content:flex-end;
@@ -376,6 +387,40 @@
 
     .check-col-result #checkBtn{
       margin-top:16px;
+      align-self:flex-end;
+    }
+
+    /* Slightly bigger calendar, capped so it never pushes the card
+       taller than a typical laptop viewport */
+    .cal-widget{
+      padding:14px;
+      max-width:360px;
+    }
+
+    .cal-title{
+      font-size:15.5px;
+    }
+
+    .cal-nav{
+      width:30px;
+      height:30px;
+    }
+
+    .cal-weekdays{
+      margin-bottom:6px;
+    }
+
+    .cal-grid{
+      gap:4px;
+    }
+
+    .cal-day{
+      font-size:14px;
+    }
+
+    .booking-open-note{
+      padding:10px 14px;
+      margin-bottom:10px;
     }
   }
 </style>
