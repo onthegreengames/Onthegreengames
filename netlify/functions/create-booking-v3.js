@@ -319,6 +319,15 @@ function normaliseInput(body) {
     )
   );
 
+  const promoCode =
+    text(
+      firstDefined(
+        booking.promo_code,
+        booking.promoCode
+      ),
+      64
+    )?.toUpperCase() || null;
+
   const eventHost = booleanValue(
     firstDefined(
       booking.event_host,
@@ -457,6 +466,7 @@ function normaliseInput(body) {
 
       game_codes: gameCodes,
       mini_golf_holes: miniGolfHoles,
+      promo_code: promoCode,
 
       event_host: false,
 
@@ -654,6 +664,9 @@ function buildRpcPayload(input) {
       mini_golf_holes:
         input.booking.mini_golf_holes,
 
+      promo_code:
+        input.booking.promo_code,
+
       event_host: false,
 
       setup_preference:
@@ -759,7 +772,13 @@ exports.handler = async function handler(event) {
           result.mini_golf_holes,
 
         packageCode:
-          result.package_code
+          result.package_code,
+
+        promoCode:
+          result.promo_code,
+
+        discountAmount:
+          result.promo_discount_amount
       }
     );
 

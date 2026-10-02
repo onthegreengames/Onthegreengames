@@ -264,7 +264,7 @@ async function waitForPaidPayment(sessionId) {
 async function loadBookingData(bookingId, payment) {
   const booking = await getOne(
     `bookings?id=eq.${encodeURIComponent(bookingId)}` +
-    '&select=id,booking_reference,customer_id,venue_id,event_date,delivery_time,collection_time,status,total_price,deposit_required,balance_due_date,selection_type,package_id,setup_preference,subtotal,travel_fee,balance_payment_token' +
+    '&select=id,booking_reference,customer_id,venue_id,event_date,delivery_time,collection_time,status,total_price,deposit_required,balance_due_date,selection_type,package_id,setup_preference,subtotal,travel_fee,promo_code,promo_discount_type,promo_discount_value,promo_discount_amount,balance_payment_token' +
     '&limit=1',
     'Booking not found.'
   );
@@ -360,6 +360,18 @@ function bookedItemsRows(data) {
         <td style="padding:9px 0;border-bottom:1px solid #e9e4d8;text-align:right;">${amount}</td>
       </tr>`);
   });
+
+  if (Number(data.booking.promo_discount_amount || 0) > 0) {
+    const promoLabel = data.booking.promo_code
+      ? `Promo code ${data.booking.promo_code}`
+      : 'Promo discount';
+
+    rows.push(`
+      <tr>
+        <td style="padding:9px 0;border-bottom:1px solid #e9e4d8;">${escapeHtml(promoLabel)}</td>
+        <td style="padding:9px 0;border-bottom:1px solid #e9e4d8;text-align:right;">−${money(data.booking.promo_discount_amount)}</td>
+      </tr>`);
+  }
 
   if (Number(data.booking.travel_fee || 0) > 0) {
     rows.push(`
@@ -578,6 +590,7 @@ function buildInternalNewBookingEmail(data, paymentType) {
 <div style="font-size:18px;font-weight:700;margin-bottom:12px;">Payment</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;line-height:1.5;">
 <tr><td style="padding:5px 0;color:#667269;">Booking total</td><td style="padding:5px 0;text-align:right;font-weight:700;">${money(booking.total_price)}</td></tr>
+${Number(booking.promo_discount_amount || 0) > 0 ? `<tr><td style="padding:5px 0;color:#667269;">Promo code</td><td style="padding:5px 0;text-align:right;font-weight:700;">${escapeHtml(booking.promo_code || 'Applied')} (−${money(booking.promo_discount_amount)})</td></tr>` : ''}
 <tr><td style="padding:5px 0;color:#667269;">Payment status</td><td style="padding:5px 0;text-align:right;font-weight:700;">${escapeHtml(paymentLabel)}</td></tr>
 <tr><td style="padding:5px 0;color:#667269;">Received now</td><td style="padding:5px 0;text-align:right;font-weight:700;">${money(payment.amount)}</td></tr>${balanceRows}
 </table>

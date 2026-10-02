@@ -77,6 +77,92 @@
     text-transform:uppercase; color:#fff; text-align:center;
   }
 
+
+  /* ---- Promo code controls on the booking summary ---- */
+  .promo-box{
+    margin-top:16px;
+    padding-top:14px;
+    border-top:1px solid rgba(255,255,255,0.16);
+  }
+  .promo-box summary{
+    cursor:pointer;
+    list-style:none;
+    font-size:12.5px;
+    font-weight:700;
+    color:#fff;
+  }
+  .promo-box summary::-webkit-details-marker{ display:none; }
+  .promo-box summary::after{
+    content:'+';
+    float:right;
+    color:var(--gold-soft);
+    font-size:16px;
+    line-height:1;
+  }
+  .promo-box[open] summary::after{ content:'−'; }
+  .promo-row{
+    display:flex;
+    gap:8px;
+    margin-top:11px;
+  }
+  .promo-row input{
+    min-width:0;
+    flex:1;
+    box-sizing:border-box;
+    padding:10px 11px;
+    border:1px solid rgba(255,255,255,0.26);
+    border-radius:9px;
+    background:rgba(255,255,255,0.10);
+    color:#fff;
+    font:600 12.5px 'Inter',sans-serif;
+    text-transform:uppercase;
+  }
+  .promo-row input::placeholder{
+    color:rgba(255,255,255,0.48);
+    text-transform:none;
+  }
+  .promo-row input:focus{
+    outline:2px solid rgba(231,206,155,0.45);
+    outline-offset:1px;
+  }
+  .promo-apply{
+    flex:none;
+    border:1px solid rgba(231,206,155,0.48);
+    border-radius:9px;
+    padding:9px 12px;
+    background:rgba(231,206,155,0.14);
+    color:var(--gold-soft);
+    font:700 12px 'Inter',sans-serif;
+    cursor:pointer;
+  }
+  .promo-apply:disabled,
+  .promo-row input:disabled{
+    opacity:0.55;
+    cursor:not-allowed;
+  }
+  .promo-message{
+    display:none;
+    margin-top:8px;
+    font-size:11.8px;
+    line-height:1.45;
+  }
+  .promo-message.show{ display:block; }
+  .promo-message.success{ color:#e4f4e9; }
+  .promo-message.error{ color:#ffd6c7; }
+  .promo-remove{
+    display:none;
+    margin-top:8px;
+    padding:0;
+    border:0;
+    background:none;
+    color:var(--gold-soft);
+    font:600 11.8px 'Inter',sans-serif;
+    text-decoration:underline;
+    text-underline-offset:2px;
+    cursor:pointer;
+  }
+  .promo-remove.show{ display:inline; }
+
   /* ---- Terms agreement checkbox on the summary card ---- */
   .booking-agreements{
     display:flex; flex-direction:column; gap:11px; margin-top:16px;
@@ -585,6 +671,16 @@ You can add as much or as little information as you have now. Everything in this
 </div>
 <div class="summary-badge" id="packageBadge"></div>
 
+<details class="promo-box" id="promoBox">
+<summary>Have a promo code?</summary>
+<div class="promo-row">
+<input id="promoCodeInput" maxlength="64" autocomplete="off" spellcheck="false" placeholder="Enter code"/>
+<button class="promo-apply" id="promoApplyBtn" type="button">Apply</button>
+</div>
+<div class="promo-message" id="promoMessage" role="status" aria-live="polite"></div>
+<button class="promo-remove" id="promoRemoveBtn" type="button">Remove code</button>
+</details>
+
 <div class="booking-agreements" id="bookingAgreements">
 <label class="agree-row" for="fAgreeTerms">
 <input id="fAgreeTerms" type="checkbox"/>
@@ -694,6 +790,7 @@ You can add as much or as little information as you have now. Everything in this
   // for the live customer summary and are revalidated by create_booking_v3.
   const BOOKING_FUNCTION_URL = '/.netlify/functions/create-booking-v3';
   const CHECKOUT_FUNCTION_URL = '/.netlify/functions/create-checkout-session';
+  const PROMO_FUNCTION_URL = '/.netlify/functions/validate-promo-code';
 
   const packageGames = Array.from(document.querySelectorAll('.package-game-cb'));
   const customGames = Array.from(document.querySelectorAll('.custom-game-cb'));
@@ -722,6 +819,10 @@ You can add as much or as little information as you have now. Everything in this
   const paymentSummaryNote = document.getElementById('paymentSummaryNote');
   const fullDetailsToggle = document.getElementById('fullDetailsToggle');
   const fullDetailsPanel = document.getElementById('fullDetailsPanel');
+  const promoCodeInput = document.getElementById('promoCodeInput');
+  const promoApplyBtn = document.getElementById('promoApplyBtn');
+  const promoMessage = document.getElementById('promoMessage');
+  const promoRemoveBtn = document.getElementById('promoRemoveBtn');
 
   // Terms agreement (required), shown on the summary card next to the pay buttons.
   const fAgreeTerms = document.getElementById('fAgreeTerms');
@@ -858,6 +959,8 @@ You can add as much or as little information as you have now. Everything in this
   let activePendingSnapshot = null;
   let paymentCompleteReturn = paymentReturnState === 'success';
   let paymentInProgress = false;
+  let appliedPromo = null;
+  let promoRequestSequence = 0;
 
   if(paymentReturnState === 'cancelled'){
     activePendingBookingId = sessionStorage.getItem('oggPendingBookingId');
@@ -883,6 +986,125 @@ You can add as much or as little information as you have now. Everything in this
       minimumFractionDigits: Number.isInteger(Number(value)) ? 0 : 2,
       maximumFractionDigits: 2
     });
+  }
+
+  function promoSelectionFingerprint(data){
+    if(!data) return '';
+    return JSON.stringify({
+      selectionType:data.selectionType || null,
+      packageCode:data.packageCode || null,
+      selectedGameCodes:[...(data.selectedGameCodes || [])].sort(),
+      miniGolfHoles:Number(data.miniGolfHoles || 0),
+      weddingDate:bookingContext?.weddingDate || null
+    });
+  }
+
+  function setPromoMessage(message, type){
+    promoMessage.textContent = message || '';
+    promoMessage.classList.remove('show', 'success', 'error');
+    if(message){
+      promoMessage.classList.add('show', type === 'success' ? 'success' : 'error');
+    }
+  }
+
+  function clearAppliedPromo(message = ''){
+    appliedPromo = null;
+    promoRemoveBtn.classList.remove('show');
+    if(message) setPromoMessage(message, 'error');
+  }
+
+  async function applyPromoCode(){
+    if(activePendingBookingId || paymentInProgress) return;
+
+    const code = promoCodeInput.value.trim().toUpperCase();
+    promoCodeInput.value = code;
+
+    if(!code){
+      clearAppliedPromo('Enter a promo code first.');
+      recalc();
+      return;
+    }
+
+    const bookingData = window._bookingData || {};
+    if(!bookingData.selectionComplete){
+      clearAppliedPromo('Complete your package or Build Your Own selection before applying a promo code.');
+      return;
+    }
+
+    if(!bookingData.meetsMinimum){
+      clearAppliedPromo('Build Your Own must meet the £300 minimum before a promo code can be applied.');
+      return;
+    }
+
+    if(!bookingContext?.weddingDate){
+      clearAppliedPromo('Check your wedding date and venue before applying a promo code.');
+      return;
+    }
+
+    const requestFingerprint = promoSelectionFingerprint(bookingData);
+    const requestNumber = ++promoRequestSequence;
+
+    promoApplyBtn.disabled = true;
+    promoApplyBtn.textContent = 'Checking…';
+    setPromoMessage('', 'error');
+
+    try{
+      const response = await fetch(PROMO_FUNCTION_URL, {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body:JSON.stringify({
+          code,
+          selectionType:bookingData.selectionType,
+          packageCode:bookingData.packageCode,
+          gameCodes:bookingData.selectedGameCodes,
+          miniGolfHoles:bookingData.miniGolfHoles,
+          eventDate:bookingContext.weddingDate
+        })
+      });
+
+      let result = {};
+      try{ result = await response.json(); } catch(error){}
+
+      if(requestNumber !== promoRequestSequence) return;
+
+      if(!response.ok){
+        throw new Error(result.error || 'We could not check that promo code. Please try again.');
+      }
+
+      if(promoSelectionFingerprint(window._bookingData) !== requestFingerprint){
+        clearAppliedPromo('Your selection changed while the code was being checked. Please apply it again.');
+        return;
+      }
+
+      if(!result.valid){
+        clearAppliedPromo(result.message || 'That promo code is not available for this booking.');
+        recalc();
+        return;
+      }
+
+      appliedPromo = {
+        code:String(result.code || code).toUpperCase(),
+        discountType:result.discountType || null,
+        discountValue:Number(result.discountValue || 0),
+        discountAmount:Number(result.discountAmount || 0),
+        selectionFingerprint:requestFingerprint
+      };
+
+      promoCodeInput.value = appliedPromo.code;
+      promoRemoveBtn.classList.add('show');
+      setPromoMessage(
+        `${appliedPromo.code} applied — you save ${money(appliedPromo.discountAmount)}.`,
+        'success'
+      );
+      recalc();
+
+    } catch(error){
+      clearAppliedPromo(error.message || 'We could not check that promo code. Please try again.');
+      recalc();
+    } finally {
+      promoApplyBtn.disabled = false;
+      promoApplyBtn.textContent = 'Apply';
+    }
   }
 
   function daysUntilEvent(eventDate){
@@ -1195,18 +1417,41 @@ You can add as much or as little information as you have now. Everything in this
 
     const meetsMinimum = packageMode || subtotal >= MIN_SPEND;
 
-    let total = subtotal;
+    const currentSelectionFingerprint = JSON.stringify({
+      selectionType:packageMode ? 'package' : 'build_your_own',
+      packageCode:packageKey,
+      selectedGameCodes:selectedGames.map(game => game.dataset.code).sort(),
+      miniGolfHoles,
+      weddingDate:bookingContext?.weddingDate || null
+    });
+
+    if(appliedPromo && appliedPromo.selectionFingerprint !== currentSelectionFingerprint){
+      clearAppliedPromo('Your selection changed. Please apply the promo code again.');
+    }
+
+    const promoDiscount = appliedPromo
+      ? Math.min(subtotal, Math.max(0, Number(appliedPromo.discountAmount || 0)))
+      : 0;
+
+    if(promoDiscount > 0){
+      lines.push([`Promo code ${appliedPromo.code}`, -promoDiscount]);
+    }
+
+    let total = Math.max(0, subtotal - promoDiscount);
     if(bookingContext){
       total += travelFee;
       lines.push(['Travel fee', travelFee]);
     }
+    total = Math.round(total * 100) / 100;
 
     document.getElementById('totalAmount').textContent = money(total);
     const mpbAmount = document.getElementById('mpbAmount');
     if(mpbAmount) mpbAmount.textContent = money(total);
-    document.getElementById('summaryLines').innerHTML = lines.map(line =>
-      `<div class="summary-line"><span>${line[0]}</span><span>${money(line[1])}</span></div>`
-    ).join('');
+    document.getElementById('summaryLines').innerHTML = lines.map(line => {
+      const amount = Number(line[1]);
+      const formatted = amount < 0 ? `−${money(Math.abs(amount))}` : money(amount);
+      return `<div class="summary-line"><span>${escapeHtml(line[0])}</span><span>${formatted}</span></div>`;
+    }).join('');
 
     const badgeEl = document.getElementById('packageBadge');
     if(packageMode && !selectionComplete){
@@ -1260,6 +1505,8 @@ You can add as much or as little information as you have now. Everything in this
       selectedGames: selectedGames.map(game => game.dataset.name),
       setup,
       subtotal,
+      promoCode:appliedPromo?.code || null,
+      promoDiscount,
       travelFee,
       total,
       depositDue: Math.round(total * 25) / 100,
@@ -1280,6 +1527,29 @@ You can add as much or as little information as you have now. Everything in this
   buildOwnBtn.addEventListener('click', switchToBuildOwn);
   incentiveButton.addEventListener('click', () => {
     if(incentiveButton.dataset.package) choosePackage(incentiveButton.dataset.package);
+  });
+
+  promoApplyBtn.addEventListener('click', applyPromoCode);
+  promoCodeInput.addEventListener('keydown', event => {
+    if(event.key === 'Enter'){
+      event.preventDefault();
+      applyPromoCode();
+    }
+  });
+  promoCodeInput.addEventListener('input', () => {
+    const typed = promoCodeInput.value.trim().toUpperCase();
+    if(appliedPromo && typed !== appliedPromo.code){
+      clearAppliedPromo('Code changed. Press Apply to check the new code.');
+      recalc();
+    }
+  });
+  promoRemoveBtn.addEventListener('click', () => {
+    promoRequestSequence += 1;
+    appliedPromo = null;
+    promoCodeInput.value = '';
+    promoRemoveBtn.classList.remove('show');
+    setPromoMessage('', 'success');
+    recalc();
   });
 
   // ---- Venue, date and flat travel fee from check-date.html ----
@@ -1362,6 +1632,7 @@ You can add as much or as little information as you have now. Everything in this
           package_code:bookingData.packageCode,
           game_codes:bookingData.selectedGameCodes,
           mini_golf_holes:bookingData.miniGolfHoles,
+          promo_code:bookingData.promoCode || null,
           event_host:false,
           setup_preference:bookingData.setup,
           guest_count:formData.guestCount,
@@ -1395,6 +1666,10 @@ You can add as much or as little information as you have now. Everything in this
     });
 
     builder.style.opacity = locked ? '0.72' : '';
+
+    promoCodeInput.disabled = locked;
+    promoApplyBtn.disabled = locked;
+    promoRemoveBtn.disabled = locked;
   }
 
   function setPaymentButtonsLoading(paymentType){
