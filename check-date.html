@@ -341,86 +341,116 @@
     }
   }
 
-  /* Desktop-only: fit the date/venue step without a page scroll, with
-     venue details on the left and a larger calendar plus the
-     availability/continue CTA stacked together on the right.
-     Scoped behind this min-width query so mobile and tablet keep the
-     original single-column stacked layout untouched. */
+  /* Desktop-only layout.
+     The main card now matches the full journey-progress width.
+     Calendar uses the left 75%; venue/details/notice/result/CTA use the right 25%.
+     Mobile/tablet styles and markup are left untouched. */
   @media (min-width:1001px){
     .page-hero{
       padding:18px 0 14px;
     }
 
     .check-wrap{
-      max-width:900px;
+      max-width:none;
+      width:100%;
+      margin:0;
     }
 
     .check-card{
       display:grid;
-      grid-template-columns:0.84fr 1.16fr;
-      grid-template-rows:auto 1fr;
-      grid-template-areas:
-        "details calendar"
-        "details result";
+      grid-template-columns:minmax(0, 3fr) minmax(0, 1fr);
+      grid-template-rows:auto auto auto 1fr;
       align-items:start;
-      gap:6px 28px;
+      gap:16px 28px;
       padding:24px;
     }
 
+    /* Right-hand column: venue details first */
     .check-col-details{
-      grid-area:details;
+      grid-column:2;
+      grid-row:1;
       min-width:0;
     }
 
-    .check-col-calendar{
-      grid-area:calendar;
-      min-width:0;
+    /* On desktop only, let the calendar field's children participate
+       directly in the main card grid. This keeps the existing mobile DOM
+       order exactly as-is. */
+    .check-col-calendar,
+    .check-col-calendar > .field{
+      display:contents;
     }
 
+    /* The month heading inside the calendar is enough on desktop.
+       Keep the Wedding date label untouched for mobile/tablet. */
+    .check-col-calendar > .field > label{
+      display:none;
+    }
+
+    /* Calendar occupies the full left-hand 75% column and starts at the top. */
+    .cal-widget{
+      grid-column:1;
+      grid-row:1 / span 4;
+      width:100%;
+      max-width:none;
+      box-sizing:border-box;
+      padding:20px;
+      align-self:start;
+    }
+
+    /* Booking-opening notice moves into the right-hand column on desktop. */
+    .booking-open-note{
+      grid-column:2;
+      grid-row:2;
+      margin:0;
+      padding:12px 14px;
+    }
+
+    /* Availability result and CTA remain together underneath the notice. */
     .check-col-result{
-      grid-area:result;
+      grid-column:2;
+      grid-row:3 / span 2;
       display:flex;
       flex-direction:column;
-      justify-content:flex-end;
       min-width:0;
+      align-self:stretch;
     }
 
     .check-col-result #checkBtn{
-      margin-top:16px;
-      align-self:flex-end;
-    }
-
-    /* Slightly bigger calendar, capped so it never pushes the card
-       taller than a typical laptop viewport */
-    .cal-widget{
-      padding:14px;
-      max-width:360px;
+      margin-top:16px !important;
+      align-self:stretch;
     }
 
     .cal-title{
-      font-size:15.5px;
+      font-size:17px;
     }
 
     .cal-nav{
-      width:30px;
-      height:30px;
+      width:34px;
+      height:34px;
     }
 
     .cal-weekdays{
-      margin-bottom:6px;
+      margin-bottom:8px;
+      font-size:12px;
     }
 
     .cal-grid{
-      gap:4px;
+      gap:5px;
     }
 
     .cal-day{
-      font-size:14px;
+      font-size:15px;
     }
 
-    .booking-open-note{
-      padding:10px 14px;
-      margin-bottom:10px;
+    .cal-legend{
+      margin-top:16px;
+      font-size:12px;
+    }
+
+    .cal-selected-label{
+      margin-top:16px;
+      padding-top:16px;
+      font-size:14px;
     }
   }
 </style>
