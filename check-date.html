@@ -340,6 +340,44 @@
       gap:10px 14px;
     }
   }
+
+  /* Desktop-only: fit the date/venue step without a page scroll by laying
+     the details, calendar and availability/continue CTA out side by side.
+     Scoped behind this min-width query so mobile and tablet keep the
+     original single-column stacked layout untouched. */
+  @media (min-width:1001px){
+    .page-hero{
+      padding:26px 0 20px;
+    }
+
+    .check-wrap{
+      max-width:1100px;
+    }
+
+    .check-card{
+      display:grid;
+      grid-template-columns:0.92fr 1.12fr 0.96fr;
+      align-items:stretch;
+      gap:36px;
+      padding:36px;
+    }
+
+    .check-col-details,
+    .check-col-calendar{
+      min-width:0;
+    }
+
+    .check-col-result{
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      min-width:0;
+    }
+
+    .check-col-result #checkBtn{
+      margin-top:16px;
+    }
+  }
 </style>
 </head>
 
@@ -383,10 +421,6 @@
 Check your wedding date and venue
 </div>
 
-<h1>
-Check Your Wedding Date
-</h1>
-
 </div>
 
 
@@ -410,6 +444,7 @@ Check Your Wedding Date
 
 <div class="check-card">
 
+<div class="check-col check-col-details">
 
 <div class="field">
 
@@ -450,6 +485,10 @@ id="postcodeError">
 
 </div>
 
+</div>
+
+
+<div class="check-col check-col-calendar">
 
 <div class="field">
 
@@ -542,6 +581,10 @@ No date selected yet
 
 </div>
 
+</div>
+
+
+<div class="check-col check-col-result">
 
 <div
 class="avail-result"
@@ -586,6 +629,7 @@ style="color:#B3492F; font-size:13px; margin-top:12px; display:none;">
 Please fill in venue name, postcode and your wedding date first.
 </p>
 
+</div>
 
 </div>
 </div>
