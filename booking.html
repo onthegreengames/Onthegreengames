@@ -1026,7 +1026,11 @@ You can add as much or as little information as you have now. Everything in this
     }
 
     const bookingData = window._bookingData || {};
-    if(!bookingData.selectionComplete){
+    // Promo validation does not need a games package's mini-golf add-on choice
+    // to be made first. A not-yet-chosen add-on is quoted as 0 holes; if the
+    // customer later adds mini golf the selection fingerprint changes and the
+    // code is cleared so it can be revalidated against the new subtotal.
+    if(!bookingData.promoSelectionComplete){
       const hasStartedSelection = Boolean(
         bookingData.packageCode ||
         (bookingData.selectedGameCodes && bookingData.selectedGameCodes.length) ||
@@ -1034,7 +1038,7 @@ You can add as much or as little information as you have now. Everything in this
       );
       clearAppliedPromo(
         hasStartedSelection
-          ? 'This promo code cannot be applied to this booking. Please try another code.'
+          ? 'Complete the games included in your package before applying a promo code.'
           : 'Complete your package or Build Your Own selection before applying a promo code.'
       );
       return;
@@ -1358,6 +1362,7 @@ You can add as much or as little information as you have now. Everything in this
     let subtotal = 0;
     let lines = [];
     let selectionComplete = false;
+    let promoSelectionComplete = false;
 
     if(packageMode){
       selectedGames = updatePackageGamesUI(pkg);
@@ -1373,12 +1378,15 @@ You can add as much or as little information as you have now. Everything in this
       }
 
       if(pkg.games === 0){
-        selectionComplete = miniGolfHoles === 3;
+        promoSelectionComplete = miniGolfHoles === 3;
+        selectionComplete = promoSelectionComplete;
       } else if(pkg.fixedGames){
-        selectionComplete = selectedGames.length === pkg.games && golfChoiceMade;
+        promoSelectionComplete = selectedGames.length === pkg.games;
+        selectionComplete = promoSelectionComplete && golfChoiceMade;
       } else {
         const totals = customGameTotals(selectedGames);
-        selectionComplete = totals.premium === pkg.premium && totals.classic === pkg.classic && golfChoiceMade;
+        promoSelectionComplete = totals.premium === pkg.premium && totals.classic === pkg.classic;
+        selectionComplete = promoSelectionComplete && golfChoiceMade;
       }
 
       if(golfChoiceMade){
@@ -1408,6 +1416,7 @@ You can add as much or as little information as you have now. Everything in this
       }
 
       selectionComplete = selectedGames.length > 0 || miniGolfHoles > 0;
+      promoSelectionComplete = selectionComplete;
     }
 
     const currentDateQuery = new URLSearchParams();
@@ -1520,6 +1529,7 @@ You can add as much or as little information as you have now. Everything in this
       total,
       depositDue: Math.round(total * 25) / 100,
       selectionComplete,
+      promoSelectionComplete,
       meetsMinimum
     };
   }
