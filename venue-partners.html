@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="/consent.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z1194VV4R4"></script>
+<script>
+  gtag('js', new Date());
+  gtag('config', 'G-Z1194VV4R4');
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="googlebot" content="noindex,nofollow,noarchive">
+<meta name="bingbot" content="noindex,nofollow,noarchive">
+<meta name="description" content="Venue information from On The Green Games.">
+<title>Venue Information | On The Green Games</title>
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<style>
+.venue-topbar{background:var(--green-deep);color:rgba(255,255,255,.78);text-align:center;font-size:11.5px;letter-spacing:.04em;padding:10px 20px}
+.venue-nav{border-bottom:1px solid var(--green-line);background:var(--cream)}
+.venue-nav .wrap{min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.venue-label{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green-mid)}
+.venue-hero{padding:48px 32px 36px}
+.venue-hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center}
+.venue-hero h1{font-size:49px;line-height:1.07;max-width:620px}
+.venue-hero p{margin:20px 0 0;max-width:560px;font-size:16.5px;line-height:1.62;color:rgba(27,42,32,.70)}
+.venue-hero-image{border-radius:26px;overflow:hidden;box-shadow:var(--shadow);aspect-ratio:1.08/1;background:var(--green-soft)}
+.venue-hero-image img{width:100%;height:100%;object-fit:cover}
+.venue-section{padding:36px 0}
+.venue-section-head{max-width:700px;margin-bottom:28px}
+.venue-section-head h2{font-size:36px;line-height:1.13}
+.venue-section-head p{margin:12px 0 0;font-size:15px;line-height:1.6;color:rgba(27,42,32,.67);max-width:650px}
+.venue-promo{background:linear-gradient(155deg,var(--green-deep),#142E22 120%);color:#fff;border-radius:26px;padding:44px;position:relative;overflow:hidden}
+.venue-promo:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.03) 0,rgba(255,255,255,.03) 1px,transparent 1px,transparent 30px)}
+.venue-promo>*{position:relative;z-index:1}
+.venue-promo .eyebrow{color:var(--gold-soft)}.venue-promo .eyebrow:before{background:var(--gold-soft)}
+.venue-promo h2{font-size:36px;line-height:1.13;color:#fff;max-width:760px}
+.venue-promo .lead{margin:14px 0 0;font-size:14.5px;line-height:1.62;color:rgba(255,255,255,.72);max-width:760px}
+.venue-promo-grid{margin-top:30px;display:grid;grid-template-columns:1fr 1.35fr;gap:14px}
+.venue-promo-card{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:22px 20px}
+.venue-promo-card .tier{color:var(--gold-soft);font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:9px}
+.venue-promo-card h3{color:#fff;font-size:19px;margin-bottom:8px}
+.venue-promo-card p{margin:0;font-size:12.8px;line-height:1.52;color:rgba(255,255,255,.68)}
+.venue-promo-card.gold{background:linear-gradient(160deg,#E7CE9B,#C0913C 115%);border-color:rgba(27,42,32,.12)}
+.venue-promo-card.gold .tier{color:#2A351F}.venue-promo-card.gold h3{color:#172219}.venue-promo-card.gold p{color:#1B2A20}
+.venue-promo-note{margin-top:18px;padding-top:17px;border-top:1px solid rgba(255,255,255,.12);font-size:12.8px;line-height:1.55;color:rgba(255,255,255,.68)}
+.venue-cred{background:var(--cream-card);border-top:1px solid var(--green-line);border-bottom:1px solid var(--green-line)}
+.venue-cred-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--green-line);border-radius:20px;overflow:hidden;background:#fff}
+.venue-cred-card{padding:26px 23px;min-height:165px}.venue-cred-card+.venue-cred-card{border-left:1px dashed var(--green-line)}
+.venue-icon{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--green-soft);color:var(--green-deep);font-size:13px;font-weight:800;margin-bottom:13px}
+.venue-cred-card strong{display:block;font-family:'Playfair Display',serif;font-size:18px;margin-bottom:7px}.venue-cred-card p{margin:0;font-size:12.8px;line-height:1.5;color:rgba(27,42,32,.65)}
+.venue-guide{display:grid;grid-template-columns:.82fr 1.18fr;gap:34px;align-items:center;padding:34px;border:1px solid var(--green-line);border-radius:22px;background:var(--cream-card);box-shadow:var(--shadow)}
+.venue-guide h2{font-size:33px;line-height:1.14;margin-bottom:12px}.venue-guide .intro{font-size:14px;line-height:1.58;color:rgba(27,42,32,.65)}
+.venue-copy{background:rgba(30,71,52,.045);border:1px solid var(--green-line);border-radius:15px;padding:20px}.venue-copy p{margin:0;font-size:13.5px;line-height:1.68;color:rgba(27,42,32,.76)}
+.venue-copy-row{margin-top:14px;display:flex;align-items:center;gap:10px}.venue-copy-btn{border:0;background:var(--green-deep);color:#fff;border-radius:999px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer}.venue-copy-status{opacity:0;font-size:12px;font-weight:700;color:var(--green-mid);transition:opacity .2s}.venue-copy-status.show{opacity:1}
+.venue-log-intro{background:linear-gradient(160deg,#E7CE9B,#C0913C 115%);border-radius:22px;padding:30px 32px;margin-bottom:18px;box-shadow:var(--shadow)}
+.venue-log-intro h2{font-size:34px;line-height:1.13;margin-bottom:10px}.venue-log-intro p{margin:0;max-width:830px;font-size:14px;line-height:1.58;color:rgba(27,42,32,.72)}
+.venue-log-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--green-line);border-radius:22px;overflow:hidden;background:var(--cream-card)}
+.venue-log-item{padding:24px 22px;min-height:155px}.venue-log-item+.venue-log-item{border-left:1px dashed var(--green-line)}.venue-log-item:nth-child(4){border-left:none}.venue-log-item:nth-child(n+4){border-top:1px dashed var(--green-line)}
+.venue-log-label{color:var(--green-mid);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}.venue-log-item h3{font-size:17px;margin-bottom:6px}.venue-log-item p{margin:0;font-size:12.8px;line-height:1.5;color:rgba(27,42,32,.66)}
+.venue-benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:17px}.venue-benefit{background:var(--cream-card);border:1px solid var(--green-line);border-radius:20px;padding:24px 22px;box-shadow:0 20px 40px -34px rgba(27,42,32,.28)}
+.venue-benefit-num{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--green-deep);color:var(--gold-soft);font-family:'Playfair Display',serif;font-weight:700;margin-bottom:17px}.venue-benefit h3{font-size:19px;margin-bottom:8px}.venue-benefit p{margin:0;font-size:13px;line-height:1.53;color:rgba(27,42,32,.67)}
+.venue-footer{border-top:1px solid var(--green-line);padding:28px 0}.venue-footer-row{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;font-size:12px;color:rgba(27,42,32,.56)}
+@media(max-width:900px){.venue-hero-grid{grid-template-columns:1fr 1fr;gap:30px}.venue-hero h1{font-size:41px}.venue-cred-grid{grid-template-columns:1fr 1fr}.venue-cred-card:nth-child(3){border-left:none;border-top:1px dashed var(--green-line)}.venue-cred-card:nth-child(4){border-top:1px dashed var(--green-line)}.venue-guide{grid-template-columns:1fr}.venue-benefits{grid-template-columns:1fr 1fr}.venue-promo-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.venue-label{display:none}.venue-hero{padding:38px 20px 26px}.venue-hero-grid{grid-template-columns:1fr;gap:25px}.venue-hero h1{font-size:34px}.venue-hero p{font-size:15px}.venue-hero-image{aspect-ratio:1.25/1}.venue-section{padding:36px 0}.venue-section-head h2{font-size:29px}.venue-cred-grid{grid-template-columns:1fr}.venue-cred-card+.venue-cred-card{border-left:none;border-top:1px dashed var(--green-line)}.venue-guide{padding:25px 21px}.venue-guide h2{font-size:28px}.venue-promo{padding:31px 22px}.venue-promo h2{font-size:29px}.venue-log-intro{padding:25px 22px}.venue-log-intro h2{font-size:29px}.venue-log-grid{grid-template-columns:1fr}.venue-log-item+.venue-log-item{border-left:none;border-top:1px dashed var(--green-line)}.venue-benefits{grid-template-columns:1fr}.venue-footer-row{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<script src="/animations.js"></script>
+<div class="venue-topbar">Venue information · On The Green Games Ltd</div>
+<header class="venue-nav">
+  <div class="wrap">
+    <a class="logo" href="/"><img src="/favicon.png" alt="On The Green Games" class="logo-image"> ON THE GREEN GAMES</a>
+    <div class="venue-label">For wedding venues</div>
+  </div>
+</header>
+
+<main>
+  <section class="venue-hero">
+    <div class="wrap venue-hero-grid">
+      <div data-reveal>
+        <div class="eyebrow">For wedding venues</div>
+        <h1>Simple, well-run wedding entertainment for <span class="italic">your couples.</span></h1>
+        <p>We provide all-day mini golf and giant garden games, delivered, set up and collected around the venue’s schedule.</p>
+      </div>
+      <div class="venue-hero-image" data-reveal style="--reveal-delay:90ms">
+        <img src="/assets/images/mini-golf-gateway-obstacle-1200.webp" alt="Portable wedding mini golf hole on a lawn">
+      </div>
+    </div>
+  </section>
+
+  <section class="venue-section">
+    <div class="wrap">
+      <div class="venue-promo" data-reveal>
+        <div class="eyebrow">Ways we can work together</div>
+        <h2>Venue-specific promo codes for your couples.</h2>
+        <p class="lead">We can create a unique discount code for your venue, giving couples an extra benefit for booking with you while keeping the booking itself directly between them and us.</p>
+        <div class="venue-promo-grid">
+          <div class="venue-promo-card">
+            <div class="tier">Simple option</div>
+            <h3>One venue code</h3>
+            <p>A single code for all couples getting married at your venue, giving them an agreed discount when they book with us.</p>
+          </div>
+          <div class="venue-promo-card gold">
+            <div class="tier">Tiered option</div>
+            <h3>Built around your structure</h3>
+            <p>We can create different codes for different venue wedding tiers, with higher-value venue packages receiving a larger discount. Codes can be named and structured around your own package levels, so the benefit feels like part of your venue offering.</p>
+          </div>
+        </div>
+        <div class="venue-promo-note">Example: a standard wedding package could receive one discount level, while premium or exclusive-use packages receive a higher one. The exact structure can be agreed with each venue.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="venue-section venue-cred">
+    <div class="wrap">
+      <div class="venue-section-head" data-reveal>
+        <div class="eyebrow">Built to operate properly</div>
+        <h2>Professional behind the scenes as well as on the lawn.</h2>
+      </div>
+      <div class="venue-cred-grid" data-reveal>
+        <div class="venue-cred-card"><div class="venue-icon">✓</div><strong>On The Green Games Ltd</strong><p>A registered UK limited company with a clear business identity and direct contact point.</p></div>
+        <div class="venue-cred-card"><div class="venue-icon">£</div><strong>Secure online booking</strong><p>Couples book and pay through our own website, making for a seamless experience for your couples.</p></div>
+        <div class="venue-cred-card"><div class="venue-icon">↻</div><strong>Live availability</strong><p>Couples can check their date online rather than relying on repeated enquiry emails.</p></div>
+        <div class="venue-cred-card"><div class="venue-icon">i</div><strong>Clear customer terms</strong><p>Packages, pricing, FAQs and booking information are published clearly before booking.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="venue-section">
+    <div class="wrap">
+      <div class="venue-guide" data-reveal>
+        <div>
+          <div class="eyebrow">Easy to add to your supplier guide</div>
+          <h2>Ready-made wording for your venue.</h2>
+          <p class="intro">Use this on your recommended-supplier page, planning guide or welcome pack.</p>
+        </div>
+        <div class="venue-copy">
+          <p id="supplierBlurb">On The Green Games provides all-day wedding mini golf and giant garden games across the North West, North Wales and South Lakes. They deliver, set up and collect the equipment, with transparent online pricing and live date checking. Couples book directly at onthegreengames.co.uk.</p>
+          <div class="venue-copy-row">
+            <button class="venue-copy-btn" id="copyButton" type="button">Copy wording</button>
+            <span class="venue-copy-status" id="copyStatus">Copied ✓</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="venue-section">
+    <div class="wrap">
+      <div class="venue-log-intro" data-reveal>
+        <div class="eyebrow">Venue logistics</div>
+        <h2>Simple to fit around your wedding day.</h2>
+        <p>We work around access, setup location and collection timings rather than expecting the venue to adapt around us.</p>
+      </div>
+      <div class="venue-log-grid" data-reveal>
+        <div class="venue-log-item"><div class="venue-log-label">Access</div><h3>Agreed arrival window</h3><p>We follow your preferred supplier access and unloading arrangements.</p></div>
+        <div class="venue-log-item"><div class="venue-log-label">Setup area</div><h3>Suitable, level space</h3><p>We can help confirm a practical location for games or mini golf.</p></div>
+        <div class="venue-log-item"><div class="venue-log-label">Power</div><h3>No mains power needed</h3><p>The equipment is non-powered, keeping setup straightforward.</p></div>
+        <div class="venue-log-item"><div class="venue-log-label">Collection</div><h3>No fixed collection time</h3><p>Collection is agreed around the wedding and venue schedule.</p></div>
+        <div class="venue-log-item"><div class="venue-log-label">Indoor use</div><h3>Possible where suitable</h3><p>Games and mini golf can be used indoors where space and access allow.</p></div>
+        <div class="venue-log-item"><div class="venue-log-label">Venue requirements</div><h3>Send them direct to us</h3><p>Supplier guidance or access notes can come straight to our team.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="venue-section">
+    <div class="wrap">
+      <div class="venue-section-head" data-reveal>
+        <div class="eyebrow">Why venues can recommend us</div>
+        <h2>Useful for couples. Low-admin for your team.</h2>
+      </div>
+      <div class="venue-benefits">
+        <article class="venue-benefit" data-reveal><div class="venue-benefit-num">1</div><h3>Couples book direct</h3><p>Your team does not need to quote, take payment or manage package choices.</p></article>
+        <article class="venue-benefit" data-reveal style="--reveal-delay:70ms"><div class="venue-benefit-num">2</div><h3>All-day hire</h3><p>Entertainment stays available across the day rather than for a short fixed slot.</p></article>
+        <article class="venue-benefit" data-reveal style="--reveal-delay:140ms"><div class="venue-benefit-num">3</div><h3>Wedding-focused</h3><p>The equipment and presentation are designed to sit comfortably in a wedding setting.</p></article>
+        <article class="venue-benefit" data-reveal style="--reveal-delay:210ms"><div class="venue-benefit-num">4</div><h3>Flexible booking</h3><p>Couples can amend their booking without amendment fees, subject to availability.</p></article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="venue-footer">
+  <div class="wrap venue-footer-row">
+    <div>© On The Green Games Ltd</div>
+    <div>bookings@onthegreengames.co.uk</div>
+  </div>
+</footer>
+
+<script>
+const copyButton=document.getElementById('copyButton'),copyStatus=document.getElementById('copyStatus'),supplierBlurb=document.getElementById('supplierBlurb');
+copyButton.addEventListener('click',async()=>{const text=supplierBlurb.innerText.trim();try{await navigator.clipboard.writeText(text)}catch(e){const r=document.createRange();r.selectNodeContents(supplierBlurb);const s=window.getSelection();s.removeAllRanges();s.addRange(r);document.execCommand('copy');s.removeAllRanges()}copyStatus.classList.add('show');setTimeout(()=>copyStatus.classList.remove('show'),1600)});
+</script>
+</body>
+</html>
