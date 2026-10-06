@@ -1,0 +1,209 @@
+name: Apply real game imagery
+
+on:
+  push:
+    branches:
+      - real-game-images
+    paths:
+      - .github/workflows/apply-real-game-images.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out working branch
+        uses: actions/checkout@v4
+        with:
+          ref: real-game-images
+
+      - name: Apply approved real-image replacements
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_once(text, old, new, label):
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f"{label}: expected exactly 1 match, found {count}")
+              return text.replace(old, new, 1)
+
+          # ---------------- Giant Games page ----------------
+          path = Path('giant-games.html')
+          text = path.read_text()
+
+          text = replace_once(
+              text,
+              '<meta content="https://onthegreengames.co.uk/assets/images/game-noughts-crosses-1200.webp" property="og:image"/><meta content="Giant wooden noughts and crosses game set up on a lawn" property="og:image:alt"/><meta content="1200" property="og:image:width"/><meta content="1200" property="og:image:height"/><meta content="image/webp" property="og:image:type"/><meta content="https://onthegreengames.co.uk/assets/images/games-all-1200.webp" name="twitter:image"/><meta content="Seven giant garden games arranged together on a lawn" name="twitter:image:alt"/>',
+              '<meta content="https://onthegreengames.co.uk/assets/images/giant-noughts-and-crosses-game-2.webp" property="og:image"/><meta content="Giant wooden noughts and crosses game set up on grass" property="og:image:alt"/><meta content="1120" property="og:image:width"/><meta content="1400" property="og:image:height"/><meta content="image/webp" property="og:image:type"/><meta content="https://onthegreengames.co.uk/assets/images/giant-noughts-and-crosses-game-2.webp" name="twitter:image"/><meta content="Giant wooden noughts and crosses game set up on grass" name="twitter:image:alt"/>',
+              'giant-games social metadata'
+          )
+
+          text = replace_once(
+              text,
+              '''<img
+  alt="Giant wooden noughts and crosses game set up on a lawn"
+  decoding="async"
+  fetchpriority="high"
+  height="1200"
+  loading="eager"
+  sizes="(max-width: 880px) 100vw, 44vw"
+  src="/assets/images/game-noughts-crosses-640.webp"
+  srcset="/assets/images/game-noughts-crosses-640.webp 640w,
+          /assets/images/game-noughts-crosses-1200.webp 1200w"
+  width="1200"
+/>''',
+              '''<img
+  alt="Giant wooden noughts and crosses game set up on grass"
+  decoding="async"
+  fetchpriority="high"
+  height="1400"
+  loading="eager"
+  sizes="(max-width: 880px) 100vw, 44vw"
+  src="/assets/images/giant-noughts-and-crosses-game-2.webp"
+  width="1120"
+/>''',
+              'giant-games hero image'
+          )
+
+          text = replace_once(
+              text,
+              '<div class="hero-caption">A line-up of seven giant games that guests can pick up and play throughout the day.</div>',
+              '<div class="hero-caption">Giant Noughts &amp; Crosses is one of seven games guests can pick up and play throughout the day.</div>',
+              'giant-games hero caption'
+          )
+
+          card_replacements = [
+              (
+                  '<img alt="Giant wooden Jenga tower on a lawn" decoding="async" height="1200" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/game-jenga-640.webp" srcset="/assets/images/game-jenga-640.webp 640w, /assets/images/game-jenga-1200.webp 1200w" width="1200"/>',
+                  '<img alt="Giant wooden tumbling blocks tower set up on grass" decoding="async" height="1400" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/giant-tumbling-blocks-game-1.webp" width="1120"/>',
+                  'tumbling blocks card'
+              ),
+              (
+                  '<img alt="Giant wooden Connect 4 game on a lawn" decoding="async" height="1200" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/game-connect-4-640.webp" srcset="/assets/images/game-connect-4-640.webp 640w, /assets/images/game-connect-4-1200.webp 1200w" width="1200"/>',
+                  '<img alt="Giant wooden Connect 4 game set up on grass" decoding="async" height="1050" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/giant-connect-four-game-1.webp" width="1400"/>',
+                  'connect four card'
+              ),
+              (
+                  '<img alt="Wooden ring toss game on a lawn" decoding="async" height="1200" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/game-ring-toss-640.webp" srcset="/assets/images/game-ring-toss-640.webp 640w, /assets/images/game-ring-toss-1200.webp 1200w" width="1200"/>',
+                  '<img alt="Wooden ring toss game set up on grass" decoding="async" height="1400" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/giant-ring-toss-game-1.webp" width="1120"/>',
+                  'ring toss card'
+              ),
+              (
+                  '<img alt="Giant wooden noughts and crosses game on a lawn" decoding="async" height="1200" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/game-noughts-crosses-640.webp" srcset="/assets/images/game-noughts-crosses-640.webp 640w, /assets/images/game-noughts-crosses-1200.webp 1200w" width="1200"/>',
+                  '<img alt="Giant wooden noughts and crosses game set up on grass" decoding="async" height="1400" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/giant-noughts-and-crosses-game-1.webp" width="1120"/>',
+                  'noughts and crosses card'
+              ),
+              (
+                  '<img alt="Wooden cornhole boards on a lawn" decoding="async" height="1200" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/game-cornhole-640.webp" srcset="/assets/images/game-cornhole-640.webp 640w, /assets/images/game-cornhole-1200.webp 1200w" width="1200"/>',
+                  '<img alt="Wooden cornhole game set up on grass" decoding="async" height="1400" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/giant-cornhole-game-1.webp" width="1120"/>',
+                  'cornhole card'
+              ),
+              (
+                  '<img alt="Giant wooden dominoes on a lawn" decoding="async" height="1200" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/game-dominoes-640.webp" srcset="/assets/images/game-dominoes-640.webp 640w, /assets/images/game-dominoes-1200.webp 1200w" width="1200"/>',
+                  '<img alt="Giant wooden dominoes set up on grass" decoding="async" height="1400" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/giant-dominoes-game-1.webp" width="1120"/>',
+                  'dominoes card'
+              ),
+          ]
+          for old, new, label in card_replacements:
+              text = replace_once(text, old, new, label)
+
+          path.write_text(text)
+
+          # ---------------- Homepage ----------------
+          path = Path('index.html')
+          text = path.read_text()
+          text = replace_once(
+              text,
+              '<img alt="Giant garden games arranged together on a lawn" class="photo-fill" decoding="async" height="1200" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/games-classic-640.webp" srcset="/assets/images/games-classic-640.webp 640w, /assets/images/games-classic-1200.webp 1200w" width="1200"/>',
+              '<img alt="Giant wooden Connect 4 wedding game set up on grass" class="photo-fill" decoding="async" height="1050" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/giant-connect-four-game-2.webp" width="1400"/>',
+              'homepage giant-games image'
+          )
+          path.write_text(text)
+
+          # ---------------- Packages page ----------------
+          path = Path('packages.html')
+          text = path.read_text()
+          text = replace_once(
+              text,
+              '<meta content="https://onthegreengames.co.uk/assets/images/game-connect-4-1200.webp" property="og:image"/><meta content="Giant wooden Connect 4 game set up on a lawn" property="og:image:alt"/><meta content="1200" property="og:image:width"/><meta content="1200" property="og:image:height"/><meta content="image/webp" property="og:image:type"/><meta content="https://onthegreengames.co.uk/assets/images/games-all-1200.webp" name="twitter:image"/><meta content="Giant garden games collection arranged together on a lawn" name="twitter:image:alt"/>',
+              '<meta content="https://onthegreengames.co.uk/assets/images/giant-connect-four-game-1.webp" property="og:image"/><meta content="Giant wooden Connect 4 game set up on grass" property="og:image:alt"/><meta content="1400" property="og:image:width"/><meta content="1050" property="og:image:height"/><meta content="image/webp" property="og:image:type"/><meta content="https://onthegreengames.co.uk/assets/images/giant-connect-four-game-1.webp" name="twitter:image"/><meta content="Giant wooden Connect 4 game set up on grass" name="twitter:image:alt"/>',
+              'packages social metadata'
+          )
+          text = replace_once(
+              text,
+              '''<img
+  alt="Giant wooden Connect 4 game set up on a lawn"
+  decoding="async"
+  fetchpriority="high"
+  height="1200"
+  loading="eager"
+  sizes="(max-width: 880px) 100vw, 44vw"
+  src="/assets/images/game-connect-4-640.webp"
+  srcset="/assets/images/game-connect-4-640.webp 640w,
+          /assets/images/game-connect-4-1200.webp 1200w"
+  width="1200"
+/>''',
+              '''<img
+  alt="Giant wooden Connect 4 game set up on grass"
+  decoding="async"
+  fetchpriority="high"
+  height="1050"
+  loading="eager"
+  sizes="(max-width: 880px) 100vw, 44vw"
+  src="/assets/images/giant-connect-four-game-1.webp"
+  width="1400"
+/>''',
+              'packages hero image'
+          )
+          path.write_text(text)
+
+          # ---------------- Validation ----------------
+          giant = Path('giant-games.html').read_text()
+          home = Path('index.html').read_text()
+          packages = Path('packages.html').read_text()
+
+          required_giant = [
+              'giant-noughts-and-crosses-game-2.webp',
+              'giant-tumbling-blocks-game-1.webp',
+              'giant-connect-four-game-1.webp',
+              'giant-ring-toss-game-1.webp',
+              'giant-noughts-and-crosses-game-1.webp',
+              'giant-cornhole-game-1.webp',
+              'giant-dominoes-game-1.webp',
+              'game-limbo-640.webp',
+          ]
+          for item in required_giant:
+              if item not in giant:
+                  raise SystemExit(f'Missing expected Giant Games asset: {item}')
+
+          if 'giant-connect-four-game-2.webp' not in home:
+              raise SystemExit('Homepage real Connect 4 image missing')
+          if 'giant-connect-four-game-1.webp' not in packages:
+              raise SystemExit('Packages real Connect 4 hero missing')
+
+          # These old individual-game images should no longer be used on Giant Games.
+          stale = [
+              'game-jenga-640.webp', 'game-connect-4-640.webp', 'game-ring-toss-640.webp',
+              'game-noughts-crosses-640.webp', 'game-cornhole-640.webp', 'game-dominoes-640.webp'
+          ]
+          for item in stale:
+              if item in giant:
+                  raise SystemExit(f'Stale Giant Games image still present: {item}')
+
+          print('All approved real-image replacements validated.')
+          PY
+
+      - name: Commit completed image rollout and remove one-off workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm .github/workflows/apply-real-game-images.yml
+          git add giant-games.html index.html packages.html .github/workflows/apply-real-game-images.yml
+          git commit -m 'Use real game imagery across website'
+          git push origin HEAD:real-game-images
