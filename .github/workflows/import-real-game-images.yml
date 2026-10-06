@@ -19,18 +19,18 @@ jobs:
         with:
           ref: real-game-images
 
-      - name: Download primary WebP assets
+      - name: Download secondary WebP assets
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p assets/images
-          curl -LfsS 'https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-62b4-8210-bee5-23d018117a5c/raw?se=2026-10-06T19%3A17%3A01Z&sp=r&sv=2026-02-06&sr=b&scid=c6cdb11c-8006-5828-a74e-0d8d341222dd&skoid=6658dbdd-f305-4d30-8f6b-d62218202cb9&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T08%3A49%3A41Z&ske=2026-10-07T08%3A49%3A41Z&sks=b&skv=2026-02-06&sig=CZKlmFIFTKC3%2BX3l03NqGVnimHBLJWzvI%2BxV0fYDlyM%3D' -o assets/images/giant-connect-four-game-1.webp
-          curl -LfsS 'https://sdmntprukwest.oaiusercontent.com/files/00000000-7984-8243-a3a6-d727af047b39/raw?se=2026-10-06T19%3A17%3A27Z&sp=r&sv=2026-02-06&sr=b&scid=7ff787e2-d987-506d-b56e-4c58fc1d0b62&skoid=1d6acb5b-b3f4-43ec-a5ec-b05c4a7708c8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T06%3A23%3A09Z&ske=2026-10-07T06%3A23%3A09Z&sks=b&skv=2026-02-06&sig=ep3G22/P6LuA5tOoNPfzbSNtbVVaK6SDay0emU1dn3s%3D' -o assets/images/giant-noughts-and-crosses-game-1.webp
-          curl -LfsS 'https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-3afc-8210-a0c2-5ff986d4b91b/raw?se=2026-10-06T19%3A17%3A49Z&sp=r&sv=2026-02-06&sr=b&scid=94a4d8df-01ab-59c7-bce6-f0f9d5ac17bf&skoid=1d6acb5b-b3f4-43ec-a5ec-b05c4a7708c8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T07%3A28%3A26Z&ske=2026-10-07T07%3A28%3A26Z&sks=b&skv=2026-02-06&sig=94B074o9fbETyzfJnOf2FQd6ympfrIDf20W9YGCojqs%3D' -o assets/images/giant-tumbling-blocks-game-1.webp
-          curl -LfsS 'https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-53b8-8210-a0e8-3873d0fe867e/raw?se=2026-10-06T19%3A18%3A14Z&sp=r&sv=2026-02-06&sr=b&scid=ed471bec-6394-54fd-8988-6d99168d10a0&skoid=1d6acb5b-b3f4-43ec-a5ec-b05c4a7708c8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T07%3A08%3A36Z&ske=2026-10-07T07%3A08%3A36Z&sks=b&skv=2026-02-06&sig=9efGngOBIf75biR7LRUPci0znXq/LHEPREYSc%2BqjFFs%3D' -o assets/images/giant-dominoes-game-1.webp
-          curl -LfsS 'https://sdmntprnortheu.oaiusercontent.com/files/00000000-184c-81f4-9f76-a0854b17cdbd/raw?se=2026-10-06T19%3A18%3A42Z&sp=r&sv=2026-02-06&sr=b&scid=7ada6592-660a-5d12-9bb7-3015da3afcc2&skoid=1d6acb5b-b3f4-43ec-a5ec-b05c4a7708c8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T04%3A53%3A08Z&ske=2026-10-07T04%3A53%3A08Z&sks=b&skv=2026-02-06&sig=QNRmLTdfEQ7TP6ZeBeVjTdLbb26j0AkEg%2B30zE%2BUIVE%3D' -o assets/images/giant-ring-toss-game-1.webp
-          curl -LfsS 'https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-3fa8-8210-aad7-6d16af4902c6/raw?se=2026-10-06T19%3A18%3A53Z&sp=r&sv=2026-02-06&sr=b&scid=10a2962f-b757-533c-beb4-a3cbb97137e1&skoid=6658dbdd-f305-4d30-8f6b-d62218202cb9&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T07%3A12%3A50Z&ske=2026-10-07T07%3A12%3A50Z&sks=b&skv=2026-02-06&sig=fIzTFkcUNfxQcwsR4YW5St0jgAEo3pAnycqjOT5VxME%3D' -o assets/images/giant-cornhole-game-1.webp
-          test "$(find assets/images -maxdepth 1 -name 'giant-*-game-1.webp' | wc -l)" -eq 6
+          curl -LfsS 'https://sdmntprpolandcentral.oaiusercontent.com/files/00000000-a66c-820a-a70a-1ba607d23d69/raw?se=2026-10-06T19%3A20%3A18Z&sp=r&sv=2026-02-06&sr=b&scid=be383f76-6635-54cb-b4bd-174c5f2e7658&skoid=d4d17077-8f33-42a9-bd8b-aa9d5eaf5320&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T16%3A08%3A48Z&ske=2026-10-07T16%3A08%3A48Z&sks=b&skv=2026-02-06&sig=O6T1k7ONgFgrza2onAeJCBxGWxF%2B3iQcG5AfZ3yU5VA%3D' -o assets/images/giant-connect-four-game-2.webp
+          curl -LfsS 'https://sdmntpritalynorth.oaiusercontent.com/files/00000000-77e4-8246-b3b6-a356cac81baa/raw?se=2026-10-06T19%3A20%3A35Z&sp=r&sv=2026-02-06&sr=b&scid=023db104-efdb-5082-a7dc-90e8a2ec0dd7&skoid=82a3371f-2f6c-4f81-8a78-2701b362559b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T00%3A08%3A47Z&ske=2026-10-07T00%3A08%3A47Z&sks=b&skv=2026-02-06&sig=pZIJ4wEECdjWDSWWvuH6XJvZSi82HLa8n/gBtvXRMdA%3D' -o assets/images/giant-noughts-and-crosses-game-2.webp
+          curl -LfsS 'https://sdmntpritalynorth.oaiusercontent.com/files/00000000-b4fc-8246-8fa0-d358288d15bf/raw?se=2026-10-06T19%3A20%3A52Z&sp=r&sv=2026-02-06&sr=b&scid=e960b372-0990-592e-958a-035cceba982e&skoid=82a3371f-2f6c-4f81-8a78-2701b362559b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T05%3A14%3A27Z&ske=2026-10-07T05%3A14%3A27Z&sks=b&skv=2026-02-06&sig=89oy8cNnthIKOYD3z//kwBXuj4mV4f2VB0FmdxPTg3Y%3D' -o assets/images/giant-tumbling-blocks-game-2.webp
+          curl -LfsS 'https://sdmntpritalynorth.oaiusercontent.com/files/00000000-db38-8246-ac2e-3bea2899091a/raw?se=2026-10-06T19%3A21%3A13Z&sp=r&sv=2026-02-06&sr=b&scid=d2e371ef-7788-52de-b303-2c9fec2adfab&skoid=82a3371f-2f6c-4f81-8a78-2701b362559b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T01%3A50%3A42Z&ske=2026-10-07T01%3A50%3A42Z&sks=b&skv=2026-02-06&sig=U%2B%2BwFcluzMzIE/JzXWoRbdC9cdO3A6OdGlNjjpicMD0%3D' -o assets/images/giant-dominoes-game-2.webp
+          curl -LfsS 'https://sdmntprukwest.oaiusercontent.com/files/00000000-f564-8243-ab89-428f96b8652f/raw?se=2026-10-06T19%3A21%3A30Z&sp=r&sv=2026-02-06&sr=b&scid=d934102b-3ae0-5b52-8726-870ac0409c01&skoid=6658dbdd-f305-4d30-8f6b-d62218202cb9&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T08%3A49%3A42Z&ske=2026-10-07T08%3A49%3A42Z&sks=b&skv=2026-02-06&sig=1T48J8eFY32Fyjuwg871jpM2OHF6Qq1hEOoS0D0QeIg%3D' -o assets/images/giant-ring-toss-game-2.webp
+          curl -LfsS 'https://sdmntprdenmarkeast.oaiusercontent.com/files/00000000-fd6c-8210-ba03-a6ba34836910/raw?se=2026-10-06T19%3A21%3A53Z&sp=r&sv=2026-02-06&sr=b&scid=e3cb041f-c68a-500d-b5c8-021ecf7fdecb&skoid=0a4a0f0c-99ac-4752-9d87-cfac036fa93f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-06T06%3A17%3A43Z&ske=2026-10-07T06%3A17%3A43Z&sks=b&skv=2026-02-06&sig=6q4uukFVhyJ3bK%2BPX6Id1I0hSBAFflkNtwMc2JaUIlU%3D' -o assets/images/giant-cornhole-game-2.webp
+          test "$(find assets/images -maxdepth 1 -name 'giant-*-game-2.webp' | wc -l)" -eq 6
 
       - name: Commit image assets
         shell: bash
@@ -38,6 +38,6 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add assets/images/giant-*-game-1.webp
-          git commit -m 'Add primary real game WebP assets'
+          git add assets/images/giant-*-game-2.webp
+          git commit -m 'Add secondary real game WebP assets'
           git push origin HEAD:real-game-images
