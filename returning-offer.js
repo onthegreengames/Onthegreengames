@@ -7,6 +7,7 @@
   var STORAGE = {
     firstSeen: 'otgg_first_seen_v1',
     lastSeen: 'otgg_last_seen_v1',
+    session: 'otgg_visit_session_v1',
     dismissed: 'otgg_birdie40_dismissed_v1',
     booked: 'otgg_customer_booked_v1',
     usedCode: 'otgg_birdie40_used_v1'
@@ -18,6 +19,14 @@
 
   function safeSet(key, value) {
     try { window.localStorage.setItem(key, value); } catch (e) {}
+  }
+
+  function safeSessionGet(key) {
+    try { return window.sessionStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  function safeSessionSet(key, value) {
+    try { window.sessionStorage.setItem(key, value); } catch (e) {}
   }
 
   function normalisePath() {
@@ -61,7 +70,9 @@
       '.otgg-return-offer.is-open .otgg-return-offer__card{transform:translateY(0) scale(1)}',
       '.otgg-return-offer__close{position:absolute;right:16px;top:14px;width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:#FAF3E6;font:300 31px/34px Inter,sans-serif;cursor:pointer;opacity:.82}',
       '.otgg-return-offer__close:hover{background:rgba(255,255,255,.08);opacity:1}',
-      '.otgg-return-offer__mark{width:44px;height:44px;margin:0 auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(231,206,155,.12);border:1px solid rgba(231,206,155,.28);color:#E7CE9B;font:700 24px/1 Georgia,serif}',
+      '.otgg-return-offer__mark{position:relative;width:44px;height:44px;margin:0 auto 14px;border-radius:50%;background:rgba(231,206,155,.12);border:1px solid rgba(231,206,155,.28)}',
+      '.otgg-return-offer__mark::before{content:"";position:absolute;left:16px;top:9px;width:2px;height:25px;border-radius:2px;background:#E7CE9B}',
+      '.otgg-return-offer__mark::after{content:"";position:absolute;left:18px;top:10px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:14px solid #E7CE9B}',
       '.otgg-return-offer__title{margin:0;font-family:"Playfair Display",serif;font-size:35px;line-height:1.12;font-weight:600;letter-spacing:-.02em;color:#FAF3E6}',
       '.otgg-return-offer__intro{margin:12px auto 23px;max-width:330px;font:400 15px/1.55 Inter,sans-serif;color:rgba(250,243,230,.82)}',
       '.otgg-return-offer__deal{border:1px solid rgba(231,206,155,.55);border-radius:15px;padding:19px 20px 18px;background:rgba(255,255,255,.035)}',
@@ -91,7 +102,7 @@
     overlay.innerHTML = [
       '<section class="otgg-return-offer__card" role="dialog" aria-modal="true" aria-labelledby="otggReturnOfferTitle" aria-describedby="otggReturnOfferIntro">',
       '<button class="otgg-return-offer__close" type="button" aria-label="Close offer">&times;</button>',
-      '<div class="otgg-return-offer__mark" aria-hidden="true">⚑</div>',
+      '<div class="otgg-return-offer__mark" aria-hidden="true"></div>',
       '<h2 class="otgg-return-offer__title" id="otggReturnOfferTitle">Still thinking it over?</h2>',
       '<p class="otgg-return-offer__intro" id="otggReturnOfferIntro">We’d love to have you with us.</p>',
       '<div class="otgg-return-offer__deal">',
@@ -193,15 +204,18 @@
     var now = Date.now();
     var firstSeen = parseInt(safeGet(STORAGE.firstSeen), 10);
     var lastSeen = parseInt(safeGet(STORAGE.lastSeen), 10);
+    var activeSession = safeSessionGet(STORAGE.session) === '1';
 
     if (!firstSeen) {
       safeSet(STORAGE.firstSeen, String(now));
       safeSet(STORAGE.lastSeen, String(now));
+      safeSessionSet(STORAGE.session, '1');
       return;
     }
 
-    var isReturningVisit = !!lastSeen && (now - lastSeen >= RETURN_GAP_MS);
+    var isReturningVisit = !activeSession && !!lastSeen && (now - lastSeen >= RETURN_GAP_MS);
     safeSet(STORAGE.lastSeen, String(now));
+    safeSessionSet(STORAGE.session, '1');
 
     if (!isReturningVisit || isBookingFlow(path)) return;
     if (safeGet(STORAGE.dismissed) === '1' || safeGet(STORAGE.booked) === '1' || safeGet(STORAGE.usedCode) === '1') return;
