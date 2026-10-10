@@ -4,6 +4,10 @@
   var OFFER_CODE = 'BIRDIE40';
   var RETURN_GAP_MS = 30 * 60 * 1000;
   var SHOW_DELAY_MS = 4000;
+  var CONSENT_STORAGE_KEY = 'otgg_cookie_consent_v1';
+  var CONSENT_VERSION = 2;
+  var TRACK_URL = '/.netlify/functions/track-returning-offer';
+  var initialisedForConsent = false;
   var STORAGE = {
     firstSeen: 'otgg_first_seen_v1',
     lastSeen: 'otgg_last_seen_v1',
@@ -21,6 +25,10 @@
     try { window.localStorage.setItem(key, value); } catch (e) {}
   }
 
+  function safeRemove(key) {
+    try { window.localStorage.removeItem(key); } catch (e) {}
+  }
+
   function safeSessionGet(key) {
     try { return window.sessionStorage.getItem(key); } catch (e) { return null; }
   }
@@ -29,8 +37,73 @@
     try { window.sessionStorage.setItem(key, value); } catch (e) {}
   }
 
+  function safeSessionRemove(key) {
+    try { window.sessionStorage.removeItem(key); } catch (e) {}
+  }
+
   function normalisePath() {
     return (window.location.pathname || '/').toLowerCase().replace(/\.html$/, '').replace(/\/$/, '') || '/';
+  }
+
+  function personalisationAllowed() {
+    try {
+      if (window.OTGGConsent && typeof window.OTGGConsent.getChoice === 'function') {
+        return Boolean(window.OTGGConsent.getChoice().personalisation);
+      }
+    } catch (e) {}
+
+    try {
+      var raw = window.localStorage.getItem(CONSENT_STORAGE_KEY);
+      if (!raw) return false;
+      var saved = JSON.parse(raw);
+      return Boolean(saved && saved.version === CONSENT_VERSION && saved.personalisation === true);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function clearOfferStorage() {
+    safeRemove(STORAGE.firstSeen);
+    safeRemove(STORAGE.lastSeen);
+    safeRemove(STORAGE.dismissed);
+    safeRemove(STORAGE.booked);
+    safeRemove(STORAGE.usedCode);
+    safeSessionRemove(STORAGE.session);
+  }
+
+  function removeOpenOffer() {
+    var overlay = document.querySelector('.otgg-return-offer');
+    if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
+    document.body.classList.remove('otgg-offer-open');
+  }
+
+  function makeUuid() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') return window.crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (char) {
+      var random = Math.random() * 16 | 0;
+      var value = char === 'x' ? random : (random & 0x3 | 0x8);
+      return value.toString(16);
+    });
+  }
+
+  function trackEvent(eventType, impressionId, eventDetail) {
+    if (!personalisationAllowed() || !impressionId) return;
+    var payload = JSON.stringify({
+      impressionId: impressionId,
+      eventType: eventType,
+      eventDetail: eventDetail || null,
+      pagePath: normalisePath()
+    });
+
+    try {
+      fetch(TRACK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true,
+        credentials: 'same-origin'
+      }).catch(function () {});
+    } catch (e) {}
   }
 
   function isBookingFlow(path) {
@@ -96,8 +169,10 @@
   }
 
   function createOffer() {
+    if (!personalisationAllowed()) return;
     injectStyles();
 
+    var impressionId = makeUuid();
     var overlay = document.createElement('div');
     overlay.className = 'otgg-return-offer';
     overlay.setAttribute('role', 'presentation');
@@ -129,8 +204,11 @@
     var live = overlay.querySelector('.otgg-return-offer__sr');
     var previousFocus = document.activeElement;
 
-    function closeOffer(markDismissed) {
-      if (markDismissed) safeSet(STORAGE.dismissed, '1');
+    function closeOffer(markDismissed, reason) {
+      if (markDismissed) {
+        safeSet(STORAGE.dismissed, '1');
+        trackEvent('dismiss', impressionId, reason || 'closed');
+      }
       overlay.classList.remove('is-open');
       document.body.classList.remove('otgg-offer-open');
       window.setTimeout(function () {
@@ -139,10 +217,15 @@
       }, 230);
     }
 
-    closeButton.addEventListener('click', function () { closeOffer(true); });
-    cta.addEventListener('click', function () { safeSet(STORAGE.dismissed, '1'); });
+    closeButton.addEventListener('click', function () { closeOffer(true, 'close_button'); });
+    cta.addEventListener('click', function () {
+      safeSet(STORAGE.dismissed, '1');
+      trackEvent('book_now_click', impressionId, 'cta');
+    });
 
     copyButton.addEventListener('click', function () {
+      trackEvent('copy_code_click', impressionId, 'copy_button');
+
       function copied() {
         copyButton.textContent = 'Copied';
         live.textContent = 'Promo code BIRDIE40 copied.';
@@ -165,7 +248,7 @@
     });
 
     overlay.addEventListener('click', function (event) {
-      if (event.target === overlay) closeOffer(true);
+      if (event.target === overlay) closeOffer(true, 'backdrop');
     });
 
     document.addEventListener('keydown', function onKeydown(event) {
@@ -175,7 +258,7 @@
       }
       if (event.key === 'Escape') {
         event.preventDefault();
-        closeOffer(true);
+        closeOffer(true, 'escape');
       }
       if (event.key === 'Tab') {
         var focusable = Array.prototype.slice.call(overlay.querySelectorAll('button, a[href]'));
@@ -193,9 +276,14 @@
     });
 
     requestAnimationFrame(function () {
+      if (!personalisationAllowed()) {
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        return;
+      }
       overlay.classList.add('is-open');
       document.body.classList.add('otgg-offer-open');
       closeButton.focus();
+      trackEvent('impression', impressionId, 'shown');
     });
   }
 
@@ -224,6 +312,7 @@
 
     window.setTimeout(function () {
       function showOfferWhenVisible() {
+        if (!personalisationAllowed()) return;
         if (document.querySelector('.otgg-return-offer')) return;
         if (document.visibilityState === 'hidden') {
           document.addEventListener('visibilitychange', showOfferWhenVisible, { once: true });
@@ -235,9 +324,32 @@
     }, SHOW_DELAY_MS);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, { once: true });
-  } else {
+  function startForConsent() {
+    if (!personalisationAllowed()) {
+      clearOfferStorage();
+      removeOpenOffer();
+      initialisedForConsent = false;
+      return;
+    }
+    if (initialisedForConsent) return;
+    initialisedForConsent = true;
     init();
+  }
+
+  window.addEventListener('otgg:consent-changed', function (event) {
+    var choice = event && event.detail && event.detail.choice;
+    if (!choice || !choice.personalisation) {
+      clearOfferStorage();
+      removeOpenOffer();
+      initialisedForConsent = false;
+      return;
+    }
+    startForConsent();
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startForConsent, { once: true });
+  } else {
+    startForConsent();
   }
 })();
