@@ -3,7 +3,7 @@
 
   var OFFER_CODE = 'BIRDIE40';
   var RETURN_GAP_MS = 30 * 60 * 1000;
-  var SHOW_DELAY_MS = 6500;
+  var SHOW_DELAY_MS = 4000;
   var STORAGE = {
     firstSeen: 'otgg_first_seen_v1',
     lastSeen: 'otgg_last_seen_v1',
