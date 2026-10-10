@@ -46,3 +46,12 @@ document.addEventListener('DOMContentLoaded', function () {
     toggleShadow();
   }
 });
+
+(function () {
+  if (document.querySelector('script[data-otgg-site-analytics]')) return;
+  var script = document.createElement('script');
+  script.src = '/site-analytics.js';
+  script.async = true;
+  script.setAttribute('data-otgg-site-analytics', '');
+  document.head.appendChild(script);
+})();
