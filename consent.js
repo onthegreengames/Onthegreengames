@@ -102,7 +102,7 @@
       <div class="cookie-banner" id="cookieBanner" role="region" aria-label="Cookie choices" hidden>
         <div class="cookie-banner__copy">
           <div class="cookie-banner__title">Cookies &amp; privacy</div>
-          <p>We use optional personalisation storage to remember previous visits and show relevant offers, analytics cookies to understand how the website is used, and advertising measurement cookies to tell us whether Google Ads lead to bookings. We do not use these for personalised advertising.</p>
+          <p>We use optional personalisation storage to remember previous visits and show relevant offers, analytics storage and cookies to understand how the website is used, and advertising measurement cookies to tell us whether Google Ads lead to bookings. We do not use these for personalised advertising.</p>
           <a href="/privacy">Privacy &amp; cookie policy</a>
         </div>
         <div class="cookie-banner__actions">
@@ -138,7 +138,7 @@
           <label class="cookie-choice" for="cookieAnalytics">
             <div>
               <div class="cookie-choice__title">Analytics</div>
-              <p>Allows Google Analytics to help us understand visits, popular pages and how the website is used.</p>
+              <p>Allows our first-party analytics and Google Analytics to help us understand visits, journeys through the site, popular pages and what leads to bookings.</p>
             </div>
             <input id="cookieAnalytics" type="checkbox">
           </label>
