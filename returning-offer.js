@@ -44,19 +44,21 @@
 
   function markBookingState(path) {
     if (path === '/booking-confirmed') safeSet(STORAGE.booked, '1');
+    if (path !== '/booking') return;
 
-    document.addEventListener('input', function (event) {
-      var target = event.target;
-      if (!target || !target.matches || !target.matches('#promoCodeInput, input[name*="promo" i], input[id*="promo" i]')) return;
-      if (String(target.value || '').trim().toUpperCase() === OFFER_CODE) safeSet(STORAGE.usedCode, '1');
-    });
+    var promoMessage = document.getElementById('promoMessage');
+    var promoInput = document.getElementById('promoCodeInput');
+    if (!promoMessage || !promoInput || !('MutationObserver' in window)) return;
 
-    document.addEventListener('click', function (event) {
-      var button = event.target && event.target.closest ? event.target.closest('#promoApplyBtn, .promo-apply') : null;
-      if (!button) return;
-      var input = document.querySelector('#promoCodeInput, input[name*="promo" i], input[id*="promo" i]');
-      if (input && String(input.value || '').trim().toUpperCase() === OFFER_CODE) safeSet(STORAGE.usedCode, '1');
-    });
+    function markIfSuccessfullyApplied() {
+      var code = String(promoInput.value || '').trim().toUpperCase();
+      var success = promoMessage.classList.contains('show') && promoMessage.classList.contains('success');
+      if (success && code === OFFER_CODE) safeSet(STORAGE.usedCode, '1');
+    }
+
+    var promoObserver = new MutationObserver(markIfSuccessfullyApplied);
+    promoObserver.observe(promoMessage, { attributes: true, childList: true, subtree: true });
+    markIfSuccessfullyApplied();
   }
 
   function injectStyles() {
@@ -221,9 +223,15 @@
     if (safeGet(STORAGE.dismissed) === '1' || safeGet(STORAGE.booked) === '1' || safeGet(STORAGE.usedCode) === '1') return;
 
     window.setTimeout(function () {
-      if (document.visibilityState === 'hidden') return;
-      if (document.querySelector('.otgg-return-offer')) return;
-      createOffer();
+      function showOfferWhenVisible() {
+        if (document.querySelector('.otgg-return-offer')) return;
+        if (document.visibilityState === 'hidden') {
+          document.addEventListener('visibilitychange', showOfferWhenVisible, { once: true });
+          return;
+        }
+        createOffer();
+      }
+      showOfferWhenVisible();
     }, SHOW_DELAY_MS);
   }
 
