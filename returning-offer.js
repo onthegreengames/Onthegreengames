@@ -294,18 +294,15 @@
     var now = Date.now();
     var firstSeen = parseInt(safeGet(STORAGE.firstSeen), 10);
     var lastSeen = parseInt(safeGet(STORAGE.lastSeen), 10);
-    var activeSession = safeSessionGet(STORAGE.session) === '1';
 
     if (!firstSeen) {
       safeSet(STORAGE.firstSeen, String(now));
       safeSet(STORAGE.lastSeen, String(now));
-      safeSessionSet(STORAGE.session, '1');
       return;
     }
 
-    var isReturningVisit = !activeSession && !!lastSeen && (now - lastSeen >= RETURN_GAP_MS);
+    var isReturningVisit = !!lastSeen && (now - lastSeen >= RETURN_GAP_MS);
     safeSet(STORAGE.lastSeen, String(now));
-    safeSessionSet(STORAGE.session, '1');
 
     if (!isReturningVisit || isBookingFlow(path)) return;
     if (safeGet(STORAGE.dismissed) === '1' || safeGet(STORAGE.booked) === '1' || safeGet(STORAGE.usedCode) === '1') return;
