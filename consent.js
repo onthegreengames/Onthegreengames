@@ -2,7 +2,7 @@
   'use strict';
 
   const STORAGE_KEY = 'otgg_cookie_consent_v1';
-  const CONSENT_VERSION = 1;
+  const CONSENT_VERSION = 2;
   const MAX_AGE_MS = 180 * 24 * 60 * 60 * 1000;
 
   window.dataLayer = window.dataLayer || [];
@@ -12,6 +12,7 @@
 
   function normaliseChoice(choice) {
     return {
+      personalisation: Boolean(choice && choice.personalisation),
       analytics: Boolean(choice && choice.analytics),
       advertising: Boolean(choice && choice.advertising)
     };
@@ -47,6 +48,7 @@
   }
 
   const storedChoice = readStoredChoice();
+  let activeChoice = storedChoice;
   window.gtag('consent', 'default', consentPayload(storedChoice));
   window.gtag('set', 'ads_data_redaction', true);
 
@@ -75,10 +77,12 @@
 
   function saveChoice(choice) {
     const current = normaliseChoice(choice);
+    activeChoice = current;
     try {
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify({
         version: CONSENT_VERSION,
         savedAt: Date.now(),
+        personalisation: current.personalisation,
         analytics: current.analytics,
         advertising: current.advertising
       }));
@@ -87,6 +91,7 @@
     }
     window.gtag('consent', 'update', consentPayload(current));
     clearDisallowedGoogleCookies(current);
+    window.dispatchEvent(new CustomEvent('otgg:consent-changed', { detail: { choice: current } }));
     return current;
   }
 
@@ -97,7 +102,7 @@
       <div class="cookie-banner" id="cookieBanner" role="region" aria-label="Cookie choices" hidden>
         <div class="cookie-banner__copy">
           <div class="cookie-banner__title">Cookies &amp; privacy</div>
-          <p>We use optional analytics cookies to understand how the website is used and advertising measurement cookies to tell us whether Google Ads lead to bookings. We do not use these for personalised advertising.</p>
+          <p>We use optional personalisation storage to remember previous visits and show relevant offers, analytics cookies to understand how the website is used, and advertising measurement cookies to tell us whether Google Ads lead to bookings. We do not use these for personalised advertising.</p>
           <a href="/privacy">Privacy &amp; cookie policy</a>
         </div>
         <div class="cookie-banner__actions">
@@ -121,6 +126,14 @@
             </div>
             <span class="cookie-always-on">Always on</span>
           </div>
+
+          <label class="cookie-choice" for="cookiePersonalisation">
+            <div>
+              <div class="cookie-choice__title">Personalisation</div>
+              <p>Allows us to remember that you have visited before so we can show relevant on-site offers, and to record anonymous interaction counts for those offers.</p>
+            </div>
+            <input id="cookiePersonalisation" type="checkbox">
+          </label>
 
           <label class="cookie-choice" for="cookieAnalytics">
             <div>
@@ -150,12 +163,13 @@
 
     const banner = root.querySelector('#cookieBanner');
     const backdrop = root.querySelector('#cookieModalBackdrop');
+    const personalisationCheckbox = root.querySelector('#cookiePersonalisation');
     const analyticsCheckbox = root.querySelector('#cookieAnalytics');
     const advertisingCheckbox = root.querySelector('#cookieAdvertising');
     let lastFocusedElement = null;
 
     function currentChoice() {
-      return readStoredChoice() || { analytics: false, advertising: false };
+      return activeChoice || { personalisation: false, analytics: false, advertising: false };
     }
 
     function hideBanner() {
@@ -168,6 +182,7 @@
 
     function openPreferences() {
       const choice = currentChoice();
+      personalisationCheckbox.checked = choice.personalisation;
       analyticsCheckbox.checked = choice.analytics;
       advertisingCheckbox.checked = choice.advertising;
       lastFocusedElement = document.activeElement;
@@ -193,13 +208,13 @@
 
     root.querySelectorAll('[data-consent-accept]').forEach(function (button) {
       button.addEventListener('click', function () {
-        applyAndClose({ analytics: true, advertising: true });
+        applyAndClose({ personalisation: true, analytics: true, advertising: true });
       });
     });
 
     root.querySelectorAll('[data-consent-reject]').forEach(function (button) {
       button.addEventListener('click', function () {
-        applyAndClose({ analytics: false, advertising: false });
+        applyAndClose({ personalisation: false, analytics: false, advertising: false });
       });
     });
 
@@ -214,6 +229,7 @@
     root.querySelectorAll('[data-consent-save]').forEach(function (button) {
       button.addEventListener('click', function () {
         applyAndClose({
+          personalisation: personalisationCheckbox.checked,
           analytics: analyticsCheckbox.checked,
           advertising: advertisingCheckbox.checked
         });
