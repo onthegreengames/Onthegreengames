@@ -1,0 +1,1 @@
+Homepage social preview image is intentionally served from /assets/images/home-wedding-games-mini-golf-1200.webp for compatibility with existing Open Graph metadata. The image content was updated to the Connect 4 asset on 2026-10-11.
