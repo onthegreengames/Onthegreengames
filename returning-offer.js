@@ -3,7 +3,6 @@
 
   var OFFER_CODE = 'BIRDIE40';
   var RETURN_GAP_MS = 30 * 60 * 1000;
-  var SHOW_DELAY_MS = 4000;
   var CONSENT_STORAGE_KEY = 'otgg_cookie_consent_v1';
   var CONSENT_VERSION = 2;
   var TRACK_URL = '/.netlify/functions/track-returning-offer';
@@ -307,18 +306,17 @@
     if (!isReturningVisit || isBookingFlow(path)) return;
     if (safeGet(STORAGE.dismissed) === '1' || safeGet(STORAGE.booked) === '1' || safeGet(STORAGE.usedCode) === '1') return;
 
-    window.setTimeout(function () {
-      function showOfferWhenVisible() {
-        if (!personalisationAllowed()) return;
-        if (document.querySelector('.otgg-return-offer')) return;
-        if (document.visibilityState === 'hidden') {
-          document.addEventListener('visibilitychange', showOfferWhenVisible, { once: true });
-          return;
-        }
-        createOffer();
+    function showOfferWhenVisible() {
+      if (!personalisationAllowed()) return;
+      if (document.querySelector('.otgg-return-offer')) return;
+      if (document.visibilityState === 'hidden') {
+        document.addEventListener('visibilitychange', showOfferWhenVisible, { once: true });
+        return;
       }
-      showOfferWhenVisible();
-    }, SHOW_DELAY_MS);
+      createOffer();
+    }
+
+    showOfferWhenVisible();
   }
 
   function startForConsent() {
