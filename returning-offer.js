@@ -3,6 +3,7 @@
 
   var OFFER_CODE = 'BIRDIE40';
   var RETURN_GAP_MS = 30 * 60 * 1000;
+  var MAX_OFFER_SHOWS = 3;
   var CONSENT_STORAGE_KEY = 'otgg_cookie_consent_v1';
   var CONSENT_VERSION = 2;
   var TRACK_URL = '/.netlify/functions/track-returning-offer';
@@ -11,7 +12,8 @@
     firstSeen: 'otgg_first_seen_v1',
     lastSeen: 'otgg_last_seen_v1',
     session: 'otgg_visit_session_v1',
-    dismissed: 'otgg_birdie40_dismissed_v1',
+    showCount: 'otgg_birdie40_show_count_v1',
+    legacyDismissed: 'otgg_birdie40_dismissed_v1',
     booked: 'otgg_customer_booked_v1',
     usedCode: 'otgg_birdie40_used_v1'
   };
@@ -61,10 +63,26 @@
     }
   }
 
+  function getOfferShowCount() {
+    var raw = parseInt(safeGet(STORAGE.showCount), 10);
+    if (!isNaN(raw) && raw >= 0) return Math.min(raw, MAX_OFFER_SHOWS);
+
+    var migratedCount = safeGet(STORAGE.legacyDismissed) === '1' ? 1 : 0;
+    safeSet(STORAGE.showCount, String(migratedCount));
+    safeRemove(STORAGE.legacyDismissed);
+    return migratedCount;
+  }
+
+  function incrementOfferShowCount() {
+    var current = getOfferShowCount();
+    if (current < MAX_OFFER_SHOWS) safeSet(STORAGE.showCount, String(current + 1));
+  }
+
   function clearOfferStorage() {
     safeRemove(STORAGE.firstSeen);
     safeRemove(STORAGE.lastSeen);
-    safeRemove(STORAGE.dismissed);
+    safeRemove(STORAGE.showCount);
+    safeRemove(STORAGE.legacyDismissed);
     safeRemove(STORAGE.booked);
     safeRemove(STORAGE.usedCode);
     safeSessionRemove(STORAGE.session);
@@ -168,7 +186,7 @@
   }
 
   function createOffer() {
-    if (!personalisationAllowed()) return;
+    if (!personalisationAllowed() || getOfferShowCount() >= MAX_OFFER_SHOWS) return;
     injectStyles();
 
     var impressionId = makeUuid();
@@ -204,10 +222,7 @@
     var previousFocus = document.activeElement;
 
     function closeOffer(markDismissed, reason) {
-      if (markDismissed) {
-        safeSet(STORAGE.dismissed, '1');
-        trackEvent('dismiss', impressionId, reason || 'closed');
-      }
+      if (markDismissed) trackEvent('dismiss', impressionId, reason || 'closed');
       overlay.classList.remove('is-open');
       document.body.classList.remove('otgg-offer-open');
       window.setTimeout(function () {
@@ -218,7 +233,6 @@
 
     closeButton.addEventListener('click', function () { closeOffer(true, 'close_button'); });
     cta.addEventListener('click', function () {
-      safeSet(STORAGE.dismissed, '1');
       trackEvent('book_now_click', impressionId, 'cta');
     });
 
@@ -282,6 +296,7 @@
       overlay.classList.add('is-open');
       document.body.classList.add('otgg-offer-open');
       closeButton.focus();
+      incrementOfferShowCount();
       trackEvent('impression', impressionId, 'shown');
     });
   }
@@ -304,7 +319,8 @@
     safeSet(STORAGE.lastSeen, String(now));
 
     if (!isReturningVisit || isBookingFlow(path)) return;
-    if (safeGet(STORAGE.dismissed) === '1' || safeGet(STORAGE.booked) === '1' || safeGet(STORAGE.usedCode) === '1') return;
+    if (safeGet(STORAGE.booked) === '1' || safeGet(STORAGE.usedCode) === '1') return;
+    if (getOfferShowCount() >= MAX_OFFER_SHOWS) return;
 
     function showOfferWhenVisible() {
       if (!personalisationAllowed()) return;
