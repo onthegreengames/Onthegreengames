@@ -124,9 +124,10 @@ document.addEventListener('DOMContentLoaded', function () {
       var marketingStyles = document.createElement('style');
       marketingStyles.id = 'otgg-marketing-optout-styles';
       marketingStyles.textContent = [
-        '.otgg-marketing-optout{display:flex;align-items:flex-start;gap:9px;margin-top:10px;font-size:12.5px;line-height:1.5;font-weight:400;color:rgba(27,42,32,.65);cursor:pointer;}',
-        '.otgg-marketing-optout input{width:16px;height:16px;margin:1px 0 0;flex:none;accent-color:var(--green-deep);}',
-        '.otgg-marketing-optout a{color:inherit;font-weight:inherit;text-decoration:underline;text-underline-offset:2px;}'
+        '.field label.otgg-marketing-optout{display:flex;align-items:flex-start;gap:9px;margin-top:10px;margin-bottom:0;font-size:12.5px;line-height:1.5;font-weight:400;color:rgba(27,42,32,0.65);cursor:pointer;}',
+        '.field label.otgg-marketing-optout span{font-size:12.5px;line-height:1.5;font-weight:400;color:rgba(27,42,32,0.65);}',
+        '.field label.otgg-marketing-optout input{width:16px;height:16px;margin:1px 0 0;flex:none;accent-color:var(--green-deep);}',
+        '.field label.otgg-marketing-optout a{color:inherit;font-size:inherit;font-weight:inherit;line-height:inherit;text-decoration:underline;text-underline-offset:2px;}'
       ].join('\n');
       document.head.appendChild(marketingStyles);
     }
