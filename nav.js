@@ -124,10 +124,9 @@ document.addEventListener('DOMContentLoaded', function () {
       var marketingStyles = document.createElement('style');
       marketingStyles.id = 'otgg-marketing-optout-styles';
       marketingStyles.textContent = [
-        '.otgg-marketing-optout{display:flex;align-items:flex-start;gap:9px;margin-top:10px;font-size:12px;line-height:1.5;color:rgba(27,42,32,.68);cursor:pointer;}',
+        '.otgg-marketing-optout{display:flex;align-items:flex-start;gap:9px;margin-top:10px;font-size:12.5px;line-height:1.5;font-weight:400;color:rgba(27,42,32,.65);cursor:pointer;}',
         '.otgg-marketing-optout input{width:16px;height:16px;margin:1px 0 0;flex:none;accent-color:var(--green-deep);}',
-        '.otgg-marketing-optout a{color:var(--green-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px;}',
-        '.otgg-marketing-optout strong{color:var(--ink);font-weight:600;}'
+        '.otgg-marketing-optout a{color:inherit;font-weight:inherit;text-decoration:underline;text-underline-offset:2px;}'
       ].join('\n');
       document.head.appendChild(marketingStyles);
     }
@@ -136,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
     marketingOptOut.className = 'otgg-marketing-optout';
     marketingOptOut.setAttribute('for', 'fMarketingOptOut');
     marketingOptOut.innerHTML = '<input id="fMarketingOptOut" type="checkbox">' +
-      '<span><strong>No marketing emails, please.</strong> Tick this box if you do not want us to email you about an unfinished booking, similar services or occasional offers. You can opt out at any time. <a href="/privacy" target="_blank" rel="noopener">Privacy policy</a>.</span>';
+      '<span>Tick this box if you do not want us to email you about an unfinished booking, similar services or occasional offers. You can opt out at any time. <a href="/privacy" target="_blank" rel="noopener">Privacy policy</a>.</span>';
     emailField.appendChild(marketingOptOut);
 
     // booking.html already sends customer.marketing_opt_in to create-booking-v3.
