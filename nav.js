@@ -115,6 +115,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }).join('');
     links.appendChild(mobileSocials);
   }
+
+  // Booking-page marketing preference. PECR soft opt-in requires a clear
+  // opportunity to refuse marketing when the email address is collected.
+  var emailField = document.getElementById('emailField');
+  if (emailField && !document.getElementById('fMarketingOptOut')) {
+    if (!document.getElementById('otgg-marketing-optout-styles')) {
+      var marketingStyles = document.createElement('style');
+      marketingStyles.id = 'otgg-marketing-optout-styles';
+      marketingStyles.textContent = [
+        '.otgg-marketing-optout{display:flex;align-items:flex-start;gap:9px;margin-top:10px;font-size:12px;line-height:1.5;color:rgba(27,42,32,.68);cursor:pointer;}',
+        '.otgg-marketing-optout input{width:16px;height:16px;margin:1px 0 0;flex:none;accent-color:var(--green-deep);}',
+        '.otgg-marketing-optout a{color:var(--green-deep);font-weight:600;text-decoration:underline;text-underline-offset:2px;}',
+        '.otgg-marketing-optout strong{color:var(--ink);font-weight:600;}'
+      ].join('\n');
+      document.head.appendChild(marketingStyles);
+    }
+
+    var marketingOptOut = document.createElement('label');
+    marketingOptOut.className = 'otgg-marketing-optout';
+    marketingOptOut.setAttribute('for', 'fMarketingOptOut');
+    marketingOptOut.innerHTML = '<input id="fMarketingOptOut" type="checkbox">' +
+      '<span><strong>No marketing emails, please.</strong> Tick this box if you do not want us to email you about an unfinished booking, similar services or occasional offers. You can opt out at any time. <a href="/privacy" target="_blank" rel="noopener">Privacy policy</a>.</span>';
+    emailField.appendChild(marketingOptOut);
+
+    // booking.html already sends customer.marketing_opt_in to create-booking-v3.
+    // It is currently hard-coded false, so adjust only that booking request to
+    // reflect the customer's opt-out choice without affecting any other fetch.
+    var nativeFetch = window.fetch.bind(window);
+    window.fetch = function (input, init) {
+      try {
+        var url = typeof input === 'string' ? input : (input && input.url) || '';
+        if (url.indexOf('/.netlify/functions/create-booking-v3') !== -1 && init && typeof init.body === 'string') {
+          var payload = JSON.parse(init.body);
+          if (payload && payload.customer) {
+            payload.customer.marketing_opt_in = !document.getElementById('fMarketingOptOut').checked;
+            init = Object.assign({}, init, { body: JSON.stringify(payload) });
+          }
+        }
+      } catch (error) {
+        console.warn('Could not attach marketing preference to booking request.', error);
+      }
+      return nativeFetch(input, init);
+    };
+  }
 });
 
 (function () {
