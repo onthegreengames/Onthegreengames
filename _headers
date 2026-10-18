@@ -3,3 +3,11 @@
 
 /venue-partners.html
   X-Robots-Tag: noindex, nofollow, noarchive
+
+/planner
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+
+/planner/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
