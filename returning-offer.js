@@ -12,6 +12,7 @@
     firstSeen: 'otgg_first_seen_v1',
     lastSeen: 'otgg_last_seen_v1',
     session: 'otgg_visit_session_v1',
+    visit: 'otgg_birdie40_visit_v1',
     showCount: 'otgg_birdie40_show_count_v1',
     legacyDismissed: 'otgg_birdie40_dismissed_v1',
     booked: 'otgg_customer_booked_v1',
@@ -78,9 +79,29 @@
     if (current < MAX_OFFER_SHOWS) safeSet(STORAGE.showCount, String(current + 1));
   }
 
+  function readVisit() {
+    try {
+      var visit = JSON.parse(safeGet(STORAGE.visit) || 'null');
+      if (!visit || typeof visit !== 'object' || !Number.isInteger(visit.pageViews) || visit.pageViews < 1) return null;
+      return visit;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function markOfferShownForVisit() {
+    var visit = readVisit();
+    if (!visit || visit.offerShown || getOfferShowCount() >= MAX_OFFER_SHOWS) return false;
+    visit.offerShown = true;
+    safeSet(STORAGE.visit, JSON.stringify(visit));
+    incrementOfferShowCount();
+    return true;
+  }
+
   function clearOfferStorage() {
     safeRemove(STORAGE.firstSeen);
     safeRemove(STORAGE.lastSeen);
+    safeRemove(STORAGE.visit);
     safeRemove(STORAGE.showCount);
     safeRemove(STORAGE.legacyDismissed);
     safeRemove(STORAGE.booked);
@@ -293,10 +314,14 @@
         if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
         return;
       }
+      if (!markOfferShownForVisit()) {
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        document.body.classList.remove('otgg-offer-open');
+        return;
+      }
       overlay.classList.add('is-open');
       document.body.classList.add('otgg-offer-open');
       closeButton.focus();
-      incrementOfferShowCount();
       trackEvent('impression', impressionId, 'shown');
     });
   }
@@ -308,23 +333,35 @@
     var now = Date.now();
     var firstSeen = parseInt(safeGet(STORAGE.firstSeen), 10);
     var lastSeen = parseInt(safeGet(STORAGE.lastSeen), 10);
+    var isFirstVisit = !firstSeen;
+    var isNewVisit = isFirstVisit || !lastSeen || (now - lastSeen >= RETURN_GAP_MS);
+    var visit = isNewVisit ? null : readVisit();
 
-    if (!firstSeen) {
-      safeSet(STORAGE.firstSeen, String(now));
-      safeSet(STORAGE.lastSeen, String(now));
-      return;
+    if (!visit) {
+      visit = {
+        pageViews: 0,
+        isFirstVisit: isFirstVisit,
+        offerShown: false
+      };
     }
 
-    var isReturningVisit = !!lastSeen && (now - lastSeen >= RETURN_GAP_MS);
+    if (isFirstVisit) safeSet(STORAGE.firstSeen, String(now));
+    visit.pageViews += 1;
+    safeSet(STORAGE.visit, JSON.stringify(visit));
     safeSet(STORAGE.lastSeen, String(now));
 
-    if (!isReturningVisit || isBookingFlow(path)) return;
+    if (isBookingFlow(path)) return;
     if (safeGet(STORAGE.booked) === '1' || safeGet(STORAGE.usedCode) === '1') return;
-    if (getOfferShowCount() >= MAX_OFFER_SHOWS) return;
+    if (visit.offerShown || getOfferShowCount() >= MAX_OFFER_SHOWS) return;
+    // The first visit must reach its third page view. Later visits can show immediately.
+    if (visit.isFirstVisit && visit.pageViews < 3) return;
 
     function showOfferWhenVisible() {
       if (!personalisationAllowed()) return;
       if (document.querySelector('.otgg-return-offer')) return;
+      var currentVisit = readVisit();
+      if (!currentVisit || currentVisit.offerShown || getOfferShowCount() >= MAX_OFFER_SHOWS) return;
+      if (currentVisit.isFirstVisit && currentVisit.pageViews < 3) return;
       if (document.visibilityState === 'hidden') {
         document.addEventListener('visibilitychange', showOfferWhenVisible, { once: true });
         return;
