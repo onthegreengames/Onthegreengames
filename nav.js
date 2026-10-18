@@ -8,7 +8,9 @@
   function applyOctoberCampaign() {
     var banner = document.querySelector('.promo-bar-text');
     if (banner) {
-      banner.innerHTML = '<strong>50% OFF</strong> all wedding games &amp; mini golf hire booked by 31 October. Use code <span class="promo-code">OCT50</span> at checkout. <span class="promo-bar-fine">Ends 31 October 2026.</span>';
+      banner.innerHTML = '<strong>50% OFF</strong> all bookings until October 31st. Use code <span class="promo-code">OCT50</span> at checkout.';
+      var bannerLink = document.querySelector('.promo-bar-link');
+      if (bannerLink) bannerLink.remove();
     }
 
     var feature = document.querySelector('.promo-feature');
