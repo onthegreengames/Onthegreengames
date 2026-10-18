@@ -19,6 +19,71 @@
 @media(max-width:620px){.layout-even{grid-template-columns:1fr}.cards-3{grid-template-columns:1fr 1fr}}
 @media(max-width:390px){.cards-4{gap:8px}.metric{padding:13px}.metric-value{font-size:22px}.field-grid,.field-grid.two,.field-grid.four{grid-template-columns:1fr}.field-grid .field.full{grid-column:auto}.hero h1{font-size:32px}.content{padding-left:11px;padding-right:11px}}
 @media print{.sidebar,.topbar,.mobile-nav,.btn,.button-row,.hamburger,.field input,.field select,.modal-shade,.toast{display:none!important}.main{width:100%;margin:0}.content{max-width:none;padding:0}.panel,.metric,.hero{break-inside:avoid;box-shadow:none}.hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{background:white}.layout-2{grid-template-columns:1fr 1fr}.cards-4{grid-template-columns:repeat(4,1fr)}.table-wrap{overflow:visible}.table{min-width:auto}}
+
+/* A quieter, progress-first dashboard; financial workspace remains unchanged */
+.home-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:22px;padding:31px 36px;border-radius:20px;background:#153e32;color:white;margin-bottom:21px;overflow:hidden;position:relative}
+.home-hero:before{content:"";position:absolute;right:-55px;top:-100px;width:280px;height:280px;border:1px solid #ffffff16;border-radius:50%;box-shadow:0 0 0 40px #ffffff07,0 0 0 88px #ffffff05;pointer-events:none}
+.home-hero h1{font-family:Georgia,serif;font-weight:500;letter-spacing:-.035em;line-height:1.15;font-size:clamp(28px,3.4vw,43px);margin:7px 0 12px}
+.home-hero p{max-width:610px;margin:0;color:#d1e3d7;line-height:1.65;font-size:13px}
+.home-hero .eyebrow{color:#dbbe89}
+.home-live{display:flex;align-items:center;gap:8px;background:#ffffff17;border:1px solid #ffffff24;padding:11px 13px;border-radius:11px;color:#e8f4e9;font-size:11px;font-weight:700;white-space:nowrap;position:relative}
+.home-live-dot{height:8px;width:8px;border-radius:50%;background:#b7d49a;box-shadow:0 0 0 4px #b7d49a23;display:block}
+.home-section-line{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:25px 0 13px;flex-wrap:wrap}
+.home-section-line h2{font-family:Georgia,serif;font-weight:500;font-size:24px;margin:0;letter-spacing:-.035em}
+.home-section-line p{font-size:12px;color:var(--muted);margin:4px 0 0}
+.home-goals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.home-goal{border:1px solid var(--line);background:var(--paper);padding:24px 24px 22px;border-radius:18px;box-shadow:0 8px 25px #19362708}
+.home-goal-primary{border-top:4px solid #1b5543}
+.home-goal-future{border-top:4px solid var(--gold)}
+.home-goal-top{display:flex;gap:8px;align-items:center;justify-content:space-between;color:#5b6e62;font-weight:700;font-size:12px}
+.home-goal-top .home-icon{width:34px;height:34px;border-radius:9px;background:#eaf2ec;display:grid;place-items:center;color:#255b46}
+.home-goal-future .home-goal-top .home-icon{background:#fbf2df;color:#a4793a}
+.home-icon svg{width:18px;height:18px}
+.home-amount{display:flex;align-items:baseline;gap:8px;margin:19px 0 9px;color:#153c31;font-variant-numeric:tabular-nums}
+.home-amount strong{font:500 clamp(42px,5vw,58px)/1 Georgia,serif;letter-spacing:-.065em}
+.home-amount span{font-size:17px;color:#86938a}
+.home-goal-progress{height:12px;border-radius:99px;overflow:hidden;background:#e7eee6;position:relative}
+.home-goal-progress>span{display:block;height:100%;border-radius:99px;background:#295f49;transition:width .3s}
+.home-goal-future .home-goal-progress>span{background:#b99355}
+.home-goal-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:13px;font-size:12px;color:#637567}
+.home-goal-meta b{color:#244e3a}
+.home-goal-foot{margin:13px 0 0;color:#697a6e;font-size:11px;line-height:1.6}
+.home-target-adjust{display:inline-flex;align-items:center;gap:6px;border:1px solid #e1e9df;border-radius:9px;background:#f7faf5;padding:6px 9px;white-space:nowrap}
+.home-target-adjust label{font-size:11px;color:#566f5b}
+.home-target-adjust input{font-size:14px;font-weight:780;min-width:0;width:54px;padding:4px 5px;border:0;background:transparent;text-align:center;border-radius:4px;box-shadow:none;font-variant-numeric:tabular-nums}
+.home-target-adjust input:focus{outline:2px solid #b99355}
+.home-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:15px}
+.home-mini{border:1px solid var(--line);background:white;border-radius:15px;padding:19px 20px 17px}
+.home-mini small{display:block;color:#6c796f;font-size:11px;font-weight:700;line-height:1.4}
+.home-mini strong{display:block;margin:7px 0 3px;font:500 32px/1.13 Georgia,serif;letter-spacing:-.045em;color:#163e32}
+.home-mini p{font-size:11px;color:#849086;margin:0}
+.home-bottom{display:grid;grid-template-columns:1.2fr .8fr;gap:15px;margin-top:18px}
+.home-surface{background:var(--paper);border:1px solid var(--line);border-radius:17px;padding:23px}
+.home-surface-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:18px}
+.home-surface-head h3{font-family:Georgia,serif;font-size:21px;font-weight:500;margin:0;letter-spacing:-.025em}
+.home-step{display:flex;align-items:center;gap:13px;padding:14px 0;border-bottom:1px solid #e9eee9}
+.home-step:last-child{border-bottom:none}
+.home-step-btn{flex:none;width:29px;height:29px;border:1px solid #cbdacb;background:white;border-radius:9px;display:grid;place-items:center;font-size:17px;color:#2d6046;cursor:pointer}
+.home-step-btn.done{background:#24573f;color:white;border-color:#24573f}
+.home-step-main{flex:1;min-width:0}
+.home-step-main strong{display:block;font-weight:720;font-size:12px;line-height:1.45}
+.home-step-main strong.done{text-decoration:line-through;color:#758476}
+.home-step-main span{display:block;font-size:11px;color:#7c897f;margin-top:3px}
+.home-upcoming{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid #e9eee9}
+.home-upcoming:last-child{border-bottom:0}
+.home-date{width:58px;flex:none;background:#f1f5ef;border-radius:10px;padding:10px 5px;text-align:center;color:#24533e}
+.home-date strong{display:block;font:500 23px/1 Georgia,serif}
+.home-date small{font-size:10px;font-weight:750;text-transform:uppercase}
+.home-event-body{flex:1;min-width:0}
+.home-event-body strong{font-size:12px;font-weight:750;display:block}
+.home-event-body small{font-size:11px;color:#7e8d7d;display:block;margin-top:3px}
+.home-event-val{font-size:12px;font-weight:750;color:#264f3e;white-space:nowrap}
+.home-empty{font-size:12px;color:#728176;line-height:1.65;padding:12px 0}
+.home-link{font-size:11px;font-weight:750;color:#315d43;cursor:pointer;background:transparent;border:0;padding:5px 0;text-decoration:none}
+.home-quietnote{margin-top:15px;font-size:11px;color:#748278;line-height:1.65}
+@media(max-width:900px){.home-bottom{grid-template-columns:1fr}.home-goals{gap:12px}}
+@media(max-width:680px){.home-hero{padding:24px 20px;grid-template-columns:1fr;gap:17px}.home-hero h1{font-size:32px}.home-live{justify-self:start;padding:8px 11px}.home-section-line h2{font-size:23px}.home-goals{grid-template-columns:1fr}.home-goal{padding:21px 20px}.home-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.home-mini{padding:15px}.home-mini strong{font-size:26px}.home-mini:last-child{grid-column:span 2}.home-surface{padding:19px}.home-amount strong{font-size:53px}}
+
 </style>
 <meta name="robots" content="noindex,nofollow">
 
@@ -106,7 +171,7 @@ const DEFAULT_OPPS=[
  ['Children’s wedding activity packs','E-commerce',2031,3,'Optional product test, avoid weak-margin bespoke work.']
 ];
 const NAV=[
- {id:'overview',label:'The big picture',icon:'layout-dashboard',group:'primary'},
+ {id:'overview',label:'My progress',icon:'layout-dashboard',group:'primary'},
  {id:'forecast',label:'Linked 10-year model',icon:'chart-no-axes-combined',group:'finance'},
  {id:'cash',label:'Cash & deposits',icon:'wallet',group:'finance'},
  {id:'bookings',label:'Booking tracker',icon:'calendar-check',group:'finance'},
@@ -131,14 +196,14 @@ function ico(name){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentC
 const KEY='otgg10yearplanner_v3';
 let page='overview',focusYear=2027,scenario='base',viewMode='revenue',warnStorage=false;
 function defaultData(){return {
- version:3,created:'2026-10-17',settings:{ownerTarget:50000,tax:22,retain:10,ownerRate:17,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Owner target is an illustrative annual amount available for distribution AFTER estimated company tax/retention but BEFORE your personal tax. Adjust it to your combined household need.'},
+ version:3,created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:50000,tax:22,retain:10,ownerRate:17,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Owner target is an illustrative annual amount available for distribution AFTER estimated company tax/retention but BEFORE your personal tax. Adjust it to your combined household need.'},
  overrides:{}, bookings:[{id:'initial',client:'Existing booking — verify details',type:'wedding',status:'confirmed',booked:'',event:'',total:344,depositPct:25,depositPaid:null,depositDate:'',balancePaid:null,balanceDate:'',notes:'The one £344 booking known at launch. Add the actual wedding date and real payment receipts; £0 is NOT assumed to have been collected.'}],
  actuals:{},milestones:DEFAULT_MILESTONES.map((a,i)=>({id:'mil'+i,year:a[0],title:a[1],description:a[2],status:'Not started'})),
  opportunities:DEFAULT_OPPS.map((a,i)=>({id:'opp'+i,title:a[0],category:a[1],year:a[2],priority:a[3],detail:a[4],status:'Explore',investment:0,margin:0})),
  tasks:[{id:'task0',title:'Confirm £344 booking date and amount actually paid',year:2027,status:'To do',priority:'High',owner:'Jordan / Dayle',due:'',notes:'Check actual contract and payment record, do not assume 25% was paid.'},{id:'task1',title:'Record enquiry sources and booking deposits',year:2027,status:'To do',priority:'High',owner:'Both',due:'',notes:'Track full order value, money paid, balance due and event delivery separately.'},{id:'task2',title:'Collect photos/reviews from every real event',year:2027,status:'To do',priority:'High',owner:'Both',due:'',notes:''},{id:'task3',title:'Create setup, collection and handover checklists',year:2027,status:'To do',priority:'Medium',owner:'Both',due:'',notes:''}],
  yearNotes:{2027:'Family first. One £344 booking so far. A handful of events and a growing future order book would be progress.'},savedAt:null};}
 let data=defaultData();data.bookings=[];
-function hydrate(d){const b=defaultData();if(!d||typeof d!=='object')return b;return {...b,...d,settings:{...b.settings,...(d.settings||{})},overrides:d.overrides||{}, bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},milestones:Array.isArray(d.milestones)?d.milestones:b.milestones,opportunities:Array.isArray(d.opportunities)?d.opportunities:b.opportunities,tasks:Array.isArray(d.tasks)?d.tasks:b.tasks,yearNotes:d.yearNotes||{}}}
+function hydrate(d){const b=defaultData();if(!d||typeof d!=='object')return b;return {...b,...d,settings:{...b.settings,...(d.settings||{})},homeTargets:{...b.homeTargets,...(d.homeTargets||{})},overrides:d.overrides||{}, bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},milestones:Array.isArray(d.milestones)?d.milestones:b.milestones,opportunities:Array.isArray(d.opportunities)?d.opportunities:b.opportunities,tasks:Array.isArray(d.tasks)?d.tasks:b.tasks,yearNotes:d.yearNotes||{}}}
 let cloudSaveTimer=null,cloudSaveBusy=false,cloudDirty=false,cloudSaveVersion=0;
 function save(){data.savedAt=new Date().toISOString();if(!plannerSession){return;}cloudDirty=true;cloudSaveVersion++;const el=document.querySelector('#save-indicator');if(el)el.textContent='Saving to Supabase…';clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(persistPlan,700)}
 async function persistPlan(){if(!plannerSession||cloudSaveBusy)return;cloudSaveBusy=true;const myVersion=cloudSaveVersion;const copy=JSON.parse(JSON.stringify(data));delete copy.bookings;delete copy.exportedAt;
@@ -205,17 +270,70 @@ function progressBar(n){return `<div class="progress"><span style="width:${clamp
 function changeTo(pg){page=pg;document.querySelector('#sidebar').classList.remove('open');render();window.scrollTo({top:0,behavior:'instant'})}
 function yearSelector(){return `<div class="year-ribbon">${YEARS.map(y=>`<button class="${y===focusYear?'active':''}" data-year="${y}">${y}<small>${y===2027?'Start':y===2036?'Freedom':'Year '+(y-2026)}</small></button>`).join('')}</div>`}
 function openingStats(){let confirmed=data.bookings.filter(b=>b.status!=='cancelled');let value=confirmed.reduce((s,b)=>s+(Number(b.total)||0),0);let collected=confirmed.reduce((s,b)=>s+paid(b),0);let incomplete=confirmed.filter(b=>!b.event).length;return {count:confirmed.length,value,collected,incomplete,remaining:Math.max(0,value-collected)}}
-function pageOverview(){let rows=allRows(),end=rows.at(-1),now=row(2027),base=openingStats(),done=data.milestones.filter(m=>m.status==='Done').length,pr=data.milestones.length?done/data.milestones.length*100:0;
- const warnings=[];if(base.incomplete)warnings.push(`${base.incomplete} confirmed booking(s) have no event date. They are excluded from date-based cash schedules.`);if(warnStorage)warnings.push('The cloud save connection needs attention; export a JSON backup.');
- return `<div class="hero"><div class="eyebrow">The long game · 2027–2036</div><h1>More freedom.<br>Not a bigger empire.</h1><p>Your editable ten-year operating plan. Pull bookings directly from Supabase; grow hire carefully, test other events and personalised products, then pay a small team to run the business.</p><button class="btn" data-page="forecast">Open the linked forecast ${ico('arrow')}</button><div class="hero-footer"><div><span>2036 sales scenario</span><strong>${shortMoney(end.revenue)}</strong></div><div><span>2036 owner-independent profit</span><strong>${shortMoney(end.profit)}</strong></div><div><span>Expected owner distributions</span><strong>${shortMoney(end.distributable)}</strong></div></div></div>
- <div class="cards-4">${metric('Real confirmed bookings',String(base.count),money(base.value)+' signed value')}${metric('Cash actually recorded',money(base.collected),'Unknown receipts are not assumed paid')}${metric('Uncollected contracted value',money(base.remaining),'Not the same as available cash')}${metric('Roadmap completed',pct(pr),done+' / '+data.milestones.length+' milestones')}</div>
- ${warnings.map(w=>`<div class="note warn" style="margin-bottom:12px">${esc(w)}</div>`).join('')}
- <div class="layout-2">${panel('Ten-year revenue curve','Linked model · '+(scenario==='base'?'base':'what-if: '+scenario),chart(rows,'revenue')+`<div class="legend"><span>Wedding hire</span><span class="goldlegend">Shop</span><span class="blulegend">Private/corporate events</span></div>`,`<button class="btn mini" data-page="forecast">Edit numbers</button>`)}${panel('The financial freedom test','Set the income you really need in Settings',`<div class="goal-number">${money(end.distributable)} <span style="font:500 12px ui-sans-serif;color:#86968a">/ ${money(data.settings.ownerTarget)} target</span></div>${progressBar(end.distributable/Math.max(1,data.settings.ownerTarget)*100)}<p class="tiny" style="margin:13px 0 16px">Distributable = operating profit after estimated corporation tax and cash retained by the company. It is before your personal taxes and assumes all founder work is replaced.</p><div class="kv"><span>Year 10 operating profit</span><strong>${money(end.profit)}</strong></div><div class="kv"><span>Estimated company tax</span><strong>${money(end.afterTax-end.profit)}</strong></div><div class="kv"><span>Retained cash</span><strong>${money(end.afterTax-end.distributable)}</strong></div><div class="kv"><span>Gap to target</span><strong>${end.distributable>=data.settings.ownerTarget?'Target met':money(data.settings.ownerTarget-end.distributable)+' short'}</strong></div>`)} </div>
- <div class="layout-even">${panel('The first year matters differently','2027 is a proof year, not a £10k revenue assumption',`<div class="stat-horizontal"><div><span>Events planned</span><strong>${num(now.v.wedEvents+now.v.privEvents+now.v.corpEvents)}</strong></div><div><span>Earned revenue</span><strong>${money(row(2027).revenue)}</strong></div><div><span>One known booking</span><strong>£344</strong></div></div><p class="tiny" style="margin:16px 0 0">A booking made this year for a future wedding is pipeline. A 25% deposit is cash received only once you record it. Delivered-event revenue counts when the event takes place.</p>`)}${panel('Milestone momentum','Edit titles, timing and completion in Roadmap',`<div class="stack">${data.milestones.slice(0,5).map(m=>`<div class="kv"><span>${m.year} · ${esc(m.title)}</span>${statusTag(m.status)}</div>`).join('')}</div><div style="margin-top:13px"><button class="btn mini" data-page="roadmap">Manage milestones</button></div>`)} </div>
- <div class="note goldnote"><strong>Important:</strong> This is a business planning model, not an established forecast. The later figures are deliberately editable assumptions. 2027 and 2028 deserve particular caution because OTGG has only one real confirmed booking today.</div>`;
+
+function homeTarget(year,type){
+ const stored=data.homeTargets?.[year]?.[type];
+ if(stored!==undefined && stored!==null && Number.isFinite(Number(stored)))return Math.max(1,Math.round(Number(stored)));
+ if(type==='delivered'&&year===2027)return 5;
+ if(type==='next'&&year===2027)return 10;
+ const y=type==='delivered'?year:Math.min(2036,year+1);
+ const v=vals(y);
+ const count=Math.round(v.wedEvents+v.privEvents+v.corpEvents);
+ return Math.max(1,type==='next'?Math.round(count*.8):count);
 }
-function modelTable(){let rows=allRows();return `<div class="table-wrap"><table class="table" style="min-width:1110px"><thead><tr><th>Year</th><th>Weddings</th><th>Avg wedding £</th><th>Private</th><th>Corporate</th><th>Shop orders</th><th>Earned revenue</th><th>True profit*</th><th>Owner distributable</th><th></th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.year===focusYear?'selected-row':''}"><td><strong>${r.year}</strong></td>${['wedEvents','wedPrice','privEvents','corpEvents','shopOrders'].map(f=>`<td><input aria-label="${r.year} ${FIELDS[f][0]}" class="cell-input" type="number" min="0" step="any" value="${Math.round(r.v[f]*10)/10}" data-driver="${f}" data-driver-year="${r.year}" title="Override ${r.year}; later linked years recalculate"></td>`).join('')}<td class="num"><strong>${money(r.revenue)}</strong></td><td class="num">${money(r.profit)}</td><td class="num">${money(r.distributable)}</td><td><button class="btn mini" data-year="${r.year}" data-page="forecast">Details</button></td></tr>`).join('')}</tbody></table></div>`}
-function editableDriver(f,y){let overridden=Object.prototype.hasOwnProperty.call(data.overrides,y+':'+f),v=drv(f,y);return `<div class="field"><label>${esc(FIELDS[f][0])} ${overridden?'<span class="tag amber">Custom</span>':''}</label><input type="number" min="0" step="any" value="${Math.round(v*100)/100}" data-driver="${f}" data-driver-year="${y}"><small>${overridden?'Override set; later years linked from this':'Edit to cascade changes into later years'}</small></div>`}
+function homeData(year,today=new Date()){
+ const localToday=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+ const bookings=(data.bookings||[]).filter(b=>b.event&&b.status!=='cancelled');
+ const forYear=bookings.filter(b=>Number(b.event.slice(0,4))===year);
+ const future=bookings.filter(b=>Number(b.event.slice(0,4))===year+1);
+ const delivered=forYear.filter(b=>b.status==='completed'||b.event<localToday).length;
+ const confirmed=forYear.length;
+ const upcoming=bookings.filter(b=>b.event>=localToday&&b.status!=='completed').sort((a,b)=>a.event.localeCompare(b.event)).slice(0,3);
+ return {year,nextYear:year+1,delivered,confirmed,future:future.length,futureValue:future.reduce((s,b)=>s+Number(b.total||0),0),
+ totalValue:bookings.reduce((s,b)=>s+Number(b.total||0),0),upcoming,targetDelivered:homeTarget(year,'delivered'),targetFuture:homeTarget(year,'next'),
+ elapsedUnverified:forYear.filter(b=>b.event<localToday&&b.status!=='completed').length};
+}
+function homeProgress(value,target,future=false){return `<div class="home-goal-progress" role="progressbar" aria-valuemin="0" aria-valuemax="${target}" aria-valuenow="${Math.min(value,target)}" aria-label="${future?'Next-year bookings':'Events delivered'} target"><span style="width:${clamp(100*value/Math.max(1,target),0,100)}%"></span></div>`}
+function homeDate(date){const [y,m,d]=date.split('-').map(Number),dt=new Date(y,m-1,d);return {day:d,month:dt.toLocaleString('en-GB',{month:'short'})}}
+function pageOverview(){
+ const y=focusYear,m=homeData(y);
+ const ms=data.milestones.filter(x=>x.year===y);
+ const completed=ms.filter(x=>x.status==='Done').length;
+ const allReached=m.delivered>=m.targetDelivered&&m.future>=m.targetFuture;
+ return `<section class="home-hero"><div><div class="eyebrow">OTGG · YEAR ${String(y-2026).padStart(2,'0')} / 10</div><h1>${y===2027?'One booking at a time.':'Keep the momentum going.'}</h1><p>Two goals to focus on: deliver events this year and fill the diary for next year. Everything below updates as customers book.</p></div><div class="home-live"><span class="home-live-dot"></span> Connected to OTGG bookings</div></section>
+ <div class="home-section-line"><div><h2>Your ${y} targets</h2><p>Change the targets here whenever you need. Progress comes from live bookings.</p></div><button class="btn mini" data-page="bookings">View booking diary ${ico('arrow')}</button></div>
+ <div class="home-goals">
+  <section class="home-goal home-goal-primary"><div class="home-goal-top"><span>Events delivered in ${y}</span><span class="home-icon">${ico('calendar-check')}</span></div>
+   <div class="home-amount"><strong>${m.delivered}</strong><span>/ ${m.targetDelivered} events</span></div>
+   ${homeProgress(m.delivered,m.targetDelivered)}
+   <div class="home-goal-meta"><span><b>${Math.round(m.delivered/Math.max(1,m.targetDelivered)*100)}%</b> of your target${m.delivered>=m.targetDelivered?' · achieved!':''}</span><div class="home-target-adjust"><label for="home-goal-delivered">Goal</label><input id="home-goal-delivered" data-home-target="delivered" data-home-year="${y}" aria-label="Target number of delivered events in ${y}" type="number" inputmode="numeric" min="1" max="10000" step="1" value="${m.targetDelivered}"></div></div>
+   <p class="home-goal-foot">${m.confirmed} confirmed for ${y} in total${m.confirmed>m.delivered?' · '+(m.confirmed-m.delivered)+' still ahead':''}. Events count as delivered once the date has passed, or when marked completed.</p>
+  </section>
+  <section class="home-goal home-goal-future"><div class="home-goal-top"><span>${y+1} bookings already secured</span><span class="home-icon">${ico('target')}</span></div>
+   <div class="home-amount"><strong>${m.future}</strong><span>/ ${m.targetFuture} bookings</span></div>
+   ${homeProgress(m.future,m.targetFuture,true)}
+   <div class="home-goal-meta"><span><b>${Math.round(m.future/Math.max(1,m.targetFuture)*100)}%</b> of your target${m.future>=m.targetFuture?' · achieved!':''}</span><div class="home-target-adjust"><label for="home-goal-future">Goal</label><input id="home-goal-future" data-home-target="next" data-home-year="${y}" aria-label="Target bookings already secured for ${y+1}" type="number" inputmode="numeric" min="1" max="10000" step="1" value="${m.targetFuture}"></div></div>
+   <p class="home-goal-foot">Confirmed events with ${y+1} dates count here, whenever customers made the booking. No deposits are counted as delivered income.</p>
+  </section>
+ </div>
+ <div class="home-metrics">
+   <div class="home-mini"><small>In the diary for ${y}</small><strong>${m.confirmed}</strong><p>Confirmed events, delivered or upcoming</p></div>
+   <div class="home-mini"><small>${y+1} booking value</small><strong>${money(m.futureValue)}</strong><p>Contracted value, not money received</p></div>
+   <div class="home-mini"><small>Value of all confirmed bookings</small><strong>${money(m.totalValue)}</strong><p>Across all event years</p></div>
+ </div>
+ <div class="home-bottom">
+  <section class="home-surface"><div class="home-surface-head"><h3>${y} milestones</h3><button class="home-link" data-year="${y}" data-page="roadmap">Full roadmap →</button></div>
+   <div class="home-goal-progress" style="height:5px;margin-bottom:13px"><span style="width:${ms.length?Math.round(completed/ms.length*100):0}%"></span></div>
+   ${ms.length?ms.slice(0,3).map(z=>`<div class="home-step"><button class="home-step-btn ${z.status==='Done'?'done':''}" title="${z.status==='Done'?'Mark incomplete':'Mark completed'}" aria-label="${z.status==='Done'?'Mark incomplete':'Mark completed'}: ${esc(z.title)}" data-home-milestone="${esc(z.id)}">${z.status==='Done'?'✓':''}</button><div class="home-step-main"><strong class="${z.status==='Done'?'done':''}">${esc(z.title)}</strong><span>${z.status==='Done'?'Completed':'Tap the square to mark complete'}</span></div></div>`).join(''):'<div class="home-empty">No milestones yet. Add one in your roadmap.</div>'}
+   <div class="home-quietnote">${completed} of ${ms.length} milestones complete. These are editable and save for both owners.</div>
+  </section>
+  <section class="home-surface"><div class="home-surface-head"><h3>Coming up</h3><button class="home-link" data-page="bookings">All bookings →</button></div>
+   ${m.upcoming.length?m.upcoming.map(b=>{const d=homeDate(b.event);return `<div class="home-upcoming"><div class="home-date"><strong>${d.day}</strong><small>${d.month}</small></div><div class="home-event-body"><strong>${esc(b.client||'Confirmed booking')}</strong><small>${b.event.slice(0,4)} · ${esc(b.type||'Event')} hire</small></div><span class="home-event-val">${money(b.total)}</span></div>`}).join(''):'<div class="home-empty">No upcoming events on the books yet. When one arrives, it will appear here automatically.</div>'}
+  </section>
+ </div>
+ ${m.elapsedUnverified?'<div class="home-quietnote">Past event dates are treated as delivered unless cancelled. '+m.elapsedUnverified+' past event(s) are not explicitly marked “completed” in Supabase; check that the event took place.</div>':''}
+ <p class="home-quietnote">This homepage tracks confirmed bookings and dates. For cash received, deposits and financial projections, use the detailed sections in the menu. Dashboard targets are independent of the forecast model.</p>`;
+}
 function pageForecast(){let r=row(focusYear),rows=allRows();return txtHeading('01 / financial model','The linked 10-year forecast','Edit any year. Later years scale automatically using the growth ratios from the original plan; overrides in a later year take precedence.',`<button class="btn mini" id="reset-year">Clear ${focusYear} custom inputs</button>`) +
  `<div class="note" style="margin-bottom:17px">Editing 2027 weddings from 5 to 3 reduces 2027 wedding revenue and <strong>all subsequent wedding-event projections</strong>. This is a linked scenario, not ten independent hard-coded totals. Values with a “Custom” label are fixed anchors.</div>`+modelTable()+`<div style="height:18px"></div>${yearSelector()}`+
  `<div class="cards-4">${metric(focusYear+' revenue',money(r.revenue),'All delivered services/products')}${metric('Contribution',money(r.contribution),'After direct costs')}${metric('Owner-independent profit',money(r.profit),'Includes market-value owner replacement')}${metric('Potential distributions',money(r.distributable),'After estimated tax and cash retained')}</div>`+
@@ -291,6 +409,7 @@ function onClick(e){let btn=e.target.closest('button');if(!btn)return;
  if(btn.id==='trigger-import'){document.querySelector('#import-file').click();return}
  if(btn.id==='quick-backup'||btn.dataset.export==='json'){downloadJson();return}
  if(btn.dataset.export==='csv'){csvExport();return}
+ if(btn.dataset.homeMilestone){const m=data.milestones.find(x=>x.id===btn.dataset.homeMilestone);if(m){m.status=m.status==='Done'?'Not started':'Done';save();render();}return}
  if(btn.id==='reset-year'){if(!confirm(`Clear all custom ${focusYear} driver inputs? Later years will relink.`))return;Object.keys(FIELDS).forEach(f=>delete data.overrides[focusYear+':'+f]);save();render();return}
  if(btn.dataset.add==='booking'||btn.dataset.editBooking||btn.dataset.viewBooking){toast('Bookings are read-only here. Edit them via the existing OTGG admin.');return}
  if(btn.id==='reset-all'){if(!confirm('Reset ALL shared planning changes for both owners? Export a backup before continuing.'))return;if(!confirm('Final confirmation: reset all shared planning forecasts, notes and tasks? Real bookings and payments will NOT be affected.'))return;data=defaultData();data.bookings=liveBookings;save();render();toast('Planning assumptions reset');return}
@@ -302,6 +421,7 @@ function onClick(e){let btn=e.target.closest('button');if(!btn)return;
  if(btn.dataset.year){render();return}
 }
 function onChange(e){let t=e.target;if(t.id==='top-year'){focusYear=Number(t.value);render();return}if(t.id==='top-scenario'){scenario=t.value;render();return}
+ if(t.dataset.homeTarget){const y=Number(t.dataset.homeYear),v=Math.round(Number(t.value));if(!Number.isInteger(v)||v<1||v>10000){toast('Choose a target between 1 and 10,000');render();return}data.homeTargets??={};data.homeTargets[y]??={};data.homeTargets[y][t.dataset.homeTarget]=v;save();render();toast('Target saved');return}
  if(t.dataset.driver){setDriver(t.dataset.driver,Number(t.dataset.driverYear),t.value);return}
  if(t.dataset.setting){settingUpdate(t.dataset.setting,t.value);return}
  if(t.dataset.actual){if(!data.actuals[t.dataset.actualYear])data.actuals[t.dataset.actualYear]={};data.actuals[t.dataset.actualYear][t.dataset.actual]=t.value===''?null:Number(t.value);save();render();return}
