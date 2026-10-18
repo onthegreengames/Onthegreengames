@@ -379,7 +379,7 @@ document.addEventListener('submit',async e=>{
  if(e.target?.id!=='planner-login')return;e.preventDefault();const email=document.getElementById('planner-email').value.trim();
  const btn=document.getElementById('planner-login-button');if(!plannerDB){authMessage('Supabase has not loaded yet. Reload the page.');return}
  btn.disabled=true;btn.textContent='Sending sign-in email…';
- const {error}=await plannerDB.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:location.origin+location.pathname}});
+ const {error}=await plannerDB.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:'https://onthegreengames.co.uk/planner/'}});
  authMessage(error?'Could not send sign-in email: '+error.message:'Check your '+email+' inbox for the sign-in email, then open the secure link on this device.');
  btn.disabled=false;btn.textContent='Email me a secure sign-in link';
 });
