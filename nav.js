@@ -1,3 +1,38 @@
+
+/* October 2026 campaign: live through 31 October UK time; pre-existing offers resume on 1 November. */
+(function () {
+  var campaignStart = Date.parse('2026-10-18T00:00:00+01:00');
+  var campaignEnd = Date.parse('2026-11-01T00:00:00+00:00');
+  if (Date.now() < campaignStart || Date.now() >= campaignEnd) return;
+
+  function applyOctoberCampaign() {
+    var banner = document.querySelector('.promo-bar-text');
+    if (banner) {
+      banner.innerHTML = '<strong>50% OFF</strong> all wedding games &amp; mini golf hire booked by 31 October. Use code <span class="promo-code">OCT50</span> at checkout. <span class="promo-bar-fine">Ends 31 October 2026.</span>';
+    }
+
+    var feature = document.querySelector('.promo-feature');
+    if (feature) {
+      var heading = feature.querySelector('h2');
+      var description = feature.querySelector('.lede');
+      var finePrint = feature.querySelector('.promo-feature-fine');
+      if (heading) heading.textContent = '50% off all wedding games & mini golf hire';
+      if (description) {
+        description.innerHTML = 'Book your date by <strong>31 October</strong> and use code <span class="promo-code promo-code-lg">OCT50</span> at checkout to save 50% on your hire.';
+      }
+      if (finePrint) {
+        finePrint.textContent = 'Book by 31 October 2026. Applies to hire charges, excluding travel fees. Subject to availability.';
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyOctoberCampaign, { once: true });
+  } else {
+    applyOctoberCampaign();
+  }
+})();
+
 document.addEventListener('DOMContentLoaded', function () {
   var toggle = document.getElementById('navToggle');
   var links = document.getElementById('navLinks');

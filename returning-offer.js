@@ -2,6 +2,7 @@
   'use strict';
 
   var OFFER_CODE = 'BIRDIE40';
+  var OCTOBER_CAMPAIGN_END = Date.parse('2026-11-01T00:00:00+00:00');
   var RETURN_GAP_MS = 30 * 60 * 1000;
   var MAX_OFFER_SHOWS = 3;
   var CONSENT_STORAGE_KEY = 'otgg_cookie_consent_v1';
@@ -373,6 +374,12 @@
   }
 
   function startForConsent() {
+    // Pause the returning-visitor 40% offer while the public 50% October promotion runs.
+    // The original returning-visitor offer resumes automatically on 1 November 2026.
+    if (Date.now() < OCTOBER_CAMPAIGN_END) {
+      removeOpenOffer();
+      return;
+    }
     if (!personalisationAllowed()) {
       clearOfferStorage();
       removeOpenOffer();
