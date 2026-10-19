@@ -135,40 +135,40 @@ const YEARS=Array.from({length:10},(_,i)=>2027+i);
 const FIELDS={wedEvents:['Wedding events','#'],wedPrice:['Average wedding booking','£'],privEvents:['Private events','#'],privPrice:['Average private booking','£'],corpEvents:['Corporate events','#'],corpPrice:['Average corporate booking','£'],shopOrders:['Shop orders','#'],shopAov:['Average shop order','£'],staff:['Staff & casual management overhead','£'],overhead:['Insurance, software, storage & admin','£'],reserve:['Annual maintenance allowance','£'],ownerHours:['Founder working hours/year','h'],capex:['Cash spent on new kit','£']};
 const DRIVERS=['wedEvents','wedPrice','privEvents','privPrice','corpEvents','corpPrice','shopOrders','shopAov'];
 const DEFAULT_ROWS={
- wedEvents:[5,11,22,30,43,55,70,80,90,100],wedPrice:[400,430,450,480,520,550,600,650,700,750],
- privEvents:[0,2,4,10,15,22,28,35,40,45],privPrice:[350,350,450,450,500,550,550,650,700,750],
- corpEvents:[0,0,1,5,8,15,22,30,42,50],corpPrice:[900,900,850,950,1000,1100,1200,1400,1500,1600],
- shopOrders:[0,0,10,60,135,250,410,550,720,800],shopAov:[65,65,55,65,75,80,83,85,88,90],
- staff:[0,0,1000,2500,6000,10000,20000,42000,55000,60000],overhead:[400,650,1400,2200,3800,6000,9000,12000,15000,18000],
- reserve:[100,150,350,650,1100,2000,2700,3500,4500,5000],ownerHours:[90,120,160,160,180,160,100,50,20,0],capex:[0,0,1200,2500,1500,2500,1600,2400,2000,2000]
+ wedEvents:[5,10,16,23,30,35,40,45,50,55],wedPrice:[400,440,500,550,600,650,710,780,850,950],
+ privEvents:[0,1,2,3,4,5,7,8,10,12],privPrice:[350,400,450,500,520,550,580,600,650,700],
+ corpEvents:[0,0,1,2,3,4,5,7,8,10],corpPrice:[900,900,900,1050,1100,1150,1200,1250,1350,1450],
+ shopOrders:[0,0,8,25,55,95,150,220,300,400],shopAov:[65,65,60,65,68,72,78,82,86,90],
+ staff:[0,0,0,0,0,0,0,0,0,0],overhead:[400,650,1000,1300,1600,2200,2700,3400,4500,7000],
+ reserve:[100,150,250,350,500,650,800,1000,1250,1500],ownerHours:[90,140,200,300,420,700,1000,1400,1900,2900],capex:[0,0,700,900,1100,950,900,1150,1200,1000]
 };
 const DEFAULT_MILESTONES=[
- [2027,'Deliver the first real events','Protect family time, secure reviews and record true margins.'],
- [2027,'Start building 2028–29 order book','Track signed future value separately from deposits received.'],
- [2028,'Offer private celebrations','Birthdays, engagements and garden events using existing equipment.'],
- [2028,'Train first casual helpers','No permanent payroll: start with delivery checklists.'],
- [2029,'Trial corporate team events','Target weekdays, summer parties and end-of-year functions.'],
- [2029,'Test 5–8 personalised products','Only made-to-order, through external production partners.'],
- [2030,'Open small public wedding shop','Signage, table plans, scorecards and bundles after paid validation.'],
- [2030,'Complete some founder-free deliveries','Train crew leads; purchase duplicate kit only against real demand.'],
- [2031,'Establish part-time operational cover','Move logistics and routine customer work away from owners.'],
- [2032,'Test two weeks away from operations','Outsource production and formalise customer-service processes.'],
- [2033,'Appoint accountable operations lead','One person owns rotas, servicing, delivery and exceptions.'],
- [2034,'Move to paid day-to-day manager','Only if winter cash flow can support the role.'],
- [2035,'Complete eight-week founder-free test','No routine owner emails, delivery, rota or supplier firefighting.'],
- [2036,'Owner-only operating model','Owners review performance and capital decisions, not daily jobs.']
+ [2027,'Deliver the first 5 events','Put on excellent weddings, capture photos and reviews, learn your real setup times and margins.'],
+ [2027,'Build a 2028 diary of 10 bookings','Count confirmed event dates, not enquiry numbers or deposits as revenue.'],
+ [2028,'Make owner-run delivery repeatable','Jordan and Dayle handle setup and collection, improve checklists and protect family weekends.'],
+ [2028,'Test private celebrations carefully','Fill suitable dates with birthdays and garden parties using the same equipment.'],
+ [2029,'Trial corporate weekday events','Start with a few higher-value bookings that do not compete with wedding Saturdays.'],
+ [2029,'Test made-to-order wedding products','Use external print/dispatch partners before carrying stock or buying machines.'],
+ [2030,'Launch a small personalised wedding shop','Sell a handful of profitable repeatable products, not a giant catalogue.'],
+ [2030,'Reach 25–30 owner-run hire events','Improve routes, pricing and booking flow before adding more workload.'],
+ [2031,'Strengthen reviews and venue referrals','Keep acquisition working without relying on constant discounted advertising.'],
+ [2032,'Set realistic boundaries for both owners','Measure hours per event and product order, including admin and travelling.'],
+ [2033,'Build weekday and winter sales','Add selective corporate work and repeatable products to smooth wedding seasonality.'],
+ [2034,'Test one owner reducing employed hours','Only after the business has cash reserves and profit across a full year.'],
+ [2035,'Validate income and workload for both','Check sustainable post-tax distributions, family time and 12-month trading seasonality.'],
+ [2036,'Jordan and Dayle run OTGG full-time','No salaried staff or management structure. Both handle bookings, delivery and products.']
 ];
 const DEFAULT_OPPS=[
- ['Private birthdays & garden parties','Events',2028,1,'Use existing games on free weekend days and Sundays.'],
- ['Corporate team days & summer events','Events',2029,1,'Higher-value weekday opportunities; test with nearby employers.'],
- ['Corporate Christmas party package','Events',2029,1,'Winter utilisation with suitable indoor games; promote early.'],
- ['Personalised mini-golf scorecards','E-commerce',2029,1,'Distinctive upsell to existing hire couples.'],
- ['Wedding welcome signs & table plans','E-commerce',2029,2,'Outsource printing/dispatch. Keep templates fixed.'],
- ['Place cards, table numbers & menus','E-commerce',2030,2,'Complement existing wedding products with bundles.'],
- ['Personalised trophies / medals','E-commerce',2030,2,'Upgrade existing package inclusions only if margins work.'],
- ['University / graduation events','Events',2032,3,'Fill weekdays if wear, staff and timings are profitable.'],
- ['Branded games for corporate activations','Events',2031,3,'Trial removable custom branding, no specialist kit purchase.'],
- ['Children’s wedding activity packs','E-commerce',2031,3,'Optional product test, avoid weak-margin bespoke work.']
+ ['Private birthdays & garden parties','Events',2028,1,'Use existing games when one of you can deliver without losing too many family weekends.'],
+ ['Corporate team days & summer events','Events',2029,1,'Weekday jobs with strong booking value; avoid long travel for weak margins.'],
+ ['Winter-friendly indoor games','Events',2029,2,'Only if venues have suitable space and there is meaningful winter demand.'],
+ ['Personalised mini-golf scorecards','E-commerce',2029,1,'Sell as a low-friction add-on to existing wedding couples.'],
+ ['Wedding welcome signs & table plans','E-commerce',2029,2,'Use templates and partner print/dispatch rather than owning machines.'],
+ ['Place cards, table numbers & menus','E-commerce',2030,2,'Standardised bundles; reject fiddly low-margin custom jobs.'],
+ ['Personalised trophies / medals','E-commerce',2030,2,'Upsells only when labour and fulfilment margins make sense.'],
+ ['University and graduation events','Events',2032,3,'Selective weekday hires close to your operational bases.'],
+ ['Repeat corporate summer bookings','Events',2031,2,'Return clients and tidy weekday schedules are more valuable than sheer volume.'],
+ ['Children’s wedding activity packs','E-commerce',2031,3,'Simple made-to-order packs, no large batches or storage needs.']
 ];
 const NAV=[
  {id:'overview',label:'My progress',icon:'layout-dashboard',group:'primary'},
@@ -179,7 +179,7 @@ const NAV=[
  {id:'actuals',label:'Actual performance',icon:'target',group:'finance'},
  {id:'roadmap',label:'Year-by-year roadmap',icon:'route',group:'work'},
  {id:'opportunities',label:'Expansion ideas',icon:'lightbulb',group:'work'},
- {id:'team',label:'Hiring & freedom',icon:'users',group:'work'},
+ {id:'team',label:'Our full-time goal',icon:'users',group:'work'},
  {id:'tasks',label:'Actions & notes',icon:'check-square',group:'work'},
  {id:'settings',label:'Settings & backups',icon:'settings',group:'work'}
 ];
@@ -197,14 +197,42 @@ function ico(name){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentC
 const KEY='otgg10yearplanner_v3';
 let page='overview',focusYear=2027,scenario='base',viewMode='revenue',warnStorage=false;
 function defaultData(){return {
- version:3,created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:50000,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Owner target is an illustrative annual amount available for distribution AFTER estimated company tax/retention but BEFORE your personal tax. Adjust it to your combined household need.'},
+ version:3,strategyVersion:2,goal:'Two owners, no permanent staff by 2036',created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:40000,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Lifestyle goal: Jordan and Dayle both operate OTGG themselves by 2036, without salaried staff. Target is £40,000 combined dividends AFTER estimated company tax/retention but BEFORE personal dividend tax. This is a starting assumption, not a verified household budget.'},
  dividendPlans:{2027:{jordan:100,dayle:100},2028:{jordan:250,dayle:250}},dividendRecords:[],overrides:{}, bookings:[],
  actuals:{},milestones:DEFAULT_MILESTONES.map((a,i)=>({id:'mil'+i,year:a[0],title:a[1],description:a[2],status:'Not started'})),
  opportunities:DEFAULT_OPPS.map((a,i)=>({id:'opp'+i,title:a[0],category:a[1],year:a[2],priority:a[3],detail:a[4],status:'Explore',investment:0,margin:0})),
  tasks:[{id:'task0',title:'Review live bookings and Stripe fees',year:2027,status:'To do',priority:'High',owner:'Jordan / Dayle',due:'',notes:'Booking details and card payments now sync automatically. Reconcile estimated Stripe fees against actual payout reports.'},{id:'task1',title:'Review deposits, balances and future booking pipeline',year:2027,status:'To do',priority:'High',owner:'Both',due:'',notes:'Use the Booking tracker for live values and the Cash view to separate deposits, balances and event-year revenue.'},{id:'task2',title:'Collect photos/reviews from every real event',year:2027,status:'To do',priority:'High',owner:'Both',due:'',notes:''},{id:'task3',title:'Create setup, collection and handover checklists',year:2027,status:'To do',priority:'Medium',owner:'Both',due:'',notes:''}],
- yearNotes:{2027:'Family first. Build towards five delivered events in 2027, plus ten confirmed bookings dated 2028. Existing bookings sync automatically.'},savedAt:null};}
+ yearNotes:{2027:'Start small and protect family life. Five 2027 deliveries and ten 2028 bookings are stretch goals, not an assumption of guaranteed demand.'},savedAt:null};}
 let data=defaultData();data.bookings=[];
-function hydrate(d){const b=defaultData();if(!d||typeof d!=='object')return b;return {...b,...d,settings:{...b.settings,...(d.settings||{})},homeTargets:{...b.homeTargets,...(d.homeTargets||{})},dividendPlans:{...b.dividendPlans,...(d.dividendPlans||{})},dividendRecords:Array.isArray(d.dividendRecords)?d.dividendRecords:[],overrides:d.overrides||{}, bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},milestones:Array.isArray(d.milestones)?d.milestones:b.milestones,opportunities:Array.isArray(d.opportunities)?d.opportunities:b.opportunities,tasks:Array.isArray(d.tasks)?d.tasks:b.tasks,yearNotes:d.yearNotes||{}}}
+function hydrate(d){
+ const b=defaultData();if(!d||typeof d!=='object')return b;
+ const fromOld=(Number(d.strategyVersion)||0)<2;
+ const settings={...b.settings,...(d.settings||{})};
+ // A former default £50k target belonged to the manager-run plan; keep bespoke owner targets intact.
+ if(fromOld&&Number(settings.ownerTarget)===50000)settings.ownerTarget=40000;
+ const oldDefaultMilestoneTitles=[
+ 'Deliver the first real events','Start building 2028–29 order book','Offer private celebrations',
+ 'Train first casual helpers','Trial corporate team events','Test 5–8 personalised products',
+ 'Open small public wedding shop','Complete some founder-free deliveries',
+ 'Establish part-time operational cover','Test two weeks away from operations',
+ 'Appoint accountable operations lead','Move to paid day-to-day manager',
+ 'Complete eight-week founder-free test','Owner-only operating model'];
+ let milestones=b.milestones;
+ if(Array.isArray(d.milestones)){
+  const extras=d.milestones.filter(m=>!/^mil\\d+$/.test(m.id||'')||(oldDefaultMilestoneTitles[Number((m.id||'').slice(3))]!==m.title&&m.id&&/^mil\\d+$/.test(m.id)&&Number((m.id||'').slice(3))<oldDefaultMilestoneTitles.length));
+  milestones=b.milestones.map(m=>{
+   let prior=d.milestones.find(x=>x.id===m.id);
+   return prior&&prior.title===oldDefaultMilestoneTitles[Number(m.id.slice(3))]?{...m,status:prior.status||m.status}:m;
+  }).concat(extras.filter(m=>!b.milestones.some(x=>x.id===m.id)));
+ }
+ return {...b,...d,goal:b.goal,strategyVersion:2,settings,homeTargets:{...b.homeTargets,...(d.homeTargets||{})},
+ dividendPlans:{...b.dividendPlans,...(d.dividendPlans||{})},
+ dividendRecords:Array.isArray(d.dividendRecords)?d.dividendRecords:[],
+ overrides:d.overrides||{},bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},
+ milestones:fromOld?milestones:(Array.isArray(d.milestones)?d.milestones:b.milestones),
+ opportunities:fromOld?b.opportunities.concat((d.opportunities||[]).filter(o=>!/^opp\\d+$/.test(o.id||''))):(Array.isArray(d.opportunities)?d.opportunities:b.opportunities),
+ tasks:Array.isArray(d.tasks)?d.tasks:b.tasks,yearNotes:d.yearNotes||{}};
+}
 let cloudSaveTimer=null,cloudSaveBusy=false,cloudDirty=false,cloudSaveVersion=0;
 function save(){data.savedAt=new Date().toISOString();if(!plannerSession){return;}cloudDirty=true;cloudSaveVersion++;const el=document.querySelector('#save-indicator');if(el)el.textContent='Saving to Supabase…';clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(persistPlan,700)}
 async function persistPlan(){if(!plannerSession||cloudSaveBusy)return;cloudSaveBusy=true;const myVersion=cloudSaveVersion;const copy=JSON.parse(JSON.stringify(data));delete copy.bookings;delete copy.exportedAt;
@@ -257,13 +285,15 @@ function row(year,s=scenario){let v=vals(year);let volume=s==='cautious'?data.se
  let ownerReplacement=v.ownerHours*(data.settings.ownerRate||0);
  // The founder-replacement test is an economic target, NOT a tax deduction.
  // Unspent reserves are cash retained, not deductible operating expenses.
- let profit=companyProfit-v.reserve-ownerReplacement;
- let afterTax=Math.max(0,companyAfterTax-v.reserve-ownerReplacement);
+ // In the owner-operated model Jordan and Dayle ARE the working team. Their time is recorded for workload,
+ // but is not an expense, and the hypothetical manager/crew replacement cost is not deducted.
+ let profit=companyProfit;
+ let afterTax=Math.max(0,companyAfterTax);
  let retainPct=clamp(data.settings.retain,0,99)/100;
- let distributable=afterTax*(1-retainPct);
+ let distributable=Math.max(0,companyAfterTax-v.reserve-v.capex)*(1-retainPct);
  let dividendCapacity=Math.max(0,companyAfterTax-v.reserve-v.capex)*(1-retainPct);
  let planned=dividendTarget(year),plannedDividends=planned.jordan+planned.dayle;
- return {year,v,wed,priv,corp,shop,direct,stripeFees,expectedTransactions,revenue,contribution,staff,overhead:v.overhead,reserve:v.reserve,ownerReplacement,companyProfit,companyTax,companyAfterTax,profit,afterTax,distributable,dividendCapacity,plannedDividends,dividendShortfall:Math.max(0,plannedDividends-dividendCapacity),dividendRemaining:Math.max(0,dividendCapacity-plannedDividends),capex:v.capex};
+ return {year,v,wed,priv,corp,shop,direct,stripeFees,expectedTransactions,revenue,contribution,staff,overhead:v.overhead,reserve:v.reserve,ownerReplacement,companyProfit,companyTax,companyAfterTax,profit,afterTax,distributable,dividendCapacity,plannedDividends,dividendShortfall:Math.max(0,plannedDividends-dividendCapacity),dividendRemaining:Math.max(0,dividendCapacity-plannedDividends),hireEvents:(v.wedEvents+v.privEvents+v.corpEvents)*volume,capex:v.capex};
 }
 function allRows(s=scenario){return YEARS.map(y=>row(y,s))}
 function leadFor(type){let st=data.settings;return type==='wedding'?[st.wedLead1/100,st.wedLead2/100]:type==='private'?[st.privLead1/100,st.privLead2/100]:[st.corpLead1/100,st.corpLead2/100]}
