@@ -222,7 +222,7 @@ function hydrate(d){
   const extras=d.milestones.filter(m=>!/^mil\\d+$/.test(m.id||'')||(oldDefaultMilestoneTitles[Number((m.id||'').slice(3))]!==m.title&&m.id&&/^mil\\d+$/.test(m.id)&&Number((m.id||'').slice(3))<oldDefaultMilestoneTitles.length));
   milestones=b.milestones.map(m=>{
    let prior=d.milestones.find(x=>x.id===m.id);
-   return prior&&prior.title===oldDefaultMilestoneTitles[Number(m.id.slice(3))]?{...m,status:prior.status||m.status}:m;
+   return prior?(prior.title===oldDefaultMilestoneTitles[Number(m.id.slice(3))]?{...m,status:prior.status||m.status}:prior):m;
   }).concat(extras.filter(m=>!b.milestones.some(x=>x.id===m.id)));
  }
  return {...b,...d,goal:b.goal,strategyVersion:2,settings,homeTargets:{...b.homeTargets,...(d.homeTargets||{})},
@@ -360,7 +360,7 @@ function pageOverview(){
  const ms=data.milestones.filter(x=>x.year===y);
  const completed=ms.filter(x=>x.status==='Done').length;
  const allReached=m.delivered>=m.targetDelivered&&m.future>=m.targetFuture;
- return `<section class="home-hero"><div><div class="eyebrow">OTGG · YEAR ${String(y-2026).padStart(2,'0')} / 10</div><h1>${y===2027?'One booking at a time.':'Keep the momentum going.'}</h1><p>Two goals to focus on: deliver events this year and fill the diary for next year. Everything below updates as customers book.</p></div><div class="home-live"><span class="home-live-dot"></span> Connected to OTGG bookings</div></section>
+ return `<section class="home-hero"><div><div class="eyebrow">OTGG · YEAR ${String(y-2026).padStart(2,'0')} / 10</div><h1>${y===2027?'One booking at a time.':'Keep the momentum going.'}</h1><p>Two simple goals on our way to running OTGG ourselves by 2036. Your booking totals update automatically.</p></div><div class="home-live"><span class="home-live-dot"></span> Connected to OTGG bookings</div></section>
  <div class="home-section-line"><div><h2>Your ${y} targets</h2><p>Change the targets here whenever you need. Progress comes from live bookings.</p></div><button class="btn mini" data-page="bookings">View booking diary ${ico('arrow')}</button></div>
  <div class="home-goals">
   <section class="home-goal home-goal-primary"><div class="home-goal-top"><span>Events delivered in ${y}</span><span class="home-icon">${ico('calendar-check')}</span></div>
@@ -392,7 +392,7 @@ function pageOverview(){
   </section>
  </div>
  ${m.elapsedUnverified?'<div class="home-quietnote">Past event dates are treated as delivered unless cancelled. '+m.elapsedUnverified+' past event(s) are not explicitly marked “completed” in Supabase; check that the event took place.</div>':''}
- <p class="home-quietnote">This homepage tracks confirmed bookings and dates. For cash received, deposits and financial projections, use the detailed sections in the menu. Dashboard targets are independent of the forecast model.</p>`;
+ <p class="home-quietnote">This homepage tracks confirmed bookings and dates. For cash received, deposits and financial projections, use the detailed sections in the menu. The end goal is for both Jordan and Dayle to operate this small business full-time, without permanent staff. <button class="home-link" data-page="team">See our ten-year goal →</button></p>`;
 }
 function editableDriver(key,year){
  const v=vals(year)[key],label=FIELDS[key]?.[0]||key,unit=FIELDS[key]?.[1]||'';
@@ -437,9 +437,9 @@ function pageDividends(){
  <div class="layout-even">
  ${panel('Company money: what is really left?','The difference between cash, profit and dividends',`
  ${kv('Forecast revenue',money(r.revenue))}
- ${kv('Supplier, crew and fulfilment costs','−'+money(r.direct))}
+ ${kv('Hire delivery, supplies and outsourced production costs','−'+money(r.direct))}
  ${kv('Stripe processing costs','−'+money2(r.stripeFees))}
- ${kv('Staffing and business overhead','−'+money(r.staff+r.overhead))}
+ ${kv('Optional outside help and fixed overhead','−'+money(r.staff+r.overhead))}
  ${kv('Illustrative taxable company profit',money(r.companyProfit))}
  ${kv('Estimated corporation tax','−'+money(r.companyTax))}
  ${kv('After corporation tax',money(r.companyAfterTax))}
@@ -524,7 +524,7 @@ function pageRoadmap(){let ms=data.milestones.filter(x=>x.year===focusYear),d=ms
 function pageOpportunities(){let opp=data.opportunities.slice().sort((a,b)=>a.year-b.year||a.priority-b.priority);return txtHeading('06 / expansion strategy','New revenue streams','Explore opportunities without making promises to spend money. Score them, test small and scale only the winners.',`<button class="btn dark" data-add="opportunity">${ico('plus')} Add idea</button>`)+
  `<div class="cards-3">${metric('Event opportunities',data.opportunities.filter(x=>x.category==='Events').length,'Private, corporate and selective formats')}${metric('E-commerce products',data.opportunities.filter(x=>x.category==='E-commerce').length,'Designed to be outsourced')}${metric('Ideas marked launched',data.opportunities.filter(x=>x.status==='Launched').length,'Keep only profitable tests')}</div>
  ${panel('Opportunity portfolio','These dates and stages are editable',`<div class="table-wrap"><table class="table" style="min-width:850px"><thead><tr><th>Idea</th><th>Category</th><th>Year</th><th>Status</th><th>Priority</th><th>Upfront investment</th><th>Target margin</th><th></th></tr></thead><tbody>${opp.map(o=>`<tr><td><strong>${esc(o.title)}</strong><div class="hint">${esc(o.detail)}</div></td><td>${esc(o.category)}</td><td>${o.year}</td><td>${statusTag(o.status)}</td><td>${o.priority}</td><td>${money(o.investment)}</td><td>${pct(o.margin)}</td><td><button class="btn mini" data-edit-opportunity="${o.id}">Edit</button></td></tr>`).join('')}</tbody></table></div>`)}<div style="height:17px"></div>
- <div class="layout-even">${panel('E-commerce: low-capital sequence','Build customers and margin before machinery',`<div class="step"><div class="step-num">01</div><div><h4>2027–28 · Research, not launch</h4><p>Collect requests, sample UK printing and laser suppliers only when affordable.</p></div></div><div class="step"><div class="step-num">02</div><div><h4>2029 · Test with existing couples</h4><p>5–8 fixed-template products. Full payment before production. No stock.</p></div></div><div class="step"><div class="step-num">03</div><div><h4>2030+ · Public shop and bundles</h4><p>Welcome signs, table plans, scorecards, medals and table stationery. Outsource fulfilment.</p></div></div>`)}${panel('Non-wedding events: sensible order','Fill existing capacity rather than building more infrastructure',`<div class="step"><div class="step-num">01</div><div><h4>2028 · Private celebrations</h4><p>Birthdays, christenings, engagements and garden parties with the same equipment.</p></div></div><div class="step"><div class="step-num">02</div><div><h4>2029 · Corporate weekdays and winter</h4><p>Team days, summer socials and Christmas parties. Be strict about travel and time and travel costs.</p></div></div><div class="step"><div class="step-num">03</div><div><h4>2031+ · Selected premium work</h4><p>Try branded activations and university events only when fees justify the extra hassle.</p></div></div>`)} </div>`}
+ <div class="layout-even">${panel('E-commerce: low-capital sequence','Build customers and margin before machinery',`<div class="step"><div class="step-num">01</div><div><h4>2027–28 · Research, not launch</h4><p>Collect requests, sample UK printing and laser suppliers only when affordable.</p></div></div><div class="step"><div class="step-num">02</div><div><h4>2029 · Test with existing couples</h4><p>5–8 fixed-template products. Full payment before production. No stock.</p></div></div><div class="step"><div class="step-num">03</div><div><h4>2030+ · Public shop and bundles</h4><p>Welcome signs, table plans, scorecards, medals and table stationery. Outsource fulfilment.</p></div></div>`)}${panel('Non-wedding events: sensible order','Only add work the two of you can comfortably handle',`<div class="step"><div class="step-num">01</div><div><h4>2028 · Private celebrations</h4><p>Birthdays, christenings, engagements and garden parties with the same equipment.</p></div></div><div class="step"><div class="step-num">02</div><div><h4>2029 · Corporate weekdays and winter</h4><p>Team days, summer socials and Christmas parties. Be strict about fuel, driving time and family commitments.</p></div></div><div class="step"><div class="step-num">03</div><div><h4>2031+ · Selected premium work</h4><p>Try branded activations and university events only when fees justify the extra hassle.</p></div></div>`)} </div>`}
 function pageTeam(){
  const r=row(focusYear),end=row(2036),target=Number(data.settings.ownerTarget)||40000,
  weeks=Math.max(1,Number(data.settings.ownerWeeks)||46),capacity=Math.max(1,Number(data.settings.maxAnnualEvents)||80);
@@ -613,8 +613,8 @@ function onForm(form){let obj=Object.fromEntries(new FormData(form)),name=form.d
  if(name==='opportunity'){o.year=Number(obj.year);o.priority=Number(obj.priority);o.investment=Number(obj.investment);o.margin=Number(obj.margin)}
  if(!String(o.title||o.client||'').trim()){toast('Add a title or customer');return}
  if(curr)arr[arr.indexOf(curr)]=o;else arr.push(o);save();closeModal();render();toast('Saved')}
-function csvExport(){let headers=['Year','Wedding events','Wedding average','Private events','Private average','Corporate events','Corporate average','Shop orders','Shop AOV','Wedding revenue','Private revenue','Corporate revenue','Shop revenue','Total earned revenue','Direct costs','Staff','Overhead','Maintenance reserve','Owner hours (informational)','Company profit before tax','Estimated distributable income','Cash model receipts'];
- headers.push('Stripe fees','Taxable company profit estimate','Corporation tax','Company profit after tax','Potential dividends (current owners)','Desired dividends total','Jordan desired dividends','Dayle desired dividends');let lines=[headers.join(',')];allRows('base').forEach(r=>{let v=r.v,c=cashRow(r.year,'base'),d=dividendTarget(r.year);lines.push([r.year,v.wedEvents,v.wedPrice,v.privEvents,v.privPrice,v.corpEvents,v.corpPrice,v.shopOrders,v.shopAov,r.wed,r.priv,r.corp,r.shop,r.revenue,r.direct,r.staff,r.overhead,r.reserve,r.v.ownerHours,r.companyProfit,r.distributable,c.cash,r.stripeFees,r.companyProfit,r.companyTax,r.companyAfterTax,r.dividendCapacity,r.plannedDividends,d.jordan,d.dayle].map(v=>Math.round(Number(v)*100)/100).join(','))});downloadFile('OTGG_10_Year_Forecast.csv','text/csv;charset=utf-8',lines.join('\r\n'))}
+function csvExport(){let headers=['Year','Wedding events','Wedding average','Private events','Private average','Corporate events','Corporate average','Shop orders','Shop AOV','Wedding revenue','Private revenue','Corporate revenue','Shop revenue','Total earned revenue','Direct costs','Outside help (default zero)','Overhead','Maintenance reserve','Owner hours (informational)','Company profit before tax','Estimated distributable income','Cash model receipts'];
+ headers.push('Stripe fees','Taxable company profit estimate','Corporation tax','Company profit after tax','Potential owner dividends','Desired dividends total','Jordan desired dividends','Dayle desired dividends');let lines=[headers.join(',')];allRows('base').forEach(r=>{let v=r.v,c=cashRow(r.year,'base'),d=dividendTarget(r.year);lines.push([r.year,v.wedEvents,v.wedPrice,v.privEvents,v.privPrice,v.corpEvents,v.corpPrice,v.shopOrders,v.shopAov,r.wed,r.priv,r.corp,r.shop,r.revenue,r.direct,r.staff,r.overhead,r.reserve,r.v.ownerHours,r.companyProfit,r.distributable,c.cash,r.stripeFees,r.companyProfit,r.companyTax,r.companyAfterTax,r.dividendCapacity,r.plannedDividends,d.jordan,d.dayle].map(v=>Math.round(Number(v)*100)/100).join(','))});downloadFile('OTGG_10_Year_Forecast.csv','text/csv;charset=utf-8',lines.join('\r\n'))}
 function downloadFile(filename,mime,content){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
 function downloadJson(){let date=new Date().toISOString().slice(0,10);downloadFile('OTGG_Planner_Backup_'+date+'.json','application/json;charset=utf-8',JSON.stringify({...data,exportedAt:new Date().toISOString()},null,2));toast('Backup downloaded — save to Files or iCloud Drive')}
 function renderNav(){for(let g of ['primary','finance','work'])document.querySelector('#nav-'+g).innerHTML=NAV.filter(n=>n.group===g).map(n=>`<button class="nav-button ${page===n.id?'active':''}" data-page="${n.id}">${ico(n.icon)}<span>${n.label}</span></button>`).join('');document.querySelector('#mobile-nav').innerHTML=['overview','forecast','cash','bookings','tasks'].map(id=>{let n=NAV.find(a=>a.id===id);return `<button class="${page===id?'active':''}" data-page="${id}">${ico(n.icon)}<span>${id==='forecast'?'Plan':id==='bookings'?'Bookings':n.label==='The big picture'?'Home':id==='cash'?'Cash':'Tasks'}</span></button>`}).join('')}
@@ -665,8 +665,11 @@ async function loadLivePlan(){
  const {data:result,error}=await plannerDB.from('otgg_planner_state').select('payload').eq('id',1).maybeSingle();
  if(error)throw Error('Owner access not authorised. Sign in using the approved OTGG address. ('+error.message+')');
  if(!result)throw Error('Planner storage is not accessible for this email.');
- data=hydrate(result.payload&&Object.keys(result.payload).length?result.payload:defaultData());
+ const existing=result.payload&&Object.keys(result.payload).length?result.payload:null;
+ const migrationNeeded=!!existing&&(Number(existing.strategyVersion)||0)<2;
+ data=hydrate(existing||defaultData());
  data.bookings=liveBookings;warnStorage=false;render();
+ if(migrationNeeded)save();
 }
 async function fetchAll(table,fields){let out=[],i=0;while(i<10000){const {data:rows,error}=await plannerDB.from(table).select(fields).order('created_at',{ascending:false}).range(i,i+999);if(error)throw error;out.push(...(rows||[]));if(!rows||rows.length<1000)break;i+=1000}return out}
 async function syncLiveBookings(){
