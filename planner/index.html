@@ -174,6 +174,7 @@ const NAV=[
  {id:'overview',label:'My progress',icon:'layout-dashboard',group:'primary'},
  {id:'forecast',label:'Linked 10-year model',icon:'chart-no-axes-combined',group:'finance'},
  {id:'cash',label:'Cash & deposits',icon:'wallet',group:'finance'},
+ {id:'dividends',label:'Tax & dividends',icon:'users',group:'finance'},
  {id:'bookings',label:'Booking tracker',icon:'calendar-check',group:'finance'},
  {id:'actuals',label:'Actual performance',icon:'target',group:'finance'},
  {id:'roadmap',label:'Year-by-year roadmap',icon:'route',group:'work'},
@@ -196,14 +197,14 @@ function ico(name){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentC
 const KEY='otgg10yearplanner_v3';
 let page='overview',focusYear=2027,scenario='base',viewMode='revenue',warnStorage=false;
 function defaultData(){return {
- version:3,created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:50000,tax:22,retain:10,ownerRate:17,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Owner target is an illustrative annual amount available for distribution AFTER estimated company tax/retention but BEFORE your personal tax. Adjust it to your combined household need.'},
- overrides:{}, bookings:[{id:'initial',client:'Existing booking — verify details',type:'wedding',status:'confirmed',booked:'',event:'',total:344,depositPct:25,depositPaid:null,depositDate:'',balancePaid:null,balanceDate:'',notes:'The one £344 booking known at launch. Add the actual wedding date and real payment receipts; £0 is NOT assumed to have been collected.'}],
+ version:3,created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:50000,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Owner target is an illustrative annual amount available for distribution AFTER estimated company tax/retention but BEFORE your personal tax. Adjust it to your combined household need.'},
+ dividendPlans:{2027:{jordan:100,dayle:100},2028:{jordan:250,dayle:250}},dividendRecords:[],overrides:{}, bookings:[{id:'initial',client:'Existing booking — verify details',type:'wedding',status:'confirmed',booked:'',event:'',total:344,depositPct:25,depositPaid:null,depositDate:'',balancePaid:null,balanceDate:'',notes:'The one £344 booking known at launch. Add the actual wedding date and real payment receipts; £0 is NOT assumed to have been collected.'}],
  actuals:{},milestones:DEFAULT_MILESTONES.map((a,i)=>({id:'mil'+i,year:a[0],title:a[1],description:a[2],status:'Not started'})),
  opportunities:DEFAULT_OPPS.map((a,i)=>({id:'opp'+i,title:a[0],category:a[1],year:a[2],priority:a[3],detail:a[4],status:'Explore',investment:0,margin:0})),
  tasks:[{id:'task0',title:'Confirm £344 booking date and amount actually paid',year:2027,status:'To do',priority:'High',owner:'Jordan / Dayle',due:'',notes:'Check actual contract and payment record, do not assume 25% was paid.'},{id:'task1',title:'Record enquiry sources and booking deposits',year:2027,status:'To do',priority:'High',owner:'Both',due:'',notes:'Track full order value, money paid, balance due and event delivery separately.'},{id:'task2',title:'Collect photos/reviews from every real event',year:2027,status:'To do',priority:'High',owner:'Both',due:'',notes:''},{id:'task3',title:'Create setup, collection and handover checklists',year:2027,status:'To do',priority:'Medium',owner:'Both',due:'',notes:''}],
  yearNotes:{2027:'Family first. One £344 booking so far. A handful of events and a growing future order book would be progress.'},savedAt:null};}
 let data=defaultData();data.bookings=[];
-function hydrate(d){const b=defaultData();if(!d||typeof d!=='object')return b;return {...b,...d,settings:{...b.settings,...(d.settings||{})},homeTargets:{...b.homeTargets,...(d.homeTargets||{})},overrides:d.overrides||{}, bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},milestones:Array.isArray(d.milestones)?d.milestones:b.milestones,opportunities:Array.isArray(d.opportunities)?d.opportunities:b.opportunities,tasks:Array.isArray(d.tasks)?d.tasks:b.tasks,yearNotes:d.yearNotes||{}}}
+function hydrate(d){const b=defaultData();if(!d||typeof d!=='object')return b;return {...b,...d,settings:{...b.settings,...(d.settings||{})},homeTargets:{...b.homeTargets,...(d.homeTargets||{})},dividendPlans:{...b.dividendPlans,...(d.dividendPlans||{})},dividendRecords:Array.isArray(d.dividendRecords)?d.dividendRecords:[],overrides:d.overrides||{}, bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},milestones:Array.isArray(d.milestones)?d.milestones:b.milestones,opportunities:Array.isArray(d.opportunities)?d.opportunities:b.opportunities,tasks:Array.isArray(d.tasks)?d.tasks:b.tasks,yearNotes:d.yearNotes||{}}}
 let cloudSaveTimer=null,cloudSaveBusy=false,cloudDirty=false,cloudSaveVersion=0;
 function save(){data.savedAt=new Date().toISOString();if(!plannerSession){return;}cloudDirty=true;cloudSaveVersion++;const el=document.querySelector('#save-indicator');if(el)el.textContent='Saving to Supabase…';clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(persistPlan,700)}
 async function persistPlan(){if(!plannerSession||cloudSaveBusy)return;cloudSaveBusy=true;const myVersion=cloudSaveVersion;const copy=JSON.parse(JSON.stringify(data));delete copy.bookings;delete copy.exportedAt;
@@ -226,15 +227,43 @@ function drv(field,year){let i=year-2027;if(i<0)return DEFAULT_ROWS[field][0];le
 }
 function vals(y){let r={};for(let f of Object.keys(FIELDS))r[f]=drv(f,y);return r}
 function sectorCosts(){return {wed:clamp(data.settings.costWed,0,100)/100,priv:clamp(data.settings.costPriv,0,100)/100,corp:clamp(data.settings.costCorp,0,100)/100,shop:clamp(data.settings.costShop,0,100)/100}}
+function stripeFee(amount){let n=Number(amount)||0;if(n<=0)return 0;return Math.round((n*clamp(data.settings.stripePct??1.5,0,25)/100+clamp(data.settings.stripeFixed??.2,0,20)+Number.EPSILON)*100)/100}
+function realStripeFees(){return livePayments.reduce((sum,p)=>sum+stripeFee(p.amount),0)}
+function corpTaxEstimate(taxableProfit){
+ const p=Math.max(0,Number(taxableProfit)||0);
+ if(!p)return 0;
+ if((data.settings.corpTaxMode||'uk')==='flat')return p*clamp(data.settings.tax,0,80)/100;
+ const assoc=Math.max(1,Math.round(Number(data.settings.corpAssociated)||1)),lower=50000/assoc,upper=250000/assoc;
+ if(p<=lower)return p*.19;
+ if(p>=upper)return p*.25;
+ return p*.25-(upper-p)*.015;
+}
+function dividendTarget(year){let p=data.dividendPlans?.[year]||{};return {jordan:Math.max(0,Number(p.jordan)||0),dayle:Math.max(0,Number(p.dayle)||0)}}
+function dividendEstimate(amount,owner){const rate=clamp(owner==='jordan'?data.settings.jordanDividendRate:data.settings.dayleDividendRate,0,60)/100;
+ return Math.max(0,(Number(amount)||0)-clamp(data.settings.dividendAllowance??500,0,100000))*rate;}
+function paidDividends(year){return (data.dividendRecords||[]).filter(x=>String(x.date||'').slice(0,4)===String(year)).reduce((a,x)=>{if(x.owner==='jordan'||x.owner==='dayle')a[x.owner]+=Number(x.amount)||0;return a},{jordan:0,dayle:0})}
 function row(year,s=scenario){let v=vals(year);let volume=s==='cautious'?data.settings.cautiousVolume/100:s==='ambitious'?data.settings.ambitiousVolume/100:1;let price=s==='cautious'?data.settings.cautiousPrice/100:s==='ambitious'?data.settings.ambitiousPrice/100:1;
  let wed=v.wedEvents*v.wedPrice*volume*price,priv=v.privEvents*v.privPrice*volume*price,corp=v.corpEvents*v.corpPrice*volume*price,shop=v.shopOrders*v.shopAov*volume*price;
  let costs=sectorCosts(),direct=wed*costs.wed+priv*costs.priv+corp*costs.corp+shop*costs.shop;
  if(s==='cautious')direct+=(wed+priv+corp+shop)*.025;
- let revenue=wed+priv+corp+shop,contribution=revenue-direct;
- let staff=v.staff*(s==='ambitious'?1.04:1),profit=contribution-staff-v.overhead-v.reserve-v.ownerHours*(data.settings.ownerRate||0);
- let afterTax=Math.max(0,profit)*(1-clamp(data.settings.tax,0,99)/100);
- let distributable=afterTax*(1-clamp(data.settings.retain,0,99)/100);
- return {year,v,wed,priv,corp,shop,direct,revenue,contribution,staff,overhead:v.overhead,reserve:v.reserve,ownerReplacement:v.ownerHours*(data.settings.ownerRate||0),profit,afterTax,distributable,capex:v.capex};}
+ let revenue=wed+priv+corp+shop;
+ let hireCount=(v.wedEvents+v.privEvents+v.corpEvents)*volume;
+ let expectedTransactions=hireCount*(1+clamp(data.settings.stripeDepositShare??80,0,100)/100)+v.shopOrders*volume;
+ let stripeFees=Math.round(((revenue*clamp(data.settings.stripePct??1.5,0,25)/100)+(expectedTransactions*clamp(data.settings.stripeFixed??.2,0,20)))*100)/100;
+ let contribution=revenue-direct-stripeFees;
+ let staff=v.staff*(s==='ambitious'?1.04:1),companyProfit=contribution-staff-v.overhead;
+ let companyTax=corpTaxEstimate(companyProfit),companyAfterTax=companyProfit-companyTax;
+ let ownerReplacement=v.ownerHours*(data.settings.ownerRate||0);
+ // The founder-replacement test is an economic target, NOT a tax deduction.
+ // Unspent reserves are cash retained, not deductible operating expenses.
+ let profit=companyProfit-v.reserve-ownerReplacement;
+ let afterTax=Math.max(0,companyAfterTax-v.reserve-ownerReplacement);
+ let retainPct=clamp(data.settings.retain,0,99)/100;
+ let distributable=afterTax*(1-retainPct);
+ let dividendCapacity=Math.max(0,companyAfterTax-v.reserve-v.capex)*(1-retainPct);
+ let planned=dividendTarget(year),plannedDividends=planned.jordan+planned.dayle;
+ return {year,v,wed,priv,corp,shop,direct,stripeFees,expectedTransactions,revenue,contribution,staff,overhead:v.overhead,reserve:v.reserve,ownerReplacement,companyProfit,companyTax,companyAfterTax,profit,afterTax,distributable,dividendCapacity,plannedDividends,dividendShortfall:Math.max(0,plannedDividends-dividendCapacity),dividendRemaining:Math.max(0,dividendCapacity-plannedDividends),capex:v.capex};
+}
 function allRows(s=scenario){return YEARS.map(y=>row(y,s))}
 function leadFor(type){let st=data.settings;return type==='wedding'?[st.wedLead1/100,st.wedLead2/100]:type==='private'?[st.privLead1/100,st.privLead2/100]:[st.corpLead1/100,st.corpLead2/100]}
 function eventSectorAmount(y,type,s=scenario){let r=row(y,s);return type==='wedding'?r.wed:type==='private'?r.priv:r.corp}
@@ -245,7 +274,7 @@ function cashRow(y,s=scenario){let deposit=data.settings.deposit/100, r=row(y,s)
  depositCash+=newCurrent+future1+future2;balanceCash+=h*(1-deposit);oldDeposits+=h*(a+b)*deposit;contractsWon+=h*same+extendedSector(y+1,type,s)*a+extendedSector(y+2,type,s)*b;forwardContractsWon+=extendedSector(y+1,type,s)*a+extendedSector(y+2,type,s)*b;
  }
  cash=depositCash+balanceCash+r.shop;
- return {year:y,depositCash,balanceCash,shopCash:r.shop,cash,hireEarn,contractsWon,forwardContractsWon,bookedAhead:depositCash,earned:r.revenue,priorDeposits:oldDeposits,netAfterCapex:cash-r.direct-r.staff-r.overhead-r.capex};}
+ return {year:y,depositCash,balanceCash,shopCash:r.shop,cash,hireEarn,contractsWon,forwardContractsWon,bookedAhead:depositCash,earned:r.revenue,priorDeposits:oldDeposits,netAfterCapex:cash-r.direct-r.stripeFees-r.staff-r.overhead-r.capex-r.companyTax-r.reserve-r.plannedDividends};}
 const parseDate=d=>d&&/^\d{4}-\d{2}-\d{2}$/.test(d)?new Date(d+'T12:00:00'):null;
 function dueDate(b){if(b.balanceDue)return b.balanceDue;let e=parseDate(b.event);if(!e)return '';e.setDate(e.getDate()-clamp(data.settings.balanceDays,0,365));return `${e.getFullYear()}-${String(e.getMonth()+1).padStart(2,'0')}-${String(e.getDate()).padStart(2,'0')}`}
 function paid(b){return (Number(b.depositPaid)||0)+(Number(b.balancePaid)||0)}
@@ -398,7 +427,7 @@ function downloadFile(filename,mime,content){const blob=new Blob([content],{type
 function downloadJson(){let date=new Date().toISOString().slice(0,10);downloadFile('OTGG_Planner_Backup_'+date+'.json','application/json;charset=utf-8',JSON.stringify({...data,exportedAt:new Date().toISOString()},null,2));toast('Backup downloaded — save to Files or iCloud Drive')}
 function renderNav(){for(let g of ['primary','finance','work'])document.querySelector('#nav-'+g).innerHTML=NAV.filter(n=>n.group===g).map(n=>`<button class="nav-button ${page===n.id?'active':''}" data-page="${n.id}">${ico(n.icon)}<span>${n.label}</span></button>`).join('');document.querySelector('#mobile-nav').innerHTML=['overview','forecast','cash','bookings','tasks'].map(id=>{let n=NAV.find(a=>a.id===id);return `<button class="${page===id?'active':''}" data-page="${id}">${ico(n.icon)}<span>${id==='forecast'?'Plan':id==='bookings'?'Bookings':n.label==='The big picture'?'Home':id==='cash'?'Cash':'Tasks'}</span></button>`}).join('')}
 function render(){renderNav();document.querySelector('#crumb-page').textContent=NAV.find(x=>x.id===page)?.label||'Overview';document.querySelector('#top-year').value=String(focusYear);document.querySelector('#top-scenario').value=scenario;
- const views={overview:pageOverview,forecast:pageForecast,cash:pageCash,bookings:pageBookings,actuals:pageActuals,roadmap:pageRoadmap,opportunities:pageOpportunities,team:pageTeam,tasks:pageTasks,settings:pageSettings};try{document.querySelector('#page').innerHTML=views[page]()}catch(e){console.error(e);document.querySelector('#page').innerHTML=`<div class="note warn">There was a display error. Your saved data remains unchanged. ${esc(e.message)}</div>`}}
+ const views={overview:pageOverview,forecast:pageForecast,cash:pageCash,dividends:pageDividends,bookings:pageBookings,actuals:pageActuals,roadmap:pageRoadmap,opportunities:pageOpportunities,team:pageTeam,tasks:pageTasks,settings:pageSettings};try{document.querySelector('#page').innerHTML=views[page]()}catch(e){console.error(e);document.querySelector('#page').innerHTML=`<div class="note warn">There was a display error. Your saved data remains unchanged. ${esc(e.message)}</div>`}}
 function settingUpdate(k,val){let n=Number(val);data.settings[k]=Number.isFinite(n)?Math.max(0,n):0;
  for(let typ of ['wed','priv','corp']){let k1=typ+'Lead1',k2=typ+'Lead2';if(data.settings[k1]+data.settings[k2]>100){data.settings[k2]=100-data.settings[k1]}}
  save();render()}
