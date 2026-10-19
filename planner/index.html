@@ -377,6 +377,95 @@ function pageCash(){let c=cashRow(focusYear),L=calcLedger();return txtHeading('0
  ${panel('10-year cash timing sensitivity','Model only · Includes deposits for weddings up to two years ahead',`<div class="table-wrap"><table class="table"><thead><tr><th>Year</th><th>Delivered revenue</th><th>New hire orders contracted</th><th>Of which future events</th><th>New deposits</th><th>Event balances</th><th>Shop receipts</th><th>Total modelled receipts</th><th>Capital purchases</th></tr></thead><tbody>${YEARS.map(y=>{let r=cashRow(y);return `<tr><td><strong>${y}</strong></td><td>${money(r.earned)}</td><td>${money(r.contractsWon)}</td><td>${money(r.forwardContractsWon)}</td><td>${money(r.depositCash)}</td><td>${money(r.balanceCash)}</td><td>${money(r.shopCash)}</td><td><strong>${money(r.cash)}</strong></td><td>${money(row(y).capex)}</td></tr>`}).join('')}</tbody></table></div><p class="fine" style="margin-top:12px">The 2036 forecast extends 2037/38 hire demand mechanically for deposit timing only; those later events are not included in the ten-year earned-revenue targets. This is not a bank or accounting forecast.</p>`)}
  <div style="height:17px"></div>${panel('Real booking balances due','Only bookings with a real event date can be scheduled',L.schedule.length?`<div class="table-wrap"><table class="table"><thead><tr><th>Customer</th><th>Balance due</th><th>Event date</th><th>Still unpaid</th></tr></thead><tbody>${L.schedule.map(x=>`<tr><td>${esc(x.client)}</td><td>${esc(x.date)}</td><td>${esc(x.event)}</td><td><strong>${money(x.amount)}</strong></td></tr>`).join('')}</tbody></table></div>`:`<div class="empty"><strong>No dated unpaid bookings yet</strong><p>Enter the actual date of the existing £344 booking and any deposit paid. Balances will appear here automatically.</p><button class="btn mini" data-page="bookings">Open booking tracker</button></div>`)} `;
 }
+
+function pageDividends(){
+ let r=row(focusYear),L=calcLedger(),plan=dividendTarget(focusYear),actual=paidDividends(focusYear);
+ let estJordan=dividendEstimate(plan.jordan,'jordan'),estDayle=dividendEstimate(plan.dayle,'dayle');
+ let paidList=(data.dividendRecords||[]).filter(x=>String(x.date||'').slice(0,4)===String(focusYear)).sort((a,b)=>b.date.localeCompare(a.date));
+ const kv=(label,value)=>`<div class="kv"><span>${label}</span><strong>${value}</strong></div>`;
+ const source='<a href="https://www.gov.uk/corporation-tax-rates/rates" target="_blank" rel="noopener">Corporation Tax guidance</a> · <a href="https://www.gov.uk/tax-on-dividends" target="_blank" rel="noopener">Dividend tax guidance</a>';
+ return txtHeading('03 / owner income','Tax, Stripe & dividends','Plan what Jordan and Dayle can take home. Deposits are not profit, and planning a dividend does not make an actual payment.')+yearSelector()+
+ `<div class="cards-4">
+ ${metric('Revenue forecast',money(r.revenue),'Delivered events and products, not deposits')}
+ ${metric('Stripe fees in this forecast',money(r.stripeFees),data.settings.stripePct+'% + '+money(data.settings.stripeFixed)+' / expected transaction')}
+ ${metric('Estimated company tax',money(r.companyTax),'On model taxable profit, not founder labour')}
+ ${metric('Potential cash for dividends',money(r.dividendCapacity),'Illustrative annual capacity, not bank balance')}
+ </div>
+ <div class="layout-even">
+ ${panel('Company money: what is really left?','The difference between cash, profit and dividends',`
+ ${kv('Forecast revenue',money(r.revenue))}
+ ${kv('Supplier, crew and fulfilment costs','−'+money(r.direct))}
+ ${kv('Stripe processing costs','−'+money(r.stripeFees))}
+ ${kv('Staffing and business overhead','−'+money(r.staff+r.overhead))}
+ ${kv('Illustrative taxable company profit',money(r.companyProfit))}
+ ${kv('Estimated corporation tax','−'+money(r.companyTax))}
+ ${kv('After corporation tax',money(r.companyAfterTax))}
+ ${kv('Maintenance reserve and capital purchases','−'+money(r.reserve+r.capex))}
+ ${kv('Additional profit retained ('+num(data.settings.retain)+'%)','−'+money(Math.max(0,r.companyAfterTax-r.reserve-r.capex)*clamp(data.settings.retain,0,99)/100))}
+ ${kv('<strong>Annual dividend capacity guide</strong>',money(r.dividendCapacity))}
+ <div class="note goldnote" style="margin-top:15px">This is a <strong>forecast profit-based guide</strong>, not confirmation that the company has distributable reserves or enough free bank cash. A dividend needs actual post-tax distributable profits, appropriate share rights and company records.</div>`)}
+ ${panel('Jordan & Dayle: plan your dividends','Change the amounts for this year. The planner will save them.',`
+ <div class="field-grid two">
+ ${field('Jordan · desired dividend (£)',plan.jordan,'data-dividend-target="jordan" data-dividend-year="'+focusYear+'"')}
+ ${field('Dayle · desired dividend (£)',plan.dayle,'data-dividend-target="dayle" data-dividend-year="'+focusYear+'"')}
+ </div>
+ <div style="height:15px"></div>
+ ${kv('Total desired dividends',money(r.plannedDividends))}
+ ${kv('Year '+focusYear+' estimated dividend capacity',money(r.dividendCapacity))}
+ ${kv('Margin / shortfall',r.dividendShortfall>0?'<span style="color:#b65f57">−'+money(r.dividendShortfall)+'</span>':money(r.dividendRemaining))}
+ ${kv('Jordan · illustrative personal dividend tax',money(estJordan))}
+ ${kv('Jordan · illustrative take-home',money(plan.jordan-estJordan))}
+ ${kv('Dayle · illustrative personal dividend tax',money(estDayle))}
+ ${kv('Dayle · illustrative take-home',money(plan.dayle-estDayle))}
+ ${r.dividendShortfall>0?'<div class="note warn" style="margin-top:14px">Your planned dividends exceed the modelled capacity. Do not treat them as safe to pay.</div>':''}
+ <p class="fine" style="margin-top:15px">Personal dividend-tax estimates assume the editable tax rate and remaining allowance for each owner. They are <strong>not a tax return</strong>: salaries, other dividend income, dividend bands and the 6 April to 5 April tax year all matter. You can adjust the rates in Settings.</p>`)}
+ </div>
+ <div class="layout-even">
+ ${panel('Actual Stripe fees · paid transactions only','Read directly from successful Supabase payment records',`
+ ${kv('Payments actually received',money(L.recorded))}
+ ${kv('Successful card transactions',String(livePayments.length))}
+ ${kv('Estimated Stripe fees on those payments',money(realStripeFees()))}
+ ${kv('Estimated Stripe net receipts',money(L.recorded-realStripeFees()))}
+ ${kv('Booked but not yet paid',money(L.outstanding))}
+ <p class="fine" style="margin-top:14px">Uses ${num(data.settings.stripePct)}% + ${money(data.settings.stripeFixed)} per successful transaction, rounded to the penny. Full payments incur one fee; separate deposits and balances incur two. This is an estimate of processor fees, not Stripe’s actual settlement/fee report. Refunds and chargebacks may differ.</p>
+ <div style="margin-top:12px" class="button-row"><button class="btn mini" data-page="bookings">Open booking ledger</button></div>`)}
+ ${panel('Record actual dividends paid','A private log; entering a payment does not send any money',`
+ <div class="cards-3" style="margin-bottom:14px">${metric('Jordan paid',money(actual.jordan),'Recorded this calendar year')}${metric('Dayle paid',money(actual.dayle),'Recorded this calendar year')}${metric('Total paid',money(actual.jordan+actual.dayle),'Entered manually')}</div>
+ <form id="dividend-payment-form" class="field-grid two">
+ <div class="field"><label for="dividend-owner">Paid to</label><select id="dividend-owner" name="owner" required><option value="jordan">Jordan</option><option value="dayle">Dayle</option></select></div>
+ <div class="field"><label for="dividend-paid-date">Payment date</label><input id="dividend-paid-date" type="date" name="date" required value="${focusYear}-01-01"></div>
+ <div class="field"><label for="dividend-paid-amount">Amount paid (£)</label><input id="dividend-paid-amount" type="number" min=".01" step=".01" name="amount" required placeholder="0.00"></div>
+ <div class="field" style="display:flex;align-items:end"><button class="btn dark" type="submit" style="width:100%">Record dividend paid</button></div>
+ </form>
+ <div style="margin-top:14px">${paidList.length?paidList.map(p=>`<div class="kv"><span>${esc(p.date)} · ${p.owner==='jordan'?'Jordan':'Dayle'}</span><div style="display:flex;gap:10px;align-items:center"><strong>${money(p.amount)}</strong><button class="btn mini" data-delete-dividend="${esc(p.id)}" aria-label="Delete recorded payment">Remove</button></div></div>`).join(''):'<p class="fine">No actual dividends recorded for this year.</p>'}</div>
+ <p class="fine">Use this only to record actual approved dividend payments; it is not connected to your bank and does not create a dividend voucher.</p>`)}
+ </div>
+ ${panel('Tax & card fee assumptions','Editable estimates · not accounting or personal tax advice',`
+ <div class="layout-even" style="margin:0">
+ <div>
+ <div class="field"><label for="corp-mode">Corporation Tax method</label><select id="corp-mode" data-setting-text="corpTaxMode"><option value="uk" ${data.settings.corpTaxMode==='uk'?'selected':''}>UK small profits + marginal relief (default)</option><option value="flat" ${data.settings.corpTaxMode==='flat'?'selected':''}>Simple flat rate</option></select></div>
+ <div class="field-grid two">
+ ${field('Associated companies',data.settings.corpAssociated,'data-setting="corpAssociated"')}
+ ${field('Flat company tax rate (%)',data.settings.tax,'data-setting="tax"')}
+ ${field('Stripe charge (%)',data.settings.stripePct,'data-setting="stripePct"')}
+ ${field('Stripe fixed fee per payment (£)',data.settings.stripeFixed,'data-setting="stripeFixed"')}
+ ${field('Hire bookings paying deposit + balance (%)',data.settings.stripeDepositShare,'data-setting="stripeDepositShare"')}
+ </div></div>
+ <div>
+ <div class="field-grid two">
+ ${field('Jordan · illustrative dividend tax rate (%)',data.settings.jordanDividendRate,'data-setting="jordanDividendRate"')}
+ ${field('Dayle · illustrative dividend tax rate (%)',data.settings.dayleDividendRate,'data-setting="dayleDividendRate"')}
+ ${field('Unused dividend allowance per owner (£)',data.settings.dividendAllowance,'data-setting="dividendAllowance"')}
+ ${field('Retain extra after-tax cash (%)',data.settings.retain,'data-setting="retain"')}
+ </div>
+ <p class="fine" style="margin-top:16px">UK Corporation Tax: 19% on profits up to £50,000, 25% at £250,000 and above, with marginal relief between (full accounting year, one company assumption). Current dividend basic-rate estimate: 10.75%; higher-rate estimate: 35.75%. £500 annual dividend allowance. These tax rules may change across 2027–2036.</p>
+ <p class="fine">Company tax model does not use tax-loss carryforwards, capital allowances, VAT adjustments, payroll/director remuneration or associated-company nuances. The actual amount depends on your accountant’s calculations.</p>
+ <p class="fine">${source}</p>
+ </div></div>`)}
+ ${panel('Ten years of potential owner income','Choose any year to edit target dividends',`<div class="table-wrap"><table class="table" style="min-width:900px"><thead><tr><th>Year</th><th>Company profit</th><th>Corporation tax</th><th>After tax</th><th>Dividend capacity guide</th><th>Jordan plan</th><th>Dayle plan</th><th>Headroom</th></tr></thead><tbody>${YEARS.map(y=>{let m=row(y),p=dividendTarget(y);return `<tr><td><button class="home-link" data-year="${y}" data-page="dividends">${y}</button></td><td>${money(m.companyProfit)}</td><td>${money(m.companyTax)}</td><td>${money(m.companyAfterTax)}</td><td><strong>${money(m.dividendCapacity)}</strong></td><td>${money(p.jordan)}</td><td>${money(p.dayle)}</td><td>${m.dividendShortfall>0?'<span style="color:#b65f57">−'+money(m.dividendShortfall)+'</span>':money(m.dividendRemaining)}</td></tr>`}).join('')}</tbody></table></div>`)}
+ <div class="note goldnote" style="margin-top:12px">Dividend amounts may be restricted by the company's distributable profits and the rights attached to each share class. Estimated personal taxes are illustrative only. Agree a dividend approach with your accountant before paying either owner.</div>`;
+}
+
 function pageBookings(){let s=openingStats(),L=calcLedger();return txtHeading('03 / booking diary','Live bookings & payments','Read-only records synced from Supabase, including real deposit and balance payments. Edit bookings through the existing OTGG admin instead.')+
  `<div class="cards-4">${metric('Confirmed bookings',s.count,'Directly from Supabase')}${metric('Future signed value',money(s.value),'This is not earned revenue')}${metric('Cash recorded paid',money(L.recorded),'Deposit + balance paid fields')}${metric('Due / uncollected',money(L.outstanding),'Collection subject to contract')}</div>
  ${panel('Booking ledger','Read-only · paid/confirmed bookings · expired checkouts excluded',`<div class="table-wrap"><table class="table" style="min-width:900px"><thead><tr><th>Customer</th><th>Event</th><th>Type</th><th>Contract</th><th>Deposit paid</th><th>Balance paid</th><th>Outstanding</th><th>Status</th><th></th></tr></thead><tbody>${data.bookings.map(b=>`<tr><td><strong>${esc(b.client)}</strong><div class="hint">Booked ${esc(b.booked||'date unknown')}</div></td><td>${esc(b.event||'Needs date')}</td><td>${esc(b.type)}</td><td>${money(b.total)}</td><td>${b.depositPaid==null?'Unknown':money(b.depositPaid)}</td><td>${b.balancePaid==null?'Unknown':money(b.balancePaid)}</td><td>${money(Math.max(0,Number(b.total)-paid(b)))}</td><td>${statusTag(b.status)}</td><td><button class="btn mini" data-view-booking="${esc(b.id)}">Live</button></td></tr>`).join('')}</tbody></table></div><div class="note" style="margin-top:14px">Records are synced from your live bookings and paid payment records. Expired checkout attempts are excluded. Amounts are not assumed from the standard deposit percentage.</div>`)}
@@ -433,6 +522,7 @@ function settingUpdate(k,val){let n=Number(val);data.settings[k]=Number.isFinite
  save();render()}
 function setDriver(f,y,val){data.overrides[y+':'+f]=Math.max(0,Number(val)||0);save();render();toast(`${y} ${FIELDS[f][0]} changed; later projections recalculated`)}
 function onClick(e){let btn=e.target.closest('button');if(!btn)return;
+ if(btn.dataset.deleteDividend){if(!confirm('Remove this recorded dividend payment? This changes the log only.'))return;data.dividendRecords=(data.dividendRecords||[]).filter(p=>p.id!==btn.dataset.deleteDividend);save();render();toast('Dividend record removed');return}
  if(btn.id==='menu-toggle'){document.querySelector('#sidebar').classList.toggle('open');return}
  if(btn.id==='modal-close'||btn.id==='modal-cancel'){closeModal();return}
  if(btn.id==='trigger-import'){document.querySelector('#import-file').click();return}
@@ -451,6 +541,7 @@ function onClick(e){let btn=e.target.closest('button');if(!btn)return;
 }
 function onChange(e){let t=e.target;if(t.id==='top-year'){focusYear=Number(t.value);render();return}if(t.id==='top-scenario'){scenario=t.value;render();return}
  if(t.dataset.homeTarget){const y=Number(t.dataset.homeYear),v=Math.round(Number(t.value));if(!Number.isInteger(v)||v<1||v>10000){toast('Choose a target between 1 and 10,000');render();return}data.homeTargets??={};data.homeTargets[y]??={};data.homeTargets[y][t.dataset.homeTarget]=v;save();render();toast('Target saved');return}
+ if(t.dataset.dividendTarget){let y=Number(t.dataset.dividendYear),v=Number(t.value);if(!Number.isFinite(v)||v<0||v>10000000){toast('Enter a valid planned dividend');render();return}data.dividendPlans??={};data.dividendPlans[y]??={jordan:0,dayle:0};data.dividendPlans[y][t.dataset.dividendTarget]=Math.round(v*100)/100;save();render();toast('Dividend plan updated');return}
  if(t.dataset.driver){setDriver(t.dataset.driver,Number(t.dataset.driverYear),t.value);return}
  if(t.dataset.setting){settingUpdate(t.dataset.setting,t.value);return}
  if(t.dataset.actual){if(!data.actuals[t.dataset.actualYear])data.actuals[t.dataset.actualYear]={};data.actuals[t.dataset.actualYear][t.dataset.actual]=t.value===''?null:Number(t.value);save();render();return}
@@ -458,6 +549,7 @@ function onChange(e){let t=e.target;if(t.id==='top-year'){focusYear=Number(t.val
  if(t.dataset.settingText){data.settings[t.dataset.settingText]=t.value;save();return}
  if(t.id==='import-file'){let f=t.files&&t.files[0];if(!f)return;f.text().then(str=>{let parsed=JSON.parse(str);if(parsed.version!==3||!Array.isArray(parsed.bookings)||!parsed.settings)throw Error('This is not a valid version 3 OTGG backup');if(!confirm('Replace current local data with this backup? Export your current version first if needed.'))return;data=hydrate(parsed);save();render();toast('Full backup restored')}).catch(err=>{toast('Import failed: '+err.message)});t.value=''}
 }
+document.addEventListener('submit',e=>{if(e.target.id!=='dividend-payment-form')return;e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const amount=Number(d.amount);if(!['jordan','dayle'].includes(d.owner)||!/^\\d{4}-\\d{2}-\\d{2}$/.test(d.date)||!(amount>0)){toast('Enter an owner, date and amount');return;}data.dividendRecords??=[];data.dividendRecords.push({id:unique(),owner:d.owner,date:d.date,amount:Math.round(amount*100)/100});save();render();toast('Actual dividend recorded');});
 document.addEventListener('click',onClick);document.addEventListener('change',onChange);document.addEventListener('submit',e=>{if(e.target.getAttribute('id')==='edit-form'){e.preventDefault();onForm(e.target)}});document.addEventListener('click',e=>{if(e.target.id==='modal-shade'||e.target.id==='navshade'){closeModal();document.querySelector('#sidebar').classList.remove('open')}});
 document.getElementById('menu-toggle').innerHTML=ico('menu');document.getElementById('backup-icon').innerHTML=ico('backup');document.getElementById('top-year').innerHTML=YEARS.map(y=>`<option value="${y}">${y}</option>`).join('');
 /* Initial render waits for authentication. */
