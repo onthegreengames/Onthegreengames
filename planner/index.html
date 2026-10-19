@@ -434,7 +434,7 @@ document.getElementById('menu-toggle').innerHTML=ico('menu');document.getElement
 /* Initial render waits for authentication. */
 
 const PLANNER_URL="https://untytznzbngourawgbqx.supabase.co",PLANNER_KEY="sb_publishable_5cEKGw7AmGfV6U8P2hoylQ_DvbEz3cB";
-let plannerDB=null,plannerSession=null,liveBookings=[],syncLoop=null,syncBusy=false,planLoading=false;
+let plannerDB=null,plannerSession=null,liveBookings=[],livePayments=[],syncLoop=null,syncBusy=false,planLoading=false;
 const wall=()=>document.getElementById('planner-auth');
 function authMessage(msg){const x=document.getElementById('planner-auth-message');if(x)x.textContent=msg}
 async function loadLivePlan(){
@@ -454,7 +454,8 @@ async function syncLiveBookings(){
   ]);
   const payMap={};
   for(const p of payments){if(!['paid','succeeded','completed'].includes(String(p.payment_status||'').toLowerCase()))continue;(payMap[p.booking_id]??=[]).push(p)}
-  const active=bookings.filter(b=>['paid','confirmed','completed','partially_paid','deposit_paid'].includes(String(b.status||'').toLowerCase())&&Number(b.total_price)>0);
+  const active=bookings.filter(b=>/^(?:paid|completed|deposit_paid|partially_paid|confirmed(?:_|$))/.test(String(b.status||'').toLowerCase())&&Number(b.total_price)>0);
+  livePayments=payments.filter(p=>['paid','succeeded','completed'].includes(String(p.payment_status||'').toLowerCase())&&active.some(b=>b.id===p.booking_id));
   liveBookings=active.map(b=>{
    const pay=payMap[b.id]||[],deposit=pay.filter(p=>String(p.payment_type).toLowerCase()==='deposit').reduce((n,p)=>n+Number(p.amount||0),0);
    const other=pay.filter(p=>String(p.payment_type).toLowerCase()!=='deposit').reduce((n,p)=>n+Number(p.amount||0),0);
