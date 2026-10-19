@@ -219,7 +219,7 @@ function hydrate(d){
  'Complete eight-week founder-free test','Owner-only operating model'];
  let milestones=b.milestones;
  if(Array.isArray(d.milestones)){
-  const extras=d.milestones.filter(m=>!/^mil\\d+$/.test(m.id||'')||(oldDefaultMilestoneTitles[Number((m.id||'').slice(3))]!==m.title&&m.id&&/^mil\\d+$/.test(m.id)&&Number((m.id||'').slice(3))<oldDefaultMilestoneTitles.length));
+  const extras=d.milestones.filter(m=>!/^mil\d+$/.test(m.id||'')||(oldDefaultMilestoneTitles[Number((m.id||'').slice(3))]!==m.title&&m.id&&/^mil\d+$/.test(m.id)&&Number((m.id||'').slice(3))<oldDefaultMilestoneTitles.length));
   milestones=b.milestones.map(m=>{
    let prior=d.milestones.find(x=>x.id===m.id);
    return prior?(prior.title===oldDefaultMilestoneTitles[Number(m.id.slice(3))]?{...m,status:prior.status||m.status}:prior):m;
@@ -230,7 +230,12 @@ function hydrate(d){
  dividendRecords:Array.isArray(d.dividendRecords)?d.dividendRecords:[],
  overrides:d.overrides||{},bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},
  milestones:fromOld?milestones:(Array.isArray(d.milestones)?d.milestones:b.milestones),
- opportunities:fromOld?b.opportunities.concat((d.opportunities||[]).filter(o=>!/^opp\\d+$/.test(o.id||''))):(Array.isArray(d.opportunities)?d.opportunities:b.opportunities),
+ opportunities:fromOld?b.opportunities.map(o=>{
+ const prior=(d.opportunities||[]).find(x=>x.id===o.id);if(!prior)return o;
+ const oldTitles=['Private birthdays & garden parties','Corporate team days & summer events','Corporate Christmas party package','Personalised mini-golf scorecards','Wedding welcome signs & table plans','Place cards, table numbers & menus','Personalised trophies / medals','University / graduation events','Branded games for corporate activations','Children’s wedding activity packs'];
+ const oldTitle=oldTitles[Number((o.id||'').slice(3))];
+ return prior.title!==oldTitle?prior:{...o,status:prior.status||o.status,priority:prior.priority??o.priority,investment:prior.investment??o.investment,margin:prior.margin??o.margin};
+}).concat((d.opportunities||[]).filter(o=>!((o.id||'').startsWith('opp')&&Number.isInteger(Number((o.id||'').slice(3)))))):(Array.isArray(d.opportunities)?d.opportunities:b.opportunities),
  tasks:Array.isArray(d.tasks)?d.tasks:b.tasks,yearNotes:d.yearNotes||{}};
 }
 let cloudSaveTimer=null,cloudSaveBusy=false,cloudDirty=false,cloudSaveVersion=0;
