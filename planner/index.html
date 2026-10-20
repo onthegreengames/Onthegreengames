@@ -850,6 +850,97 @@ function csvExport(){let headers=['Year','Wedding events','Wedding average','Pri
  headers.push('Stripe fees','Taxable company profit estimate','Corporation tax','Company profit after tax','Potential owner dividends','Desired dividends total','Jordan desired dividends','Dayle desired dividends');let lines=[headers.join(',')];allRows('base').forEach(r=>{let v=r.v,c=cashRow(r.year,'base'),d=dividendTarget(r.year);lines.push([r.year,v.wedEvents,v.wedPrice,v.privEvents,v.privPrice,v.corpEvents,v.corpPrice,v.shopOrders,v.shopAov,r.wed,r.priv,r.corp,r.shop,r.revenue,r.direct,r.staff,r.overhead,r.reserve,r.v.ownerHours,r.companyProfit,r.distributable,c.cash,r.stripeFees,r.companyProfit,r.companyTax,r.companyAfterTax,r.dividendCapacity,r.plannedDividends,d.jordan,d.dayle].map(v=>Math.round(Number(v)*100)/100).join(','))});downloadFile('OTGG_10_Year_Forecast.csv','text/csv;charset=utf-8',lines.join('\r\n'))}
 function downloadFile(filename,mime,content){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
 function downloadJson(){let date=new Date().toISOString().slice(0,10);downloadFile('OTGG_Planner_Backup_'+date+'.json','application/json;charset=utf-8',JSON.stringify({...data,exportedAt:new Date().toISOString()},null,2));toast('Backup downloaded — save to Files or iCloud Drive')}
+
+/* 2026 simpler planner: goal tracking + interactive pricing. Preserve the previous
+   model as archived Supabase payload fields, rather than deleting users' history. */
+function simpleStore(){
+ if(!data.simplePlanner||typeof data.simplePlanner!=='object'){
+  const goals={};
+  for(const y of YEARS){
+   goals[y]={delivered:data.homeTargets?.[y]?.delivered??null,next:data.homeTargets?.[y]?.next??null,dividends:y===2036?Number(data.settings?.ownerTarget)||90000:null};
+  }
+  data.simplePlanner={goals,scenarios:{}};
+ }
+ data.simplePlanner.goals??={};data.simplePlanner.scenarios??={};
+ return data.simplePlanner;
+}
+function simpleGoal(y){
+ const store=simpleStore();
+ if(!store.goals[y])store.goals[y]={delivered:null,next:null,dividends:y===2036?90000:null};
+ return store.goals[y];
+}
+function simpleExample(y){
+ return {weddings:y===2027?5:0,private:0,corporate:0,weddingPrice:400,premiumPrice:750,premiumShare:0,
+  privatePrice:550,corporatePrice:1500,costPct:25,shopSales:0,shopCostsPct:50,
+  marketing:500,overhead:600,equipment:0,expansion:150,maintenance:100,keepPct:10,
+  vatPct:10,vatThreshold:90000,cardPct:1.5,cardFixed:.20,transactionsPerHire:1.8};
+}
+function simpleScenario(y){
+ const store=simpleStore();
+ if(!store.scenarios[y])store.scenarios[y]=simpleExample(y);
+ return store.scenarios[y];
+}
+function simpleNumber(n,d=0){return Number(n||0).toLocaleString('en-GB',{maximumFractionDigits:d,minimumFractionDigits:0})}
+function simpleMoney(n){return (Number(n)<0?'−':'')+'£'+Math.abs(Number(n)||0).toLocaleString('en-GB',{maximumFractionDigits:0})}
+function simpleField(key,label,value,note='',attrs=''){
+ return `<div class="s-field"><label for="s-${key}">${esc(label)}</label><input id="s-${key}" type="number" inputmode="decimal" step="any" min="0" data-simple-price="${key}" value="${value}" ${attrs}>${note?'<small>'+esc(note)+'</small>':''}</div>`;
+}
+function simpleBar(value,target,gold=false){
+ const pct=target>0?Math.min(100,Math.max(0,100*value/target)):0;
+ return `<div class="s-bar ${gold?'gold':''}" role="progressbar" aria-valuenow="${value}" aria-valuemax="${target||0}"><b style="width:${pct}%"></b></div>`;
+}
+function simpleHead(kicker,title,description){
+ return `<header class="s-head"><span class="s-kicker">${esc(kicker)}</span><h1>${esc(title)}</h1><p>${esc(description)}</p></header>`;
+}
+function simpleMetrics(y){
+ const m=homeData(y);const bookings=(data.bookings||[]).filter(b=>b.status!=='cancelled');
+ const yearEvents=bookings.filter(b=>String(b.event||'').startsWith(String(y)));
+ const now=new Date(),today=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
+ const fulfilled=yearEvents.filter(b=>b.status==='completed'||(b.event&&b.event<today)).length;
+ const next=bookings.filter(b=>String(b.event||'').startsWith(String(y+1)));
+ return {m,fulfilled,booked:yearEvents.length,next:next.length,
+  yearValue:yearEvents.reduce((a,b)=>a+Number(b.total||0),0),
+  nextValue:next.reduce((a,b)=>a+Number(b.total||0),0),
+  totalCash:bookings.reduce((a,b)=>a+paid(b),0),
+  upcoming:bookings.filter(b=>b.event>=today&&b.status!=='completed').sort((a,b)=>a.event.localeCompare(b.event)).slice(0,4)};
+}
+function pageSimpleHome(){
+ const y=focusYear,g=simpleGoal(y),m=simpleMetrics(y);
+ const delivered=g.delivered>0?g.delivered:null,next=g.next>0?g.next:null;
+ const card=(title,value,target,sublabel,gold=false)=>`<section class="s-card">
+  <h2>${title}</h2><p>${sublabel}</p><div class="s-number">${value}<small> / ${target??'set a goal'}</small></div>
+  ${simpleBar(value,target,gold)}
+  <div class="s-split"><span>${target?Math.round(value/target*100)+'% of target':'No goal set yet'}</span><button class="s-link" data-page="targets">Edit target →</button></div>
+ </section>`;
+ const up=m.upcoming.length?m.upcoming.map(b=>`<tr><td>${esc(b.event)}</td><td>${esc(b.client||'Confirmed booking')}</td><td><strong>${simpleMoney(b.total)}</strong></td></tr>`).join(''):'<tr><td colspan="3">No upcoming events yet.</td></tr>';
+ return `<div class="s-hero"><div><span class="s-kicker" style="color:#e7c891">On The Green Games · ${y}</span><h1>How are we doing?</h1><p>Real booking progress, two clear goals and one long-term ambition. Pricing decisions stay separate until you choose to test them.</p></div><span class="s-live">● Synced from OTGG</span></div>
+ <div class="s-grid">
+ ${card('Events fulfilled in '+y,m.fulfilled,delivered,'Counts completed events or dates that have passed. Confirm any event that was postponed.')}
+ ${card('Bookings already secured for '+(y+1),m.next,next,'Counts confirmed bookings with event dates next year, regardless of when they booked.',true)}
+ </div>
+ <div class="s-stats"><div class="s-stat"><span>Bookings in ${y} diary</span><strong>${m.booked}</strong></div>
+ <div class="s-stat"><span>Confirmed ${y} booking value</span><strong>${simpleMoney(m.yearValue)}</strong></div>
+ <div class="s-stat"><span>Customer payments received</span><strong>${simpleMoney(m.totalCash)}</strong></div></div>
+ <div class="s-panel"><h2>The bigger goal</h2><p>By 2036, you and Dayle want OTGG to support <strong>£90,000 combined annual gross dividends</strong>, before your personal dividend tax. That is a target, not an earnings prediction.</p>
+ <div class="s-actions"><button class="btn dark" data-year="2036" data-page="pricing">Try prices and bookings for 2036 →</button><button class="btn" data-page="targets">See all annual targets</button></div></div>
+ <div class="s-panel"><h2>What's coming up</h2><p>Read directly from the booking system.</p><div class="table-wrap"><table class="s-table"><thead><tr><th>Event date</th><th>Booking</th><th>Value</th></tr></thead><tbody>${up}</tbody></table></div><div class="s-actions"><button class="s-link" data-page="bookings">All live bookings →</button></div></div>
+ <p class="s-hint">Progress figures reflect booking statuses and event dates stored in Supabase. They do not claim events happened if they were postponed outside the system. Income targets are not treated as money earned.</p>`;
+}
+function pageSimpleTargets(){
+ const y=focusYear,g=simpleGoal(y);
+ return simpleHead('Our targets · 2027–2036','Set the goals. Track the bookings.','Decide what success looks like for each year. Leave goals blank if you do not know yet; this is your plan, not a prediction.')+
+ `<div class="s-panel"><h2>${y} goals</h2><p>You can change these whenever you like. The dashboard progress bars update using real customer bookings.</p>
+ <div class="s-formgrid three">
+ ${[['delivered','Events to fulfil','Confirmed events that have taken place'],['next','Next-year bookings to secure','Event dates in '+(y+1)],['dividends','Combined gross dividends (£)','Money you both hope to take before personal tax']].map(([k,l,n])=>`<div class="s-field"><label>${l}</label><input type="number" min="0" step="1" data-simple-goal="${k}" data-simple-year="${y}" value="${g[k]??''}" placeholder="Not set"><small>${n}</small></div>`).join('')}
+ </div><div class="s-actions"><button class="btn" data-page="overview">See dashboard →</button><button class="btn dark" data-page="pricing">Work out some prices →</button></div></div>
+ <div class="s-panel"><h2>The ten-year target list</h2><p>No more predicted annual figures: choose and change your own targets.</p>
+ <div class="table-wrap"><table class="s-table"><thead><tr><th>Year</th><th>Events fulfilled</th><th>Next-year bookings</th><th>Combined gross dividends</th></tr></thead><tbody>
+ ${YEARS.map(yr=>{const goal=simpleGoal(yr);return `<tr><td><button class="s-link" data-year="${yr}" data-page="targets">${yr}</button></td>
+ ${['delivered','next','dividends'].map(k=>`<td><input type="number" inputmode="numeric" min="0" step="1" placeholder="—" aria-label="${yr} ${k} target" data-simple-goal="${k}" data-simple-year="${yr}" value="${goal[k]??''}"></td>`).join('')}</tr>`}).join('')}
+ </tbody></table></div></div>
+ <p class="s-hint">The starting 2027 targets are five fulfilled events and ten bookings for 2028. The long-term goal is £90,000 combined gross dividends by 2036. Everything else is deliberately yours to decide. Changes save automatically to Supabase.</p>`;
+}
+
 function renderNav(){
 for(const g of ['primary','finance','work'])document.querySelector('#nav-'+g).innerHTML=NAV.filter(n=>n.group===g).map(n=>`<button class="nav-button ${page===n.id?'active':''}" data-page="${n.id}">${ico(n.icon)}<span>${n.label}</span></button>`).join('');
 document.querySelector('#mobile-nav').innerHTML=NAV.map(n=>`<button class="${page===n.id?'active':''}" data-page="${n.id}">${ico(n.icon)}<span>${n.id==='overview'?'Home':n.id==='targets'?'Goals':n.id==='pricing'?'Pricing':'Bookings'}</span></button>`).join('');
