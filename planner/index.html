@@ -118,9 +118,9 @@
 <div class="shell">
 <aside class="sidebar" id="sidebar">
   <div class="brand"><div class="brand-line"><div class="brandmark"><svg viewBox="0 0 32 32" fill="none" stroke="#e9d5a4" stroke-width="1.8" stroke-linejoin="round"><path d="M11 27V4m0 1 12 5-12 5M5 27h22"/><circle cx="20" cy="24" r="3"/></svg></div><div class="brandname">On The Green<small>GAMES · OUR TARGETS</small></div></div><div class="brand-sub">Live targets and pricing. Nothing more complicated.</div></div>
-  <div class="nav-group"><span class="nav-label">The big picture</span><div id="nav-primary"></div></div>
-  <div class="nav-group"><span class="nav-label">The numbers</span><div id="nav-finance"></div></div>
-  <div class="nav-group"><span class="nav-label">Make it happen</span><div id="nav-work"></div></div>
+  <div class="nav-group"><span class="nav-label">Your business</span><div id="nav-primary"></div></div>
+  <div class="nav-group"><span class="nav-label">Your plans</span><div id="nav-finance"></div></div>
+  <div class="nav-group"><span class="nav-label">Live records</span><div id="nav-work"></div></div>
   <div class="sidebar-bottom"><div><span class="sync-dot"></span><span id="save-indicator">Changes saved on this device</span></div><div style="margin-top:7px">Private by default. Export a backup to protect your progress.</div></div>
 </aside><div class="shade" id="navshade"></div>
 <main class="main"><div class="topbar"><div class="button-row"><button class="hamburger" id="menu-toggle" title="Menu" aria-label="Open menu"></button><div class="crumb">OTGG / <strong id="crumb-page">Overview</strong></div></div><div class="topcontrols"><select id="top-year" class="select-mini" aria-label="Focus year"></select><select id="top-scenario" class="select-mini hide-mobile" aria-label="Scenario"><option value="base">Base plan</option><option value="cautious">Cautious</option><option value="ambitious">Ambitious</option></select><button class="btn" id="quick-backup" title="Back up your planner"><span id="backup-icon"></span><span class="hide-mobile">Backup</span></button></div></div><div id="page" class="content"></div></main>
@@ -1094,6 +1094,7 @@ function settingUpdate(k,val){let n=Number(val);if(k==='vatPlanningPct')n=clamp(
  save();render()}
 function setDriver(f,y,val){if(!FIELDS[f]||!YEARS.includes(y))return;let n=Math.max(0,Number(val)||0);if(['wedPremiumShare','dividendPayoutPct'].includes(f))n=clamp(n,0,100);if(f==='weeklyCapacity')n=Math.max(1,Math.round(n));data.overrides[y+':'+f]=n;save();render();toast(`${y} ${FIELDS[f][0]} changed; later projections recalculated`)}
 function onClick(e){let btn=e.target.closest('button');if(!btn)return;
+ if(btn.id==='simple-reset'){if(!confirm('Reset only this year’s pricing example? Your actual bookings and goals will be kept.'))return;delete simpleStore().scenarios[focusYear];save();render();toast('Example reset');return}
  if(btn.dataset.deleteDividend){if(!confirm('Remove this recorded dividend payment? This changes the log only.'))return;data.dividendRecords=(data.dividendRecords||[]).filter(p=>p.id!==btn.dataset.deleteDividend);save();render();toast('Dividend record removed');return}
  if(btn.id==='menu-toggle'){document.querySelector('#sidebar').classList.toggle('open');return}
  if(btn.id==='modal-close'||btn.id==='modal-cancel'){closeModal();return}
@@ -1111,7 +1112,10 @@ function onClick(e){let btn=e.target.closest('button');if(!btn)return;
  if(btn.dataset.page){changeTo(btn.dataset.page);return}
  if(btn.dataset.year){render();return}
 }
-function onChange(e){let t=e.target;if(t.id==='top-year'){focusYear=Number(t.value);render();return}if(t.id==='top-scenario'){scenario=t.value;render();return}
+function onChange(e){let t=e.target;
+ if(t.dataset.simpleGoal){const y=Number(t.dataset.simpleYear),key=t.dataset.simpleGoal;if(!YEARS.includes(y)||!['delivered','next','dividends'].includes(key))return;simpleGoal(y)[key]=t.value===''?null:Math.max(0,Math.round(Number(t.value)||0));save();render();return}
+ if(t.dataset.simplePrice){simpleScenario(focusYear)[t.dataset.simplePrice]=Math.max(0,Number(t.value)||0);save();const result=document.querySelector('#simple-output');if(result)result.innerHTML=simpleResults(focusYear);return}
+ if(t.hasAttribute('data-simple-gross-goal')){simpleGoal(focusYear).dividends=t.value===''?null:Math.max(0,Number(t.value)||0);save();const result=document.querySelector('#simple-output');if(result)result.innerHTML=simpleResults(focusYear);return}if(t.id==='top-year'){focusYear=Number(t.value);render();return}if(t.id==='top-scenario'){scenario=t.value;render();return}
  if(t.dataset.homeTarget){const y=Number(t.dataset.homeYear),v=Math.round(Number(t.value));if(!Number.isInteger(v)||v<1||v>10000){toast('Choose a target between 1 and 10,000');render();return}data.homeTargets??={};data.homeTargets[y]??={};data.homeTargets[y][t.dataset.homeTarget]=v;save();render();toast('Target saved');return}
  if(t.dataset.dividendTarget){let y=Number(t.dataset.dividendYear),v=Number(t.value);if(!Number.isFinite(v)||v<0||v>10000000){toast('Enter a valid planned dividend');render();return}data.dividendPlans??={};data.dividendPlans[y]??={jordan:0,dayle:0};data.dividendPlans[y][t.dataset.dividendTarget]=Math.round(v*100)/100;save();render();toast('Dividend plan updated');return}
  if(t.dataset.driver){setDriver(t.dataset.driver,Number(t.dataset.driverYear),t.value);return}
@@ -1122,6 +1126,11 @@ function onChange(e){let t=e.target;if(t.id==='top-year'){focusYear=Number(t.val
  if(t.id==='import-file'){let f=t.files&&t.files[0];if(!f)return;f.text().then(str=>{let parsed=JSON.parse(str);if(parsed.version!==3||!parsed.settings)throw Error('This is not a valid version 3 OTGG backup');if(!confirm('Replace shared planning settings with this backup? Live bookings remain synced from Supabase.'))return;data=hydrate(parsed);data.bookings=liveBookings;save();render();toast('Planning backup restored; live bookings unchanged')}).catch(err=>{toast('Import failed: '+err.message)});t.value=''}
 }
 document.addEventListener('submit',e=>{if(e.target.id!=='dividend-payment-form')return;e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const amount=Number(d.amount);if(!['jordan','dayle'].includes(d.owner)||!/^\\d{4}-\\d{2}-\\d{2}$/.test(d.date)||!(amount>0)){toast('Enter an owner, date and amount');return;}data.dividendRecords??=[];data.dividendRecords.push({id:unique(),owner:d.owner,date:d.date,amount:Math.round(amount*100)/100});save();render();toast('Actual dividend recorded');});
+document.addEventListener('input',e=>{
+ const t=e.target;
+ if(t.dataset.simplePrice){simpleScenario(focusYear)[t.dataset.simplePrice]=Math.max(0,Number(t.value)||0);save();const result=document.getElementById('simple-output');if(result)result.innerHTML=simpleResults(focusYear);}
+ if(t.hasAttribute('data-simple-gross-goal')){simpleGoal(focusYear).dividends=t.value===''?null:Math.max(0,Number(t.value)||0);save();const result=document.getElementById('simple-output');if(result)result.innerHTML=simpleResults(focusYear);}
+});
 document.addEventListener('click',onClick);document.addEventListener('change',onChange);document.addEventListener('submit',e=>{if(e.target.getAttribute('id')==='edit-form'){e.preventDefault();onForm(e.target)}});document.addEventListener('click',e=>{if(e.target.id==='modal-shade'||e.target.id==='navshade'){closeModal();document.querySelector('#sidebar').classList.remove('open')}});
 document.getElementById('menu-toggle').innerHTML=ico('menu');document.getElementById('backup-icon').innerHTML=ico('backup');document.getElementById('top-year').innerHTML=YEARS.map(y=>`<option value="${y}">${y}</option>`).join('');
 /* Initial render waits for authentication. */
