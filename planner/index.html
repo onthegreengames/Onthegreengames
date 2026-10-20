@@ -156,7 +156,7 @@ const DEFAULT_MILESTONES=[
  [2033,'Build weekday and winter sales','Add selective corporate work and repeatable products to smooth wedding seasonality.'],
  [2034,'Test one owner reducing employed hours','Only after the business has cash reserves and profit across a full year.'],
  [2035,'Validate income and workload for both','Check sustainable post-tax distributions, family time and 12-month trading seasonality.'],
- [2036,'Jordan and Dayle run OTGG full-time','No salaried staff or management structure. Both handle bookings, delivery and products.']
+ [2036,'Only leave employed jobs when £90k gross dividends are sustainable','Keep one-event-per-week hire ceiling and no permanent staff. Make the change only if actual annual profit, cash flow and household needs support the £90k gross dividend target.']
 ];
 const DEFAULT_OPPS=[
  ['Private birthdays & garden parties','Events',2028,1,'Use existing games when one of you can deliver without losing too many family weekends.'],
@@ -210,6 +210,7 @@ function hydrate(d){
  const settings={...b.settings,...(d.settings||{})};
  // A former default £50k target belonged to the manager-run plan; keep bespoke owner targets intact.
  if((fromOld&&Number(settings.ownerTarget)===50000)||(oldGrossTarget&&Number(settings.ownerTarget)===38000))settings.ownerTarget=90000;
+ if(oldGrossTarget&&typeof settings.notes==='string'&&settings.notes.includes('£38,000 combined dividends'))settings.notes=b.settings.notes;
  const oldDefaultMilestoneTitles=[
  'Deliver the first real events','Start building 2028–29 order book','Offer private celebrations',
  'Train first casual helpers','Trial corporate team events','Test 5–8 personalised products',
@@ -229,7 +230,7 @@ function hydrate(d){
  dividendPlans:{...b.dividendPlans,...(d.dividendPlans||{})},
  dividendRecords:Array.isArray(d.dividendRecords)?d.dividendRecords:[],
  overrides:d.overrides||{},bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},
- milestones:fromOld?milestones:(Array.isArray(d.milestones)?d.milestones:b.milestones),
+ milestones:fromOld?milestones:(Array.isArray(d.milestones)?d.milestones.map(m=>oldGrossTarget&&m.id==='mil13'&&m.title==='Jordan and Dayle run OTGG full-time'?{...b.milestones[13],status:m.status||'Not started'}:m):b.milestones),
  opportunities:fromOld?b.opportunities.map(o=>{
  const prior=(d.opportunities||[]).find(x=>x.id===o.id);if(!prior)return o;
  const oldTitles=['Private birthdays & garden parties','Corporate team days & summer events','Corporate Christmas party package','Personalised mini-golf scorecards','Wedding welcome signs & table plans','Place cards, table numbers & menus','Personalised trophies / medals','University / graduation events','Branded games for corporate activations','Children’s wedding activity packs'];
@@ -475,7 +476,7 @@ function pageCash(){let c=cashRow(focusYear),L=calcLedger();return txtHeading('0
 }
 
 function pageDividends(){
- let r=row(focusYear),L=calcLedger(),plan=dividendTarget(focusYear),actual=paidDividends(focusYear);
+ let r=row(focusYear),L=calcLedger(),plan=dividendTarget(focusYear),actual=paidDividends(focusYear),goal=goalFeasibility(2036);
  let estJordan=dividendEstimate(plan.jordan,'jordan'),estDayle=dividendEstimate(plan.dayle,'dayle');
  let paidList=(data.dividendRecords||[]).filter(x=>String(x.date||'').slice(0,4)===String(focusYear)).sort((a,b)=>b.date.localeCompare(a.date));
  const kv=(label,value)=>`<div class="kv"><span>${label}</span><strong>${value}</strong></div>`;
@@ -487,6 +488,7 @@ function pageDividends(){
  ${metric('Estimated company tax',money(r.companyTax),'On model taxable profit, not founder labour')}
  ${metric('Potential cash for dividends',money(r.dividendCapacity),'Illustrative annual capacity, not bank balance')}
  </div>
+ <div class="note goldnote" style="margin-bottom:17px"><strong>2036 gross-dividend goal: ${money(goal.target)} combined.</strong> The current base forecast supports only ${money(goal.grossDividends)}, leaving a gap of ${money(goal.grossGap)}. Personal dividend tax is paid separately from the distribution, not added to this £90k company target. <button class="home-link" data-page="team">View feasibility →</button></div>
  <div class="layout-even">
  ${panel('Company money: what is really left?','The difference between cash, profit and dividends',`
  ${kv('Forecast revenue',money(r.revenue))}
@@ -514,7 +516,7 @@ function pageDividends(){
  ${kv('Dayle · illustrative personal dividend tax',money(estDayle))}
  ${kv('Dayle · illustrative take-home',money(plan.dayle-estDayle))}
  ${r.dividendShortfall>0?'<div class="note warn" style="margin-top:14px">Your planned dividends exceed the modelled capacity. Do not treat them as safe to pay.</div>':''}
- <p class="fine" style="margin-top:15px">Personal dividend-tax estimates assume the editable tax rate and remaining allowance for each owner. They are <strong>not a tax return</strong>: salaries, other dividend income, dividend bands and the 6 April to 5 April tax year all matter. You can adjust the rates in Settings.</p>`)}
+ <p class="fine" style="margin-top:15px">Personal dividend-tax estimates assume the editable tax rate and remaining allowance for each owner. They are <strong>not a tax return</strong>: salaries, other dividend income, tax bands and the 6 April to 5 April tax year all matter. You can adjust the rates in Settings.</p>`)}
  </div>
  <div class="layout-even">
  ${panel('Actual Stripe fees · paid transactions only','Read directly from successful Supabase payment records',`
@@ -549,12 +551,25 @@ function pageDividends(){
  </div></div>
  <div>
  <div class="field-grid two">
- ${field('Jordan · illustrative dividend tax rate (%)',data.settings.jordanDividendRate,'data-setting="jordanDividendRate"')}
- ${field('Dayle · illustrative dividend tax rate (%)',data.settings.dayleDividendRate,'data-setting="dayleDividendRate"')}
- ${field('Unused dividend allowance per owner (£)',data.settings.dividendAllowance,'data-setting="dividendAllowance"')}
+ <div class="field"><label>Personal dividend tax calculation</label><select data-setting-text="personalDividendMode">
+  <option value="bands" ${data.settings.personalDividendMode==='bands'?'selected':''}>UK 2026/27 tax bands (default)</option>
+  <option value="flat" ${data.settings.personalDividendMode==='flat'?'selected':''}>Custom flat rates</option>
+ </select></div>
+ <div class="field-grid two">
+ ${field('Jordan · other annual taxable income (£)',data.settings.jordanOtherIncome,'data-setting="jordanOtherIncome"')}
+ ${field('Dayle · other annual taxable income (£)',data.settings.dayleOtherIncome,'data-setting="dayleOtherIncome"')}
+ ${field('Personal allowance (£)',data.settings.personalAllowance,'data-setting="personalAllowance"')}
+ ${field('Dividend allowance per owner (£)',data.settings.dividendAllowance,'data-setting="dividendAllowance"')}
+ ${field('Basic-rate taxable income band (£)',data.settings.dividendBasicBand,'data-setting="dividendBasicBand"')}
+ ${field('Higher-rate taxable income ceiling (£)',data.settings.dividendHigherBand,'data-setting="dividendHigherBand"')}
+ ${field('Basic-rate dividend tax (%)',data.settings.dividendBasicRate,'data-setting="dividendBasicRate"')}
+ ${field('Higher-rate dividend tax (%)',data.settings.dividendHigherRate,'data-setting="dividendHigherRate"')}
+ ${field('Additional-rate dividend tax (%)',data.settings.dividendAdditionalRate,'data-setting="dividendAdditionalRate"')}
+ ${field('Jordan · custom flat rate (%)',data.settings.jordanDividendRate,'data-setting="jordanDividendRate"')}
+ ${field('Dayle · custom flat rate (%)',data.settings.dayleDividendRate,'data-setting="dayleDividendRate"')}
  ${field('Retain extra after-tax cash (%)',data.settings.retain,'data-setting="retain"')}
  </div>
- <p class="fine" style="margin-top:16px">UK Corporation Tax: 19% on profits up to £50,000, 25% at £250,000 and above, with marginal relief between (full accounting year, one company assumption). Current dividend basic-rate estimate: 10.75%; higher-rate estimate: 35.75%. £500 annual dividend allowance. These tax rules may change across 2027–2036.</p>
+ <p class="fine" style="margin-top:16px">UK Corporation Tax: 19% on profits up to £50,000, 25% at £250,000 and above, with marginal relief between (full accounting year, one company assumption). Current 2026/27 dividend rates: 10.75% basic, 35.75% higher and 39.35% additional; £500 dividend allowance and a personal allowance which can taper over £100,000 of income. The default banded estimate assumes each owner has no other taxable income; use the editable fields above to change that. Rules may change by 2036.</p>
  <p class="fine">Company tax model does not use tax-loss carryforwards, capital allowances, VAT adjustments, payroll/director remuneration or associated-company nuances. The actual amount depends on your accountant’s calculations.</p>
  <p class="fine">${source}</p>
  </div></div>`)}
