@@ -684,90 +684,103 @@ function pageOpportunities(){let opp=data.opportunities.slice().sort((a,b)=>a.ye
  ${panel('Opportunity portfolio','These dates and stages are editable',`<div class="table-wrap"><table class="table" style="min-width:850px"><thead><tr><th>Idea</th><th>Category</th><th>Year</th><th>Status</th><th>Priority</th><th>Upfront investment</th><th>Target margin</th><th></th></tr></thead><tbody>${opp.map(o=>`<tr><td><strong>${esc(o.title)}</strong><div class="hint">${esc(o.detail)}</div></td><td>${esc(o.category)}</td><td>${o.year}</td><td>${statusTag(o.status)}</td><td>${o.priority}</td><td>${money(o.investment)}</td><td>${pct(o.margin)}</td><td><button class="btn mini" data-edit-opportunity="${o.id}">Edit</button></td></tr>`).join('')}</tbody></table></div>`)}<div style="height:17px"></div>
  <div class="layout-even">${panel('E-commerce: low-capital sequence','Build customers and margin before machinery',`<div class="step"><div class="step-num">01</div><div><h4>2027–28 · Research, not launch</h4><p>Collect requests, sample UK printing and laser suppliers only when affordable.</p></div></div><div class="step"><div class="step-num">02</div><div><h4>2029 · Test with existing couples</h4><p>5–8 fixed-template products. Full payment before production. No stock.</p></div></div><div class="step"><div class="step-num">03</div><div><h4>2030+ · Public shop and bundles</h4><p>Welcome signs, table plans, scorecards, medals and table stationery. Outsource fulfilment.</p></div></div>`)}${panel('Non-wedding events: sensible order','Only add work the two of you can comfortably handle',`<div class="step"><div class="step-num">01</div><div><h4>2028 · Private celebrations</h4><p>Birthdays, christenings, engagements and garden parties with the same equipment.</p></div></div><div class="step"><div class="step-num">02</div><div><h4>2029 · Corporate weekdays and winter</h4><p>Team days, summer socials and Christmas parties. Be strict about fuel, driving time and family commitments.</p></div></div><div class="step"><div class="step-num">03</div><div><h4>2031+ · Selected premium work</h4><p>Try branded activations and university events only when fees justify the extra hassle.</p></div></div>`)} </div>`}
 function pageTeam(){
- const r=row(focusYear),end=row(2036),target=Math.max(0,Number(data.settings.ownerTarget)||90000),goal=goalFeasibility(2036),
- weeks=Math.max(1,Number(data.settings.ownerWeeks)||46),capacity=Math.max(1,Number(data.settings.maxAnnualEvents)||50);
- const perOwnerHours=r.v.ownerHours/(2*weeks),endPerOwner=end.v.ownerHours/(2*weeks);
- const perOwner= end.dividendCapacity/2,perOwnerNet=Math.max(0,perOwner-dividendEstimate(perOwner,'jordan'));
- const dayleNet=Math.max(0,perOwner-dividendEstimate(perOwner,'dayle'));
- const capacityPct=Math.round(end.hireEvents/capacity*100),readinessPct=Math.round(end.dividendCapacity/Math.max(1,target)*100),goalJordanTax=dividendEstimate(target/2,'jordan'),goalDayleTax=dividendEstimate(target/2,'dayle');
- const annualProfitGuide=YEARS.map(y=>{const a=row(y);return `<tr><td><strong>${y}</strong></td><td>${num(a.hireEvents)}</td><td>${money(a.weddingAov)}</td><td>${num(a.v.wedPremiumShare)}%</td><td>${num(a.v.shopOrders)}</td><td>${money(a.revenue)}</td><td>${money(a.marketing)}</td><td>${money(a.capex+a.expansionFund)}</td><td><strong>${money(a.dividendCapacity)}</strong></td></tr>`}).join('');
- return txtHeading('07 / our lifestyle goal','OTGG becomes our full-time work','By the end of 2036, Jordan and Dayle both work in OTGG themselves. No managers or permanent employees, and around one hire job per week. Our £90,000 gross-dividend goal requires much more profit than the current base-case plan.')+yearSelector()+
- `<div class="hero" style="margin-bottom:19px"><div class="eyebrow">A small business supporting two owners</div><h1>Work for ourselves.<br>Keep it manageable.</h1><p>We are building for income, flexibility and family time, not multiple depots, hundreds of employees or a national hire company.</p><div class="hero-footer"><div><span>2036 sales scenario</span><strong>${money(end.revenue)}</strong></div><div><span>2036 combined gross-dividend target</span><strong>${money(target)}/yr</strong></div><div><span>2036 combined owner hours</span><strong>${num(end.v.ownerHours)}h/yr</strong></div></div></div>
- ${end.vatThresholdWarning?'<div class="note warn" style="margin:0 0 17px"><strong>VAT planning matters at this scale.</strong> The 2036 scenario exceeds the current £90,000 UK VAT registration threshold. Projected turnover, prices and dividends here do not yet deduct net VAT due, and the true profit may be lower. <a href="https://www.gov.uk/register-for-vat" target="_blank" rel="noopener">VAT registration rules</a>.</div>':''}
+ const r=row(focusYear),end=row(2036),cautious=row(2036,'cautious');
+ const target=Math.max(0,Number(data.settings.ownerTarget)||90000),goal=goalFeasibility(2036);
+ const ready=Math.round(end.dividendCapacity/Math.max(1,target)*100);
+ const weeks=Math.max(1,Number(data.settings.ownerWeeks)||46);
+ const personalEach=end.dividendCapacity/2;
+ const jordanNet=Math.max(0,personalEach-dividendEstimate(personalEach,'jordan'));
+ const dayleNet=Math.max(0,personalEach-dividendEstimate(personalEach,'dayle'));
+ const goalJordanTax=dividendEstimate(target/2,'jordan'),goalDayleTax=dividendEstimate(target/2,'dayle');
+ const allYears=YEARS.map(y=>{const x=row(y);return `<tr>
+  <td><button class="home-link" data-year="${y}" data-page="team">${y}</button></td>
+  <td>${num(x.v.wedEvents)}</td><td>${num(x.v.privEvents)}</td><td>${num(x.v.corpEvents)}</td>
+  <td><strong>${num(x.hireEvents)}</strong></td><td>${num(Math.round(x.avgWeeklyHires*10)/10)}</td>
+  <td>${num(Math.round(x.busyWeeklyHires*10)/10)} / ${num(x.weeksCapacity)} ${x.overCapacity?'<span style="color:#b65f57">!</span>':''}</td>
+  <td>${money(x.revenue)}</td><td>${money(x.marketing)}</td>
+  <td>${money(x.dividendCapacity)}</td>
+ </tr>`}).join('');
+ return txtHeading('07 / our full-time goal','Work for ourselves by 2036','A growing owner-operated events business across weddings, private hires and weekday corporate bookings. No automatic one-event-a-week ceiling, no permanent employees, and £90,000 combined gross dividends as the financial target.')+yearSelector()+
+ `<div class="hero" style="margin-bottom:18px">
+  <div class="eyebrow">More bookings across the week · higher-value packages · no permanent employees</div>
+  <h1>Build the diary.<br>Replace both salaries.</h1>
+  <p>Weddings make the weekend bookings; corporate work fills weekdays. Jordan and Dayle expand capacity gradually using the two operating areas, the right equipment and the time available.</p>
+  <div class="hero-footer">
+   <div><span>2036 scenario revenue</span><strong>${money(end.revenue)}</strong></div>
+   <div><span>Combined gross dividend goal</span><strong>${money(target)}</strong></div>
+   <div><span>Forecast gross dividends</span><strong>${money(end.dividendCapacity)}</strong></div>
+  </div>
+ </div>
  <div class="cards-4">
- ${metric('Gross dividends goal for both',money(target),'Not take-home income after personal tax')}
- ${metric('2036 forecast dividend capacity',money(end.dividendCapacity),readinessPct+'% of the £90k gross goal')}
- ${metric('Planned 2036 hire events',num(end.hireEvents),'Across both operating locations')}
- ${metric('Working time per owner',num(endPerOwner)+'h/wk',weeks+' active weeks, average not peak')}
+  ${metric('2036 annual hires',num(end.hireEvents),'Wedding + private + corporate')}
+  ${metric('Weekday corporate hires',num(end.v.corpEvents),'Included in annual hire total')}
+  ${metric('Average hires each week',num(Math.round(end.avgWeeklyHires*10)/10),weeks+' planned working weeks')}
+  ${metric('Per-owner working hours',num(Math.round(end.perOwnerWeeklyHours*10)/10)+'/week','Average · peak periods could be longer')}
  </div>
  <div class="layout-even">
-  ${panel('Can we both afford to leave our jobs?','The goal is combined gross dividends, before personal dividend tax',`
-   <div class="field-grid two">
-    ${field('Combined gross dividend target (£)',data.settings.ownerTarget,'data-setting="ownerTarget"')}
-    ${field('Weeks we want to work each year',data.settings.ownerWeeks,'data-setting="ownerWeeks"')}
-   </div>
-   <div style="margin:16px 0 6px" class="split-line"><strong>2036 income against our target</strong><strong>${readinessPct}%</strong></div>
-   ${progressBar(end.dividendCapacity/Math.max(1,target)*100)}
-   <div style="margin-top:16px"><div class="kv"><span>2036 base-case dividend capacity</span><strong>${money(end.dividendCapacity)}</strong></div><div class="kv"><span>Gross dividend target for both</span><strong>${money(target)}</strong></div><div class="kv"><span>Headroom / shortfall</span><strong>${end.dividendCapacity>=target?money(end.dividendCapacity-target)+' ahead':money(target-end.dividendCapacity)+' short'}</strong></div></div>
-   <p class="fine" style="margin-top:13px">You have set the gross dividend target with personal tax already in mind. The business does not have to pay your personal dividend tax on top of the £90,000; it must produce enough distributable profit and cash to pay the £90,000.</p>`)}
-  ${panel('What would reaching our £90,000 gross-dividend target require?','A requirement calculation, not a promised forecast',`
-   <div class="kv"><span>2036 company profit in base case</span><strong>${money(end.companyProfit)}</strong></div>
-   <div class="kv"><span>Company profit required for this dividend target</span><strong>${money(goal.requiredProfit)}</strong></div>
-   <div class="kv"><span>Extra annual profit required</span><strong>${money(goal.profitGap)}</strong></div>
-   <div class="kv"><span>Gross dividend shortfall</span><strong>${money(goal.grossGap)}</strong></div>
-   <div class="note warn" style="margin-top:13px">The base scenario does <strong>not</strong> support both of you quitting. Reaching this target requires much greater sales and/or contribution margin while keeping the one-event-per-week ceiling.</div>
-   <div class="kv"><span>One illustrative shop-only route: total orders annually</span><strong>${goal.totalShopOrders===null?'Not possible':num(goal.totalShopOrders)}</strong></div>
-   <div class="kv"><span>Orders per week in that scenario</span><strong>${goal.totalShopOrders===null?'—':num(Math.round(goal.totalShopOrders/52*10)/10)}</strong></div>
-   <div class="kv"><span>Implied total company turnover in that scenario</span><strong>${goal.requiredSalesShopOnly===null?'—':money(goal.requiredSalesShopOnly)}</strong></div>
-   <p class="fine" style="margin-top:12px">This shop-only route assumes ${money(goal.shopAov)} average order value, today's assumed margins and no additional fixed expenses. It is not a projection or a recommendation to handle that many orders yourselves; extra admin time, marketing and VAT could materially change it.</p>
+  ${panel('Are we on track for £90,000 dividends?','Gross company dividends before your individual personal tax',`
+    <div class="field-grid two">
+      ${field('Combined gross dividend target (£)',data.settings.ownerTarget,'data-setting="ownerTarget"')}
+      ${field('Planned working weeks per year',data.settings.ownerWeeks,'data-setting="ownerWeeks"')}
+    </div>
+    <div class="split-line" style="margin:16px 0 6px"><strong>2036 base forecast / target</strong><strong>${ready}%</strong></div>
+    ${progressBar(ready)}
+    <div class="kv" style="margin-top:14px"><span>2036 suggested dividend ceiling</span><strong>${money(end.dividendCapacity)}</strong></div>
+    <div class="kv"><span>Combined gross-dividend target</span><strong>${money(target)}</strong></div>
+    <div class="kv"><span>Headroom or shortfall</span><strong>${end.dividendCapacity>=target?money(end.dividendCapacity-target)+' above goal':money(target-end.dividendCapacity)+' below goal'}</strong></div>
+    <div class="kv"><span>Approximate profit before Corporation Tax required</span><strong>${money(goal.requiredProfit)}</strong></div>
+    <div class="kv"><span>Base scenario profit before Corporation Tax</span><strong>${money(end.companyProfit)}</strong></div>
+    ${end.dividendCapacity>=target?'<div class="note goldnote" style="margin-top:13px">The base scenario reaches the £90k gross dividend target. It is still dependent on achieving the assumed bookings and prices, and having legally distributable reserves and sufficient cash.</div>':'<div class="note warn" style="margin-top:13px">The base scenario still falls short. Adjust event volumes, average prices, mix or expenses before relying on leaving both jobs.</div>'}
   `)}
-  ${panel('Dividend tax is paid by each of us personally','Gross dividends remain the £90,000 goal, not a larger figure',`
-   <div class="kv"><span>Jordan's illustrative gross dividends (50% split)</span><strong>${money(target/2)}</strong></div>
-   <div class="kv"><span>Dayle's illustrative gross dividends (50% split)</span><strong>${money(target/2)}</strong></div>
-   <div class="kv"><span>Jordan's estimated personal dividend tax</span><strong>−${money(goalJordanTax)}</strong></div>
-   <div class="kv"><span>Dayle's estimated personal dividend tax</span><strong>−${money(goalDayleTax)}</strong></div>
-   <div class="kv"><span>Combined net after illustrative personal dividend tax</span><strong>${money(target-goalJordanTax-goalDayleTax)}</strong></div>
-   <p class="fine" style="margin-top:12px">Assumes equal shares and the tax assumptions in the planner. Actual tax depends on your other income and future tax rules. We are not increasing the gross dividend target to pay that tax.</p>
+  ${panel('A realistic events diary, not a weekly cap','Peak weeks and the two operating areas matter more than an annual one-per-week rule',`
+    <div class="kv"><span>2036 weddings</span><strong>${num(end.v.wedEvents)} events</strong></div>
+    <div class="kv"><span>2036 private parties</span><strong>${num(end.v.privEvents)} events</strong></div>
+    <div class="kv"><span>2036 corporate/weekday work</span><strong>${num(end.v.corpEvents)} events</strong></div>
+    <div class="kv"><span>Average hires/week across ${weeks} working weeks</span><strong>${num(Math.round(end.avgWeeklyHires*10)/10)}</strong></div>
+    <div class="kv"><span>Illustrative busy-week demand</span><strong>${num(Math.round(end.busyWeeklyHires*10)/10)}</strong></div>
+    <div class="kv"><span>Modelled busy-week capacity</span><strong>${num(end.weeksCapacity)}</strong></div>
+    <div class="field-grid two" style="margin-top:13px">
+      ${field('Capacity for busy weeks in '+focusYear+' (events)',r.v.weeklyCapacity,'data-driver="weeklyCapacity" data-driver-year="'+focusYear+'"')}
+      ${field('Peak seasonal demand multiplier',data.settings.peakSeasonFactor,'data-setting="peakSeasonFactor"')}
+    </div>
+    ${end.overCapacity?'<div class="note warn">The forecast peak-week demand exceeds current planned delivery capacity. Revise staffing/equipment/work patterns or the booking target.</div>':'<p class="fine">There is no hard one-event-a-week limit. The assumed 2036 peak of '+num(Math.round(end.busyWeeklyHires*10)/10)+' events must still be checked against real dates, kit availability, geography and both owners’ schedules.</p>'}
   `)}
  </div>
  <div class="layout-even">
-  ${panel('Who does the work?','No salaried staff in the base forecast',`
-   <div class="kv"><span>Weddings in 2036</span><strong>${num(end.v.wedEvents)} jobs</strong></div>
-   <div class="kv"><span>Private event hires</span><strong>${num(end.v.privEvents)} jobs</strong></div>
-   <div class="kv"><span>Corporate/weekday hires</span><strong>${num(end.v.corpEvents)} jobs</strong></div>
-   <div class="kv"><span>Made-to-order shop</span><strong>${num(end.v.shopOrders)} orders</strong></div>
+  ${panel('How many hours will this actually take?','Time rises automatically as you increase event and product volumes',`
+   <div class="kv"><span>Combined annual owner work</span><strong>${num(end.v.ownerHours)} hours</strong></div>
+   <div class="kv"><span>Jordan, average weekly hours</span><strong>${num(Math.round(end.perOwnerWeeklyHours*10)/10)}</strong></div>
+   <div class="kv"><span>Dayle, average weekly hours</span><strong>${num(Math.round(end.perOwnerWeeklyHours*10)/10)}</strong></div>
+   <div class="kv"><span>Shop orders annually</span><strong>${num(end.v.shopOrders)}</strong></div>
    <div class="kv"><span>Permanent employees</span><strong>0</strong></div>
-   <div class="kv"><span>Combined owner time</span><strong>${num(end.v.ownerHours)}h/year</strong></div>
-   <div class="field-grid two" style="margin-top:13px">
-     ${field('Preferred annual hire limit',data.settings.maxAnnualEvents,'data-setting="maxAnnualEvents"')}
-     ${field('Our ${focusYear} combined work hours',r.v.ownerHours,'data-driver="ownerHours" data-driver-year="'+focusYear+'"')}
-   </div>
-   <div style="margin-top:14px" class="split-line"><span>2036 hire workload vs preferred limit</span><strong>${capacityPct}%</strong></div>
-   ${progressBar(end.hireEvents/capacity*100)}
-   ${end.hireEvents>capacity?'<div class="note warn" style="margin-top:12px">Your 2036 hire volumes exceed your chosen annual limit. Reduce event targets, increase prices or change capacity assumptions.</div>':'<p class="fine">We are aiming for no more than one hire event per week across the business on average. Actual peak-week dates still need checking.</p>'}
+   ${end.perOwnerWeeklyHours>45?'<div class="note warn" style="margin-top:12px">Average weekly work exceeds 45 hours per person. Reassess personal capacity and whether you can deliver this without regular help.</div>':''}
+   <p class="fine" style="margin-top:13px">This is a combined owner-hour model including travel/setup, customer admin and shop fulfilment. During summer wedding peaks, hours could be considerably higher than the average. These hours are not deducted as an employee wage.</p>
+   <div class="button-row"><button class="btn mini" data-page="settings">Edit labour assumptions</button></div>
+  `)}
+  ${panel('Tax and what each of us receives','Corporation Tax and an adjustable VAT allowance are already deducted in the company forecast',`
+   <div class="kv"><span>Estimated net-VAT planning deduction</span><strong>${money(end.vatProvision)}</strong></div>
+   <div class="kv"><span>Estimated Corporation Tax</span><strong>${money(end.companyTax)}</strong></div>
+   <div class="kv"><span>Marketing budget</span><strong>${money(end.marketing)}</strong></div>
+   <div class="kv"><span>Kit, future expansion & maintenance held back</span><strong>${money(end.capex+end.expansionFund+end.reserve)}</strong></div>
+   <div class="kv"><span>Illustrative gross dividend per owner (50/50)</span><strong>${money(personalEach)}</strong></div>
+   <div class="kv"><span>Jordan after estimated personal dividend tax</span><strong>${money(jordanNet)}</strong></div>
+   <div class="kv"><span>Dayle after estimated personal dividend tax</span><strong>${money(dayleNet)}</strong></div>
+   <p class="fine" style="margin-top:13px">The default VAT allowance is ${num(data.settings.vatPlanningPct)}% of annual customer-priced sales once model turnover exceeds ${money(data.settings.vatThreshold)}. This approximates VAT remitted net of recoverable input VAT; it is <strong>not a VAT return</strong>, and the actual amount could differ substantially. This is a forward-looking, VAT-inclusive pricing sensitivity.</p>
+   <div class="button-row"><button class="btn mini" data-page="dividends">Edit dividend and tax settings</button></div>
   `)}
  </div>
- <div class="layout-even">
-  ${panel('What each of us might take home','Equal split is illustrative; actual entitlement follows share rights',`
-  <div class="kv"><span>Possible dividend for Jordan (before personal tax)</span><strong>${money(end.dividendCapacity/2)}</strong></div>
-  <div class="kv"><span>Possible dividend for Dayle (before personal tax)</span><strong>${money(end.dividendCapacity/2)}</strong></div>
-  <div class="kv"><span>Jordan after illustrative dividend tax</span><strong>${money(Math.max(0,perOwner-dividendEstimate(perOwner,'jordan')))}</strong></div>
-  <div class="kv"><span>Dayle after illustrative dividend tax</span><strong>${money(dayleNet)}</strong></div>
-  <div class="kv"><span>Combined illustrative personal net</span><strong>${money(perOwnerNet+dayleNet)}</strong></div>
-  <p class="fine">Personal tax is shown separately using the current illustrative UK dividend bands, personal allowance and other taxable income. Your actual 2036 tax bill may differ.</p>
-  <button class="btn mini" data-page="dividends">Edit tax and individual dividend plans</button>`)}
-  ${panel('When is it safe to change our jobs?','Evidence gates rather than a fixed resignation date',`
-  <div class="stack">
-    <div class="step"><div class="step-num">1</div><div><h4>Prove demand through real fulfilled events</h4><p>Track two complete seasons of delivered bookings, margins, customer feedback and repeat demand.</p></div></div>
-    <div class="step"><div class="step-num">2</div><div><h4>Build reserves and cover all taxes</h4><p>Set aside business cash for winter, repairs, refunds, upcoming events, Corporation Tax and VAT if relevant.</p></div></div>
-    <div class="step"><div class="step-num">3</div><div><h4>Protect family time and both owners</h4><p>Test the busy-season workload. Choose who handles each hire, enquiries and shop orders.</p></div></div>
-    <div class="step"><div class="step-num">4</div><div><h4>Reduce employed hours before leaving fully</h4><p>Only if your real dividend income, after personal taxes, can cover the household budget reliably.</p></div></div>
-  </div>`)}
- </div>
- ${panel('Owner-run business · year by year','Every figure is editable in the Linked forecast. This is a scenario, not a promise.',`
-  <div class="table-wrap"><table class="table" style="min-width:720px"><thead><tr><th>Year</th><th>Hire jobs</th><th>Wedding AOV</th><th>Premium share</th><th>Shop orders</th><th>Sales</th><th>Marketing</th><th>Kit + expansion</th><th>Combined gross dividends</th></tr></thead><tbody>${annualProfitGuide}</tbody></table></div>
-  <p class="fine" style="margin-top:13px">2027–29: prioritise marketing, equipment and future expansion with very little dividend income. 2030–35: release a gradually larger share of profit to owners. 2036: both switch only if sustainable actual gross dividends approach £90k. All dividends depend on company profits and share entitlements, not forward-booked deposits.</p>`)}
- `;
+ ${panel('2027–2036 · growing the number of hires','Illustrative annual bookings, not live confirmed bookings. Weekend weddings + weekday corporate events.',`
+  <div class="table-wrap"><table class="table" style="min-width:1070px"><thead><tr>
+   <th>Year</th><th>Weddings</th><th>Private</th><th>Corporate</th><th>Total hires</th><th>Avg / week</th><th>Peak / capacity</th><th>Revenue</th><th>Marketing</th><th>Combined gross dividends</th>
+  </tr></thead><tbody>${allYears}</tbody></table></div>
+  <p class="fine" style="margin-top:12px">A peak-week estimate is average hires/week × the seasonal multiplier; it does not check booking collisions or equipment allocations. Multiple simultaneous events depend on Jordan and Dayle working independently when needed and owning enough appropriate equipment. You can change event targets and weekly capacity in the forecast.</p>
+ `)}
+ ${panel('Before handing in our notices','Evidence, not just modelled targets',`
+  <div class="step"><div class="step-num">01</div><div><h4>Prove corporate demand</h4><p>Win and fulfil repeat weekday events at the higher package prices assumed in the model.</p></div></div>
+  <div class="step"><div class="step-num">02</div><div><h4>Validate weekly logistics</h4><p>Track real equipment availability, journey times, setup labour and peak wedding Saturdays across Chester and Ashton-in-Makerfield.</p></div></div>
+  <div class="step"><div class="step-num">03</div><div><h4>Verify profit, VAT and cash with an accountant</h4><p>Ensure VAT treatment, Corporation Tax, capital allowances and genuine distributable reserves are supported by the books.</p></div></div>
+  <div class="step"><div class="step-num">04</div><div><h4>Prove the household can rely on it</h4><p>Check multiple trading seasons and a cautious scenario. At current caution settings, 2036 dividend capacity would be ${money(cautious.dividendCapacity)}, not the base-case ${money(end.dividendCapacity)}.</p></div></div>
+ `)}`;
 }
 function pageTasks(){let open=data.tasks.filter(t=>t.status!=='Done'),done=data.tasks.filter(t=>t.status==='Done');return txtHeading('08 / execution','Actions, decisions & notes','A working list for the next decade. Add tasks, mark them done, or move dates without editing the website.',`<button class="btn dark" data-add="task">${ico('plus')} Add task</button>`)+
  `<div class="cards-3">${metric('Still open',open.length,'Across the full ten-year plan')}${metric('Completed',done.length,'Keeps a record of progress')}${metric('Due in focus year',data.tasks.filter(t=>t.year===focusYear&&t.status!=='Done').length,focusYear+' priority list')}</div>
