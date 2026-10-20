@@ -156,18 +156,18 @@ const DEFAULT_ROWS={
  marketing:[500,1000,1600,2000,2200,2500,2500,2800,3000,3500],
  reserve:[100,150,300,450,600,800,1000,1200,1400,1600],
  expansionFund:[150,500,1100,1700,2200,2500,3000,3200,3500,3500],
- dividendPayoutPct:[0,0,10,25,45,60,70,80,90,100],
+ dividendPayoutPct:[0,0,0,25,45,60,70,80,90,100],
  ownerHours:[90,140,220,330,470,800,1200,1500,2000,2900],
  capex:[0,700,1700,2800,3200,2500,2000,2500,3000,3500]
 };
 const DEFAULT_MILESTONES=[
  [2027,'Deliver the first 5 events','Put on excellent weddings, capture photos and reviews, learn your real setup times and margins.'],
  [2027,'Build a 2028 diary of 10 bookings','Count confirmed event dates, not enquiry numbers or deposits as revenue.'],
- [2028,'Make owner-run delivery repeatable','Jordan and Dayle handle setup and collection, improve checklists and protect family weekends.'],
- [2028,'Test private celebrations carefully','Fill suitable dates with birthdays and garden parties using the same equipment.'],
- [2029,'Trial corporate weekday events','Start with a few higher-value bookings that do not compete with wedding Saturdays.'],
+ [2028,'Introduce premium wedding packages','Use saved profit to add better-value bundles and carefully chosen games; measure how often couples upgrade.'],
+ [2028,'Test new equipment and package combinations','Start small with the 2028 equipment budget and keep delivery manageable for Jordan and Dayle.'],
+ [2029,'Review package prices and conversion','Raise standard prices where the product and market support it, and test how premium packages affect average booking value.'],
  [2029,'Test made-to-order wedding products','Use external print/dispatch partners before carrying stock or buying machines.'],
- [2030,'Launch a small personalised wedding shop','Sell a handful of profitable repeatable products, not a giant catalogue.'],
+ [2030,'Expand the premium wedding packages and shop','Use equipment purchases and profitable made-to-order products to lift booking values without extra staff.'],
  [2030,'Reach 25–30 owner-run hire events','Improve routes, pricing and booking flow before adding more workload.'],
  [2031,'Strengthen reviews and venue referrals','Keep acquisition working without relying on constant discounted advertising.'],
  [2032,'Set realistic boundaries for both owners','Measure hours per event and product order, including admin and travelling.'],
@@ -186,7 +186,9 @@ const DEFAULT_OPPS=[
  ['Personalised trophies / medals','E-commerce',2030,2,'Upsells only when labour and fulfilment margins make sense.'],
  ['University and graduation events','Events',2032,3,'Selective weekday hires close to your operational bases.'],
  ['Repeat corporate summer bookings','Events',2031,2,'Return clients and tidy weekday schedules are more valuable than sheer volume.'],
- ['Children’s wedding activity packs','E-commerce',2031,3,'Simple made-to-order packs, no large batches or storage needs.']
+ ['Children’s wedding activity packs','E-commerce',2031,3,'Simple made-to-order packs, no large batches or storage needs.'],
+ ['Premium wedding package bundles','Events',2028,1,'Bundle games or expanded golf in higher-value tiers; fund new equipment from profits rather than future customer deposits.'],
+ ['Additional premium mini-golf experiences','Events',2030,2,'Upgrade hire packages only if venue logistics, transport and actual demand justify the kit spend.']
 ];
 const NAV=[
  {id:'overview',label:'My progress',icon:'layout-dashboard',group:'primary'},
@@ -248,13 +250,18 @@ function hydrate(d){
  dividendPlans:{...b.dividendPlans,...(d.dividendPlans||{})},
  dividendRecords:Array.isArray(d.dividendRecords)?d.dividendRecords:[],
  overrides:d.overrides||{},bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},
- milestones:fromOld?milestones:(Array.isArray(d.milestones)?d.milestones.map(m=>oldGrossTarget&&m.id==='mil13'&&m.title==='Jordan and Dayle run OTGG full-time'?{...b.milestones[13],status:m.status||'Not started'}:m):b.milestones),
+ milestones:fromOld?milestones:(Array.isArray(d.milestones)?d.milestones.map(m=>{
+ const previousTitles={mil2:'Make owner-run delivery repeatable',mil3:'Test private celebrations carefully',mil4:'Trial corporate weekday events',mil6:'Launch a small personalised wedding shop'};
+ if(oldReinvestmentModel&&previousTitles[m.id]===m.title)return {...b.milestones[Number(m.id.slice(3))],status:m.status||'Not started'};
+ if(oldGrossTarget&&m.id==='mil13'&&m.title==='Jordan and Dayle run OTGG full-time')return {...b.milestones[13],status:m.status||'Not started'};
+ return m;
+ }):b.milestones),
  opportunities:fromOld?b.opportunities.map(o=>{
  const prior=(d.opportunities||[]).find(x=>x.id===o.id);if(!prior)return o;
  const oldTitles=['Private birthdays & garden parties','Corporate team days & summer events','Corporate Christmas party package','Personalised mini-golf scorecards','Wedding welcome signs & table plans','Place cards, table numbers & menus','Personalised trophies / medals','University / graduation events','Branded games for corporate activations','Children’s wedding activity packs'];
  const oldTitle=oldTitles[Number((o.id||'').slice(3))];
  return prior.title!==oldTitle?prior:{...o,status:prior.status||o.status,priority:prior.priority??o.priority,investment:prior.investment??o.investment,margin:prior.margin??o.margin};
-}).concat((d.opportunities||[]).filter(o=>!((o.id||'').startsWith('opp')&&Number.isInteger(Number((o.id||'').slice(3)))))):(Array.isArray(d.opportunities)?d.opportunities:b.opportunities),
+}).concat((d.opportunities||[]).filter(o=>!((o.id||'').startsWith('opp')&&Number.isInteger(Number((o.id||'').slice(3)))))):(Array.isArray(d.opportunities)?d.opportunities.concat(b.opportunities.filter(o=>!d.opportunities.some(p=>p.id===o.id))):b.opportunities),
  tasks:Array.isArray(d.tasks)?d.tasks:b.tasks,yearNotes:d.yearNotes||{}};
 }
 let cloudSaveTimer=null,cloudSaveBusy=false,cloudDirty=false,cloudSaveVersion=0;
@@ -278,7 +285,7 @@ function drv(field,year){let i=year-2027;if(i<0)return DEFAULT_ROWS[field][0];le
  const key=(2027+k)+':'+field;if(Object.prototype.hasOwnProperty.call(data.overrides,key))value=Number(data.overrides[key]);}
  return /Events$/.test(field)||field==='shopOrders'?Math.round(value):value;
 }
-function vals(y){let r={};for(let f of Object.keys(FIELDS))r[f]=drv(f,y);return r}
+function vals(y){let r={};for(let f of Object.keys(FIELDS)){const n=drv(f,y);r[f]=['wedPremiumShare','dividendPayoutPct'].includes(f)?clamp(n,0,100):n;}return r}
 function sectorCosts(){return {wed:clamp(data.settings.costWed,0,100)/100,priv:clamp(data.settings.costPriv,0,100)/100,corp:clamp(data.settings.costCorp,0,100)/100,shop:clamp(data.settings.costShop,0,100)/100}}
 function stripeFee(amount){let n=Number(amount)||0;if(n<=0)return 0;return Math.round((n*clamp(data.settings.stripePct??1.5,0,25)/100+clamp(data.settings.stripeFixed??.2,0,20)+Number.EPSILON)*100)/100}
 function realStripeFees(){return livePayments.reduce((sum,p)=>sum+stripeFee(p.amount),0)}
@@ -746,7 +753,7 @@ function pageSettings(){return txtHeading('09 / configuration','Settings & data 
  ${panel('Growth budgets and staged dividends','Each year can be edited on the financial forecast page',`
  <p class="fine">The forecasts have a separate annual marketing budget (rising above £2,000), cash for new premium-package equipment, an expansion savings pot, a maintenance reserve and a payout percentage. Years 2027–28 default to zero dividends so the business can develop its equipment and marketing first.</p>
  <div class="field-grid two">
-  ${field('Marketing spend in ${focusYear} (£)',vals(focusYear).marketing,'data-driver="marketing" data-driver-year="'+focusYear+'"')}
+  ${field('Marketing spend in '+focusYear+' (£)',vals(focusYear).marketing,'data-driver="marketing" data-driver-year="'+focusYear+'"')}
   ${field('New package/kit spend (£)',vals(focusYear).capex,'data-driver="capex" data-driver-year="'+focusYear+'"')}
   ${field('Save for later expansion (£)',vals(focusYear).expansionFund,'data-driver="expansionFund" data-driver-year="'+focusYear+'"')}
   ${field('Maintenance reserve (£)',vals(focusYear).reserve,'data-driver="reserve" data-driver-year="'+focusYear+'"')}
@@ -781,7 +788,7 @@ function render(){renderNav();document.querySelector('#crumb-page').textContent=
 function settingUpdate(k,val){let n=Number(val);data.settings[k]=Number.isFinite(n)?Math.max(0,n):0;
  for(let typ of ['wed','priv','corp']){let k1=typ+'Lead1',k2=typ+'Lead2';if(data.settings[k1]+data.settings[k2]>100){data.settings[k2]=100-data.settings[k1]}}
  save();render()}
-function setDriver(f,y,val){data.overrides[y+':'+f]=Math.max(0,Number(val)||0);save();render();toast(`${y} ${FIELDS[f][0]} changed; later projections recalculated`)}
+function setDriver(f,y,val){if(!FIELDS[f]||!YEARS.includes(y))return;let n=Math.max(0,Number(val)||0);if(['wedPremiumShare','dividendPayoutPct'].includes(f))n=clamp(n,0,100);data.overrides[y+':'+f]=n;save();render();toast(`${y} ${FIELDS[f][0]} changed; later projections recalculated`)}
 function onClick(e){let btn=e.target.closest('button');if(!btn)return;
  if(btn.dataset.deleteDividend){if(!confirm('Remove this recorded dividend payment? This changes the log only.'))return;data.dividendRecords=(data.dividendRecords||[]).filter(p=>p.id!==btn.dataset.deleteDividend);save();render();toast('Dividend record removed');return}
  if(btn.id==='menu-toggle'){document.querySelector('#sidebar').classList.toggle('open');return}
