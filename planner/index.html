@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#143c32">
-<meta name="description" content="On The Green Games | private offline-ready ten-year planning and progress dashboard">
+<meta name="description" content="OTGG private live target tracker and editable pricing calculator"><meta name="robots" content="noindex,nofollow,noarchive">
 <title>OTGG · Our Targets</title>
 <style>
 :root{--forest:#143c32;--forest2:#1d5141;--forest3:#285f4b;--gold:#b99355;--goldSoft:#f4e9d0;--cream:#f8f6f1;--paper:#fffefd;--ink:#18362e;--muted:#6c7973;--line:#e3e9e1;--pale:#edf2ed;--rose:#b65f57;--blue:#5a81aa;--shadow:0 15px 45px rgba(24,49,36,.07);--radius:18px;--sidebar:252px}
@@ -921,7 +921,7 @@ function pageSimpleHome(){
  <div class="s-stats"><div class="s-stat"><span>Bookings in ${y} diary</span><strong>${m.booked}</strong></div>
  <div class="s-stat"><span>Confirmed ${y} booking value</span><strong>${simpleMoney(m.yearValue)}</strong></div>
  <div class="s-stat"><span>Customer payments received</span><strong>${simpleMoney(m.totalCash)}</strong></div></div>
- <div class="s-panel"><h2>The bigger goal</h2><p>By 2036, you and Dayle want OTGG to support <strong>£90,000 combined annual gross dividends</strong>, before your personal dividend tax. That is a target, not an earnings prediction.</p>
+ <div class="s-panel"><h2>The bigger goal</h2><p>By 2036, you and Dayle want OTGG to support <strong>${simpleMoney(simpleGoal(2036).dividends??90000)} combined annual gross dividends</strong>, before your personal dividend tax. That is a target, not an earnings prediction.</p>
  <div class="s-actions"><button class="btn dark" data-year="2036" data-page="pricing">Try prices and bookings for 2036 →</button><button class="btn" data-page="targets">See all annual targets</button></div></div>
  <div class="s-panel"><h2>What's coming up</h2><p>Read directly from the booking system.</p><div class="table-wrap"><table class="s-table"><thead><tr><th>Event date</th><th>Booking</th><th>Value</th></tr></thead><tbody>${up}</tbody></table></div><div class="s-actions"><button class="s-link" data-page="bookings">All live bookings →</button></div></div>
  <p class="s-hint">Progress figures reflect booking statuses and event dates stored in Supabase. They do not claim events happened if they were postponed outside the system. Income targets are not treated as money earned.</p>`;
@@ -938,7 +938,7 @@ function pageSimpleTargets(){
  ${YEARS.map(yr=>{const goal=simpleGoal(yr);return `<tr><td><button class="s-link" data-year="${yr}" data-page="targets">${yr}</button></td>
  ${['delivered','next','dividends'].map(k=>`<td><input type="number" inputmode="numeric" min="0" step="1" placeholder="—" aria-label="${yr} ${k} target" data-simple-goal="${k}" data-simple-year="${yr}" value="${goal[k]??''}"></td>`).join('')}</tr>`}).join('')}
  </tbody></table></div></div>
- <p class="s-hint">The starting 2027 targets are five fulfilled events and ten bookings for 2028. The long-term goal is £90,000 combined gross dividends by 2036. Everything else is deliberately yours to decide. Changes save automatically to Supabase.</p>`;
+ <p class="s-hint">The starting 2027 targets are five fulfilled events and ten bookings for 2028. The current long-term goal is ${simpleMoney(simpleGoal(2036).dividends??90000)} combined gross dividends by 2036. Everything else is deliberately yours to decide. Changes save automatically to Supabase.</p>`;
 }
 
 
@@ -1047,7 +1047,7 @@ function pageSimplePricing(){
  <p>Your target is <strong>combined gross dividends before personal tax</strong>. Leave it blank if you're not setting one yet.</p>
  <div class="s-formgrid"><div class="s-field"><label for="s-gross-goal">Annual gross-dividend goal (£)</label>
  <input id="s-gross-goal" type="number" step="100" min="0" data-simple-gross-goal value="${goal.dividends??''}" placeholder="Not set">
- <small>2036 starts at £90,000 combined. Other years are your decision.</small></div></div>
+ <small>2036 starts at £90,000 combined. Every year is editable.</small></div></div>
  <details class="s-detail"><summary>Costs, marketing and how much to keep in OTGG</summary>
  <p class="s-hint">These are adjustable example costs. Marketing is an annual expense. Kit and expansion savings come out before any dividend. Stripe defaults to 1.5% + 20p per payment.</p>
  <div class="s-formgrid">
