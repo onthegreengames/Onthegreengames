@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#143c32">
 <meta name="description" content="On The Green Games | private offline-ready ten-year planning and progress dashboard">
-<title>OTGG · The 10-Year Plan</title>
+<title>OTGG · Our Targets</title>
 <style>
 :root{--forest:#143c32;--forest2:#1d5141;--forest3:#285f4b;--gold:#b99355;--goldSoft:#f4e9d0;--cream:#f8f6f1;--paper:#fffefd;--ink:#18362e;--muted:#6c7973;--line:#e3e9e1;--pale:#edf2ed;--rose:#b65f57;--blue:#5a81aa;--shadow:0 15px 45px rgba(24,49,36,.07);--radius:18px;--sidebar:252px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);line-height:1.48;font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}input,select,textarea{min-width:0;border:1px solid #d6dfd6;border-radius:9px;background:white;color:var(--ink);padding:9px 11px;outline:none;max-width:100%}textarea{resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px #b9935524}input[type=number]{font-variant-numeric:tabular-nums}input[type=checkbox]{accent-color:var(--forest);width:16px;height:16px}input[type=date]{min-height:40px}a{color:var(--forest2)}button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
@@ -84,6 +84,18 @@
 @media(max-width:900px){.home-bottom{grid-template-columns:1fr}.home-goals{gap:12px}}
 @media(max-width:680px){.home-hero{padding:24px 20px;grid-template-columns:1fr;gap:17px}.home-hero h1{font-size:32px}.home-live{justify-self:start;padding:8px 11px}.home-section-line h2{font-size:23px}.home-goals{grid-template-columns:1fr}.home-goal{padding:21px 20px}.home-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.home-mini{padding:15px}.home-mini strong{font-size:26px}.home-mini:last-child{grid-column:span 2}.home-surface{padding:19px}.home-amount strong{font-size:53px}}
 
+
+/* Simple target tracker and pricing lab */
+#top-scenario{display:none!important}
+.s-head{margin-bottom:22px;max-width:700px}.s-head h1{font:500 clamp(28px,4vw,40px)/1.2 Georgia,serif;letter-spacing:-.035em;margin:5px 0 9px}.s-head p{color:var(--muted);line-height:1.6;font-size:13px}.s-kicker{font-size:10px;letter-spacing:.13em;font-weight:800;color:#967642;text-transform:uppercase}
+.s-hero{border-radius:17px;background:#153e32;color:white;padding:25px 30px;margin:0 0 17px;display:flex;justify-content:space-between;gap:13px;align-items:center}.s-hero h1{font:500 clamp(28px,4vw,38px)/1.2 Georgia,serif;letter-spacing:-.035em;margin:4px 0 7px}.s-hero p{color:#d6e4d9;font-size:12px;max-width:600px;margin:0;line-height:1.6}.s-live{border:1px solid #ffffff35;border-radius:50px;color:#e8f4ed;padding:8px 12px;font-size:11px;white-space:nowrap}
+.s-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:15px 0}.s-card,.s-panel{border:1px solid var(--line);border-radius:16px;background:white;padding:22px}.s-panel{margin-bottom:16px}.s-card h2,.s-panel h2{font:500 23px/1.3 Georgia,serif;letter-spacing:-.02em;margin:0 0 8px}.s-card p,.s-panel>p{font-size:12px;color:var(--muted);margin:0 0 15px;line-height:1.6}.s-number{font:500 clamp(40px,5vw,55px)/1.1 Georgia,serif;letter-spacing:-.06em;color:#153d2f}.s-number small{font-size:18px;color:#8a958d}.s-bar{height:11px;background:#e8efe8;border-radius:100px;overflow:hidden;margin:17px 0 9px}.s-bar b{display:block;background:#2a694d;height:100%;border-radius:inherit}.s-bar.gold b{background:#b99556}.s-split{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:#64786b}
+.s-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:15px 0}.s-stat{background:#fff;border:1px solid var(--line);padding:17px;border-radius:14px}.s-stat span{font-size:11px;color:var(--muted);font-weight:700}.s-stat strong{display:block;font:500 29px/1.2 Georgia,serif;color:#153d2f;margin-top:6px}
+.s-formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.s-formgrid.three{grid-template-columns:repeat(3,minmax(0,1fr))}.s-field{display:flex;flex-direction:column;gap:5px}.s-field label{font-size:11px;color:#56705f;font-weight:750}.s-field input{width:100%;font-weight:750;font-size:16px;color:#153d2f;background:#fcfdf9}.s-field small{font-size:10px;color:#7a8c80;line-height:1.5}
+.s-result{border-radius:16px;background:#163f32;color:white;padding:23px;margin:16px 0}.s-result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.s-result span{font-size:11px;color:#c9ddce;display:block}.s-result strong{font:500 29px/1.2 Georgia,serif;display:block;margin:6px 0}.s-result p{font-size:12px;color:#dae9db;line-height:1.6;margin:10px 0 0}.s-result .s-bar{background:#ffffff25}.s-result .s-bar b{background:#e4c992}
+.s-detail{border:1px solid var(--line);background:#fbfcf9;padding:14px 16px;border-radius:12px;margin:15px 0}.s-detail summary{font-size:12px;font-weight:800;cursor:pointer}.s-detail .s-formgrid{margin-top:16px}.s-hint{color:var(--muted);font-size:11px;line-height:1.7;margin:14px 0}.s-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:15px 0}.s-link{border:0;padding:0;background:transparent;color:#2a5b43;text-decoration:underline;font-weight:750;font-size:12px;cursor:pointer}
+.s-table{width:100%;min-width:680px;border-collapse:collapse}.s-table th{font-size:11px;color:#65776a;text-align:left;font-weight:750;border-bottom:1px solid #e5eee4;padding:12px}.s-table td{font-size:12px;padding:10px 12px;border-bottom:1px solid #ebf0e8}.s-table tr:nth-child(even){background:#fbfcf9}.s-table input{max-width:115px;font-size:13px;padding:9px}.s-alert{font-size:12px;color:#7a5e42;line-height:1.6;padding:13px 16px;background:#fff8ee;border:1px solid #eedec5;border-radius:11px;margin:14px 0}
+@media(max-width:700px){.s-hero{display:block;padding:21px}.s-live{display:inline-block;margin-top:13px}.s-grid{grid-template-columns:1fr}.s-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.s-stats .s-stat:last-child{grid-column:span 2}.s-card,.s-panel{padding:17px}.s-formgrid.three{grid-template-columns:repeat(2,minmax(0,1fr))}.s-result-grid{grid-template-columns:1fr;gap:9px}}
 </style>
 <meta name="robots" content="noindex,nofollow">
 
@@ -105,7 +117,7 @@
 <body>
 <div class="shell">
 <aside class="sidebar" id="sidebar">
-  <div class="brand"><div class="brand-line"><div class="brandmark"><svg viewBox="0 0 32 32" fill="none" stroke="#e9d5a4" stroke-width="1.8" stroke-linejoin="round"><path d="M11 27V4m0 1 12 5-12 5M5 27h22"/><circle cx="20" cy="24" r="3"/></svg></div><div class="brandname">On The Green<small>GAMES · THE LONG GAME</small></div></div><div class="brand-sub">Your private ten-year business cockpit.</div></div>
+  <div class="brand"><div class="brand-line"><div class="brandmark"><svg viewBox="0 0 32 32" fill="none" stroke="#e9d5a4" stroke-width="1.8" stroke-linejoin="round"><path d="M11 27V4m0 1 12 5-12 5M5 27h22"/><circle cx="20" cy="24" r="3"/></svg></div><div class="brandname">On The Green<small>GAMES · OUR TARGETS</small></div></div><div class="brand-sub">Live targets and pricing. Nothing more complicated.</div></div>
   <div class="nav-group"><span class="nav-label">The big picture</span><div id="nav-primary"></div></div>
   <div class="nav-group"><span class="nav-label">The numbers</span><div id="nav-finance"></div></div>
   <div class="nav-group"><span class="nav-label">Make it happen</span><div id="nav-work"></div></div>
@@ -196,17 +208,10 @@ const DEFAULT_OPPS=[
  ['Additional premium mini-golf experiences','Events',2030,2,'Upgrade hire packages only if venue logistics, transport and actual demand justify the kit spend.']
 ];
 const NAV=[
- {id:'overview',label:'My progress',icon:'layout-dashboard',group:'primary'},
- {id:'forecast',label:'Linked 10-year model',icon:'chart-no-axes-combined',group:'finance'},
- {id:'cash',label:'Cash & deposits',icon:'wallet',group:'finance'},
- {id:'dividends',label:'Tax & dividends',icon:'users',group:'finance'},
- {id:'bookings',label:'Booking tracker',icon:'calendar-check',group:'finance'},
- {id:'actuals',label:'Actual performance',icon:'target',group:'finance'},
- {id:'roadmap',label:'Year-by-year roadmap',icon:'route',group:'work'},
- {id:'opportunities',label:'Expansion ideas',icon:'lightbulb',group:'work'},
- {id:'team',label:'Our full-time goal',icon:'users',group:'work'},
- {id:'tasks',label:'Actions & notes',icon:'check-square',group:'work'},
- {id:'settings',label:'Settings & backups',icon:'settings',group:'work'}
+{id:'overview',label:'Dashboard',icon:'layout-dashboard',group:'primary'},
+{id:'targets',label:'Our targets',icon:'target',group:'finance'},
+{id:'pricing',label:'Try our pricing',icon:'chart-no-axes-combined',group:'finance'},
+{id:'bookings',label:'Live bookings',icon:'calendar-check',group:'work'}
 ];
 const icons={
  'layout-dashboard':'<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
@@ -222,7 +227,7 @@ function ico(name){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentC
 const KEY='otgg10yearplanner_v3';
 let page='overview',focusYear=2027,scenario='base',viewMode='revenue',warnStorage=false;
 function defaultData(){return {
- version:3,strategyVersion:5,goal:'£90,000 combined gross dividends by 2036, two working owners',created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:90000,ownerWeeks:46,vatPlanningPct:10,vatThreshold:90000,peakSeasonFactor:1.75,hoursWed:16,hoursPriv:12,hoursCorp:16,hoursShop:0.75,hoursPerHireAdmin:2,hoursCoreAdmin:150,jordanOtherIncome:0,dayleOtherIncome:0,personalDividendMode:'bands',personalAllowance:12570,dividendBasicBand:37700,dividendHigherBand:112570,dividendBasicRate:10.75,dividendHigherRate:35.75,dividendAdditionalRate:39.35,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Lifestyle goal: Jordan and Dayle both operate OTGG themselves by 2036, without salaried staff. Target is £90,000 combined gross annual dividends (for example £45,000 each on an equal split) AFTER Corporation Tax but BEFORE personal dividend tax. Personal dividend tax is paid by each shareholder separately and is not an additional company target. No permanent employees; weekday corporate events and two operating bases allow multiple hires per week as capacity and kit grow. 2036 targets are illustrative, not booked work.'},
+ version:3,strategyVersion:6,goal:'£90,000 combined gross dividends by 2036, two working owners',created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:90000,ownerWeeks:46,vatPlanningPct:10,vatThreshold:90000,peakSeasonFactor:1.75,hoursWed:16,hoursPriv:12,hoursCorp:16,hoursShop:0.75,hoursPerHireAdmin:2,hoursCoreAdmin:150,jordanOtherIncome:0,dayleOtherIncome:0,personalDividendMode:'bands',personalAllowance:12570,dividendBasicBand:37700,dividendHigherBand:112570,dividendBasicRate:10.75,dividendHigherRate:35.75,dividendAdditionalRate:39.35,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Lifestyle goal: Jordan and Dayle both operate OTGG themselves by 2036, without salaried staff. Target is £90,000 combined gross annual dividends (for example £45,000 each on an equal split) AFTER Corporation Tax but BEFORE personal dividend tax. Personal dividend tax is paid by each shareholder separately and is not an additional company target. No permanent employees; weekday corporate events and two operating bases allow multiple hires per week as capacity and kit grow. 2036 targets are illustrative, not booked work.'},
  dividendPlans:{2027:{jordan:0,dayle:0},2028:{jordan:0,dayle:0}},dividendRecords:[],overrides:{}, bookings:[],
  actuals:{},milestones:DEFAULT_MILESTONES.map((a,i)=>({id:'mil'+i,year:a[0],title:a[1],description:a[2],status:'Not started'})),
  opportunities:DEFAULT_OPPS.map((a,i)=>({id:'opp'+i,title:a[0],category:a[1],year:a[2],priority:a[3],detail:a[4],status:'Explore',investment:0,margin:0})),
@@ -251,7 +256,7 @@ function hydrate(d){
    return prior?(prior.title===oldDefaultMilestoneTitles[Number(m.id.slice(3))]?{...m,status:prior.status||m.status}:prior):m;
   }).concat(extras.filter(m=>!b.milestones.some(x=>x.id===m.id)));
  }
- return {...b,...d,goal:b.goal,strategyVersion:5,settings,homeTargets:{...b.homeTargets,...(d.homeTargets||{})},
+ return {...b,...d,goal:b.goal,strategyVersion:6,settings,homeTargets:{...b.homeTargets,...(d.homeTargets||{})},
  dividendPlans:{...b.dividendPlans,...(d.dividendPlans||{})},
  dividendRecords:Array.isArray(d.dividendRecords)?d.dividendRecords:[],
  overrides:d.overrides||{},bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},
@@ -845,9 +850,12 @@ function csvExport(){let headers=['Year','Wedding events','Wedding average','Pri
  headers.push('Stripe fees','Taxable company profit estimate','Corporation tax','Company profit after tax','Potential owner dividends','Desired dividends total','Jordan desired dividends','Dayle desired dividends');let lines=[headers.join(',')];allRows('base').forEach(r=>{let v=r.v,c=cashRow(r.year,'base'),d=dividendTarget(r.year);lines.push([r.year,v.wedEvents,v.wedPrice,v.privEvents,v.privPrice,v.corpEvents,v.corpPrice,v.shopOrders,v.shopAov,r.wed,r.priv,r.corp,r.shop,r.revenue,r.direct,r.staff,r.overhead,r.reserve,r.v.ownerHours,r.companyProfit,r.distributable,c.cash,r.stripeFees,r.companyProfit,r.companyTax,r.companyAfterTax,r.dividendCapacity,r.plannedDividends,d.jordan,d.dayle].map(v=>Math.round(Number(v)*100)/100).join(','))});downloadFile('OTGG_10_Year_Forecast.csv','text/csv;charset=utf-8',lines.join('\r\n'))}
 function downloadFile(filename,mime,content){const blob=new Blob([content],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
 function downloadJson(){let date=new Date().toISOString().slice(0,10);downloadFile('OTGG_Planner_Backup_'+date+'.json','application/json;charset=utf-8',JSON.stringify({...data,exportedAt:new Date().toISOString()},null,2));toast('Backup downloaded — save to Files or iCloud Drive')}
-function renderNav(){for(let g of ['primary','finance','work'])document.querySelector('#nav-'+g).innerHTML=NAV.filter(n=>n.group===g).map(n=>`<button class="nav-button ${page===n.id?'active':''}" data-page="${n.id}">${ico(n.icon)}<span>${n.label}</span></button>`).join('');document.querySelector('#mobile-nav').innerHTML=['overview','forecast','cash','bookings','tasks'].map(id=>{let n=NAV.find(a=>a.id===id);return `<button class="${page===id?'active':''}" data-page="${id}">${ico(n.icon)}<span>${id==='forecast'?'Plan':id==='bookings'?'Bookings':n.label==='The big picture'?'Home':id==='cash'?'Cash':'Tasks'}</span></button>`}).join('')}
+function renderNav(){
+for(const g of ['primary','finance','work'])document.querySelector('#nav-'+g).innerHTML=NAV.filter(n=>n.group===g).map(n=>`<button class="nav-button ${page===n.id?'active':''}" data-page="${n.id}">${ico(n.icon)}<span>${n.label}</span></button>`).join('');
+document.querySelector('#mobile-nav').innerHTML=NAV.map(n=>`<button class="${page===n.id?'active':''}" data-page="${n.id}">${ico(n.icon)}<span>${n.id==='overview'?'Home':n.id==='targets'?'Goals':n.id==='pricing'?'Pricing':'Bookings'}</span></button>`).join('');
+}
 function render(){renderNav();document.querySelector('#crumb-page').textContent=NAV.find(x=>x.id===page)?.label||'Overview';document.querySelector('#top-year').value=String(focusYear);document.querySelector('#top-scenario').value=scenario;
- const views={overview:pageOverview,forecast:pageForecast,cash:pageCash,dividends:pageDividends,bookings:pageBookings,actuals:pageActuals,roadmap:pageRoadmap,opportunities:pageOpportunities,team:pageTeam,tasks:pageTasks,settings:pageSettings};try{document.querySelector('#page').innerHTML=views[page]()}catch(e){console.error(e);document.querySelector('#page').innerHTML=`<div class="note warn">There was a display error. Your saved data remains unchanged. ${esc(e.message)}</div>`}}
+ const views={overview:pageSimpleHome,targets:pageSimpleTargets,pricing:pageSimplePricing,bookings:pageSimpleBookings};try{document.querySelector('#page').innerHTML=views[page]()}catch(e){console.error(e);document.querySelector('#page').innerHTML=`<div class="note warn">There was a display error. Your saved data remains unchanged. ${esc(e.message)}</div>`}}
 function settingUpdate(k,val){let n=Number(val);if(k==='vatPlanningPct')n=clamp(n,0,20);if(k==='peakSeasonFactor')n=clamp(n,1,5);if(k==='ownerWeeks')n=clamp(n,1,52);data.settings[k]=Number.isFinite(n)?Math.max(0,n):0;
  for(let typ of ['wed','priv','corp']){let k1=typ+'Lead1',k2=typ+'Lead2';if(data.settings[k1]+data.settings[k2]>100){data.settings[k2]=100-data.settings[k1]}}
  save();render()}
@@ -894,7 +902,7 @@ async function loadLivePlan(){
  if(error)throw Error('Owner access not authorised. Sign in using the approved OTGG address. ('+error.message+')');
  if(!result)throw Error('Planner storage is not accessible for this email.');
  const existing=result.payload&&Object.keys(result.payload).length?result.payload:null;
- const migrationNeeded=!!existing&&(Number(existing.strategyVersion)||0)<5;
+ const migrationNeeded=!!existing&&(Number(existing.strategyVersion)||0)<6;
  data=hydrate(existing||defaultData());
  data.bookings=liveBookings;warnStorage=false;render();
  if(migrationNeeded)save();
