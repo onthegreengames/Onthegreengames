@@ -132,15 +132,33 @@
 <script>
 'use strict';
 const YEARS=Array.from({length:10},(_,i)=>2027+i);
-const FIELDS={wedEvents:['Wedding events','#'],wedPrice:['Average wedding booking','£'],privEvents:['Private events','#'],privPrice:['Average private booking','£'],corpEvents:['Corporate events','#'],corpPrice:['Average corporate booking','£'],shopOrders:['Shop orders','#'],shopAov:['Average shop order','£'],staff:['Outside help (optional, default £0)','£'],overhead:['Insurance, software, storage & admin','£'],reserve:['Annual maintenance allowance','£'],ownerHours:['Jordan + Dayle total work hours/year','h'],capex:['Cash spent on new kit','£']};
-const DRIVERS=['wedEvents','wedPrice','privEvents','privPrice','corpEvents','corpPrice','shopOrders','shopAov'];
+const FIELDS={
+ wedEvents:['Wedding bookings','#'],wedPrice:['Standard wedding booking price','£'],
+ wedPremiumShare:['Premium package uptake','%'],wedPremiumUplift:['Typical premium package extra','£'],
+ privEvents:['Private event bookings','#'],privPrice:['Average private booking','£'],
+ corpEvents:['Corporate bookings','#'],corpPrice:['Average corporate booking','£'],
+ shopOrders:['Shop orders','#'],shopAov:['Average shop order','£'],
+ staff:['Optional outside help','£'],overhead:['Insurance, software, storage & admin','£'],
+ marketing:['Annual marketing budget','£'],reserve:['Equipment maintenance reserve','£'],
+ expansionFund:['Annual savings for future expansion','£'],
+ dividendPayoutPct:['Share of dividend headroom we can withdraw','%'],
+ ownerHours:['Jordan + Dayle combined work hours/year','h'],capex:['Kit and new package purchases THIS year','£']};
+const DRIVERS=['wedEvents','wedPrice','wedPremiumShare','wedPremiumUplift','privEvents','privPrice','corpEvents','corpPrice','shopOrders','shopAov'];
 const DEFAULT_ROWS={
- wedEvents:[5,10,15,20,25,28,32,35,38,40],wedPrice:[400,440,500,550,600,650,720,820,920,1050],
+ wedEvents:[5,10,15,20,25,28,32,35,38,40],
+ wedPrice:[400,420,450,480,520,550,585,620,660,700],
+ wedPremiumShare:[0,10,20,25,30,35,40,48,55,65],
+ wedPremiumUplift:[0,180,230,280,350,400,450,500,580,650],
  privEvents:[0,1,2,3,3,4,4,5,5,6],privPrice:[350,400,450,500,550,600,650,700,750,800],
  corpEvents:[0,0,1,1,2,2,3,3,4,4],corpPrice:[900,900,900,1100,1200,1450,1600,1750,1850,2000],
- shopOrders:[0,0,8,25,60,120,200,300,400,550],shopAov:[65,65,60,65,70,75,80,85,90,95],
+ shopOrders:[0,0,8,25,60,120,200,300,400,550],shopAov:[65,65,60,70,75,85,95,105,115,125],
  staff:[0,0,0,0,0,0,0,0,0,0],overhead:[400,650,1000,1300,1700,2200,2900,3700,4800,6500],
- reserve:[100,150,250,350,500,700,900,1100,1300,1500],ownerHours:[90,140,220,330,470,800,1200,1500,2000,2900],capex:[0,0,600,800,900,850,850,1000,1100,1000]
+ marketing:[500,1000,1600,2000,2200,2500,2500,2800,3000,3500],
+ reserve:[100,200,300,450,600,800,1000,1200,1400,1600],
+ expansionFund:[400,800,1500,1800,2200,2500,3000,3200,3500,3500],
+ dividendPayoutPct:[0,0,10,25,45,60,70,80,90,100],
+ ownerHours:[90,140,220,330,470,800,1200,1500,2000,2900],
+ capex:[500,1500,2500,3500,3200,2500,2000,2500,3000,3500]
 };
 const DEFAULT_MILESTONES=[
  [2027,'Deliver the first 5 events','Put on excellent weddings, capture photos and reviews, learn your real setup times and margins.'],
@@ -197,7 +215,7 @@ function ico(name){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentC
 const KEY='otgg10yearplanner_v3';
 let page='overview',focusYear=2027,scenario='base',viewMode='revenue',warnStorage=false;
 function defaultData(){return {
- version:3,strategyVersion:3,goal:'£90,000 combined gross dividends by 2036, two working owners',created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:90000,ownerWeeks:46,maxAnnualEvents:50,jordanOtherIncome:0,dayleOtherIncome:0,personalDividendMode:'bands',personalAllowance:12570,dividendBasicBand:37700,dividendHigherBand:112570,dividendBasicRate:10.75,dividendHigherRate:35.75,dividendAdditionalRate:39.35,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Lifestyle goal: Jordan and Dayle both operate OTGG themselves by 2036, without salaried staff. Target is £90,000 combined gross annual dividends (for example £45,000 each on an equal split) AFTER Corporation Tax but BEFORE personal dividend tax. Personal dividend tax is paid by each shareholder separately and is not an additional company target. No permanent staff; around 50 hire events annually.'},
+ version:3,strategyVersion:4,goal:'£90,000 combined gross dividends by 2036, two working owners',created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:90000,ownerWeeks:46,maxAnnualEvents:50,jordanOtherIncome:0,dayleOtherIncome:0,personalDividendMode:'bands',personalAllowance:12570,dividendBasicBand:37700,dividendHigherBand:112570,dividendBasicRate:10.75,dividendHigherRate:35.75,dividendAdditionalRate:39.35,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Lifestyle goal: Jordan and Dayle both operate OTGG themselves by 2036, without salaried staff. Target is £90,000 combined gross annual dividends (for example £45,000 each on an equal split) AFTER Corporation Tax but BEFORE personal dividend tax. Personal dividend tax is paid by each shareholder separately and is not an additional company target. No permanent staff; around 50 hire events annually.'},
  dividendPlans:{2027:{jordan:100,dayle:100},2028:{jordan:250,dayle:250}},dividendRecords:[],overrides:{}, bookings:[],
  actuals:{},milestones:DEFAULT_MILESTONES.map((a,i)=>({id:'mil'+i,year:a[0],title:a[1],description:a[2],status:'Not started'})),
  opportunities:DEFAULT_OPPS.map((a,i)=>({id:'opp'+i,title:a[0],category:a[1],year:a[2],priority:a[3],detail:a[4],status:'Explore',investment:0,margin:0})),
@@ -206,7 +224,7 @@ function defaultData(){return {
 let data=defaultData();data.bookings=[];
 function hydrate(d){
  const b=defaultData();if(!d||typeof d!=='object')return b;
- const fromOld=(Number(d.strategyVersion)||0)<2;const oldGrossTarget=(Number(d.strategyVersion)||0)<3;
+ const fromOld=(Number(d.strategyVersion)||0)<2;const oldGrossTarget=(Number(d.strategyVersion)||0)<3;const oldReinvestmentModel=(Number(d.strategyVersion)||0)<4;
  const settings={...b.settings,...(d.settings||{})};
  // A former default £50k target belonged to the manager-run plan; keep bespoke owner targets intact.
  if((fromOld&&Number(settings.ownerTarget)===50000)||(oldGrossTarget&&Number(settings.ownerTarget)===38000))settings.ownerTarget=90000;
@@ -226,7 +244,7 @@ function hydrate(d){
    return prior?(prior.title===oldDefaultMilestoneTitles[Number(m.id.slice(3))]?{...m,status:prior.status||m.status}:prior):m;
   }).concat(extras.filter(m=>!b.milestones.some(x=>x.id===m.id)));
  }
- return {...b,...d,goal:b.goal,strategyVersion:3,settings,homeTargets:{...b.homeTargets,...(d.homeTargets||{})},
+ return {...b,...d,goal:b.goal,strategyVersion:4,settings,homeTargets:{...b.homeTargets,...(d.homeTargets||{})},
  dividendPlans:{...b.dividendPlans,...(d.dividendPlans||{})},
  dividendRecords:Array.isArray(d.dividendRecords)?d.dividendRecords:[],
  overrides:d.overrides||{},bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},
@@ -302,10 +320,11 @@ function dividendEstimate(amount,owner){
        +additional*clamp(settings.dividendAdditionalRate??39.35,0,60)/100;
 }
 function profitForGrossDividends(target,year=2036){
- const needed=Math.max(0,Number(target)||0),settings=data.settings;
- const v=vals(year),outflow=Math.max(0,Number(v.reserve)||0)+Math.max(0,Number(v.capex)||0);
- const keep=1-clamp(settings.retain,0,99)/100;
- const afterTaxNeeded=needed/keep+outflow;
+ const needed=Math.max(0,Number(target)||0),st=data.settings,v=vals(year);
+ const payout=clamp(v.dividendPayoutPct,0,100)/100,keep=1-clamp(st.retain,0,99)/100;
+ if(needed>0 && payout*keep<=0)return Infinity;
+ const outflow=Math.max(0,v.capex)+Math.max(0,v.reserve)+Math.max(0,v.expansionFund);
+ const afterTaxNeeded=needed/(payout*keep)+outflow;
  let lo=0,hi=Math.max(150000,afterTaxNeeded*2+20000);
  while(hi-corpTaxEstimate(hi)<afterTaxNeeded && hi<1e10)hi*=2;
  for(let i=0;i<65;i++){const mid=(lo+hi)/2;
@@ -315,9 +334,9 @@ function profitForGrossDividends(target,year=2036){
 function goalFeasibility(year=2036){
  const r=row(year),target=Math.max(0,Number(data.settings.ownerTarget)||0);
  const requiredProfit=profitForGrossDividends(target,year);
- const profitGap=Math.max(0,requiredProfit-r.companyProfit);
+ const profitGap=Number.isFinite(requiredProfit)?Math.max(0,requiredProfit-r.companyProfit):Infinity;
  const marginPerShopOrder=Math.max(0,r.v.shopAov*(1-clamp(data.settings.costShop,0,100)/100-clamp(data.settings.stripePct,0,25)/100)-clamp(data.settings.stripeFixed,0,20));
- const extraShopOrders=marginPerShopOrder>0?Math.ceil(profitGap/marginPerShopOrder):null;
+ const extraShopOrders=marginPerShopOrder>0&&Number.isFinite(profitGap)?Math.ceil(profitGap/marginPerShopOrder):null;
  return {target,requiredProfit,profitGap,grossDividends:r.dividendCapacity,
   grossGap:Math.max(0,target-r.dividendCapacity),
   shopAov:r.v.shopAov,extraShopOrders,totalShopOrders:extraShopOrders===null?null:r.v.shopOrders+extraShopOrders,
@@ -325,29 +344,48 @@ function goalFeasibility(year=2036){
   projectedSales:r.revenue,requiredSalesShopOnly:extraShopOrders===null?null:r.revenue+extraShopOrders*r.v.shopAov};
 }
 function paidDividends(year){return (data.dividendRecords||[]).filter(x=>String(x.date||'').slice(0,4)===String(year)).reduce((a,x)=>{if(x.owner==='jordan'||x.owner==='dayle')a[x.owner]+=Number(x.amount)||0;return a},{jordan:0,dayle:0})}
-function row(year,s=scenario){let v=vals(year);let volume=s==='cautious'?data.settings.cautiousVolume/100:s==='ambitious'?data.settings.ambitiousVolume/100:1;let price=s==='cautious'?data.settings.cautiousPrice/100:s==='ambitious'?data.settings.ambitiousPrice/100:1;
- let wed=v.wedEvents*v.wedPrice*volume*price,priv=v.privEvents*v.privPrice*volume*price,corp=v.corpEvents*v.corpPrice*volume*price,shop=v.shopOrders*v.shopAov*volume*price;
- let costs=sectorCosts(),direct=wed*costs.wed+priv*costs.priv+corp*costs.corp+shop*costs.shop;
+function row(year,s=scenario){
+ const v=vals(year),st=data.settings;
+ const volume=s==='cautious'?st.cautiousVolume/100:s==='ambitious'?st.ambitiousVolume/100:1;
+ const price=s==='cautious'?st.cautiousPrice/100:s==='ambitious'?st.ambitiousPrice/100:1;
+ const premiumShare=clamp(v.wedPremiumShare,0,100)/100;
+ const weddingAov=(v.wedPrice+premiumShare*v.wedPremiumUplift)*price;
+ const wed=v.wedEvents*volume*weddingAov,priv=v.privEvents*v.privPrice*volume*price;
+ const corp=v.corpEvents*v.corpPrice*volume*price,shop=v.shopOrders*v.shopAov*volume*price;
+ const costs=sectorCosts();let direct=wed*costs.wed+priv*costs.priv+corp*costs.corp+shop*costs.shop;
  if(s==='cautious')direct+=(wed+priv+corp+shop)*.025;
- let revenue=wed+priv+corp+shop;
- let hireCount=(v.wedEvents+v.privEvents+v.corpEvents)*volume;
- let expectedTransactions=hireCount*(1+clamp(data.settings.stripeDepositShare??80,0,100)/100)+v.shopOrders*volume;
- let stripeFees=Math.round(((revenue*clamp(data.settings.stripePct??1.5,0,25)/100)+(expectedTransactions*clamp(data.settings.stripeFixed??.2,0,20)))*100)/100;
- let contribution=revenue-direct-stripeFees;
- let staff=v.staff*(s==='ambitious'?1.04:1),companyProfit=contribution-staff-v.overhead;
- let companyTax=corpTaxEstimate(companyProfit),companyAfterTax=companyProfit-companyTax;
- let ownerReplacement=v.ownerHours*(data.settings.ownerRate||0);
- // The founder-replacement test is an economic target, NOT a tax deduction.
- // Unspent reserves are cash retained, not deductible operating expenses.
- // In the owner-operated model Jordan and Dayle ARE the working team. Their time is recorded for workload,
- // but is not an expense, and the hypothetical manager/crew replacement cost is not deducted.
- let profit=companyProfit;
- let afterTax=Math.max(0,companyAfterTax);
- let retainPct=clamp(data.settings.retain,0,99)/100;
- let distributable=Math.max(0,companyAfterTax-v.reserve-v.capex)*(1-retainPct);
- let dividendCapacity=Math.max(0,companyAfterTax-v.reserve-v.capex)*(1-retainPct);
- let planned=dividendTarget(year),plannedDividends=planned.jordan+planned.dayle;
- return {year,v,wed,priv,corp,shop,direct,stripeFees,expectedTransactions,revenue,contribution,staff,overhead:v.overhead,reserve:v.reserve,ownerReplacement,companyProfit,companyTax,companyAfterTax,profit,afterTax,distributable,dividendCapacity,plannedDividends,dividendShortfall:Math.max(0,plannedDividends-dividendCapacity),dividendRemaining:Math.max(0,dividendCapacity-plannedDividends),hireEvents:(v.wedEvents+v.privEvents+v.corpEvents)*volume,capex:v.capex};
+ const revenue=wed+priv+corp+shop;
+ const hireEvents=(v.wedEvents+v.privEvents+v.corpEvents)*volume;
+ const expectedTransactions=hireEvents*(1+clamp(st.stripeDepositShare??80,0,100)/100)+v.shopOrders*volume;
+ const stripeFees=Math.round((revenue*clamp(st.stripePct??1.5,0,25)/100+expectedTransactions*clamp(st.stripeFixed??.2,0,20))*100)/100;
+ const staff=v.staff*(s==='ambitious'?1.04:1);
+ // Marketing is a deductible business running cost. Equipment purchases and planned
+ // cash reserves are NOT automatically deductible expenses in this scenario model.
+ const marketing=v.marketing,overhead=v.overhead;
+ const companyProfit=revenue-direct-stripeFees-staff-overhead-marketing;
+ const companyTax=corpTaxEstimate(companyProfit);
+ const companyAfterTax=companyProfit-companyTax;
+ const capex=v.capex,reserve=v.reserve,expansionFund=v.expansionFund;
+ const fundsNeeded=capex+reserve+expansionFund;
+ const reinvestmentShortfall=Math.max(0,fundsNeeded-Math.max(0,companyAfterTax));
+ const afterEarmarks=Math.max(0,companyAfterTax-fundsNeeded);
+ const retention=afterEarmarks*clamp(st.retain,0,99)/100;
+ const maxDividendHeadroom=Math.max(0,afterEarmarks-retention);
+ const payoutPct=clamp(v.dividendPayoutPct,0,100);
+ const dividendCapacity=maxDividendHeadroom*payoutPct/100;
+ const additionallyRetained=Math.max(0,maxDividendHeadroom-dividendCapacity);
+ const cashHeldBack=Math.max(0,companyAfterTax-capex-dividendCapacity);
+ const planned=dividendTarget(year),plannedDividends=planned.jordan+planned.dayle;
+ return {year,v,wed,priv,corp,shop,direct,expectedTransactions,stripeFees,
+  premiumShare,weddingAov,hireEvents,revenue,contribution:revenue-direct-stripeFees,
+  staff,marketing,overhead,reserve,expansionFund,capex,companyProfit,companyTax,companyAfterTax,
+  ownerReplacement:v.ownerHours*(st.ownerRate||0),profit:companyProfit,afterTax:Math.max(0,companyAfterTax),
+  distributable:dividendCapacity,dividendCapacity,maxDividendHeadroom,
+  dividendPayoutPct:payoutPct,additionalRetention:retention+additionallyRetained,
+  additionallyRetained,cashHeldBack,reinvestmentShortfall,fundsNeeded,
+  plannedDividends,dividendShortfall:Math.max(0,plannedDividends-dividendCapacity),
+  dividendRemaining:Math.max(0,dividendCapacity-plannedDividends),
+  vatThresholdWarning:revenue>90000};
 }
 function allRows(s=scenario){return YEARS.map(y=>row(y,s))}
 function leadFor(type){let st=data.settings;return type==='wedding'?[st.wedLead1/100,st.wedLead2/100]:type==='private'?[st.privLead1/100,st.privLead2/100]:[st.corpLead1/100,st.corpLead2/100]}
@@ -359,7 +397,7 @@ function cashRow(y,s=scenario){let deposit=data.settings.deposit/100, r=row(y,s)
  depositCash+=newCurrent+future1+future2;balanceCash+=h*(1-deposit);oldDeposits+=h*(a+b)*deposit;contractsWon+=h*same+extendedSector(y+1,type,s)*a+extendedSector(y+2,type,s)*b;forwardContractsWon+=extendedSector(y+1,type,s)*a+extendedSector(y+2,type,s)*b;
  }
  cash=depositCash+balanceCash+r.shop;
- return {year:y,depositCash,balanceCash,shopCash:r.shop,cash,hireEarn,contractsWon,forwardContractsWon,bookedAhead:depositCash,earned:r.revenue,priorDeposits:oldDeposits,netAfterCapex:cash-r.direct-r.stripeFees-r.staff-r.overhead-r.capex-r.companyTax-r.reserve-r.plannedDividends};}
+ return {year:y,depositCash,balanceCash,shopCash:r.shop,cash,hireEarn,contractsWon,forwardContractsWon,bookedAhead:depositCash,earned:r.revenue,priorDeposits:oldDeposits,netAfterCapex:cash-r.direct-r.stripeFees-r.staff-r.overhead-r.marketing-r.capex-r.companyTax-r.reserve-r.expansionFund-r.dividendCapacity};}
 const parseDate=d=>d&&/^\d{4}-\d{2}-\d{2}$/.test(d)?new Date(d+'T12:00:00'):null;
 function dueDate(b){if(b.balanceDue)return b.balanceDue;let e=parseDate(b.event);if(!e)return '';e.setDate(e.getDate()-clamp(data.settings.balanceDays,0,365));return `${e.getFullYear()}-${String(e.getMonth()+1).padStart(2,'0')}-${String(e.getDate()).padStart(2,'0')}`}
 function paid(b){return (Number(b.depositPaid)||0)+(Number(b.balancePaid)||0)}
@@ -755,7 +793,7 @@ async function loadLivePlan(){
  if(error)throw Error('Owner access not authorised. Sign in using the approved OTGG address. ('+error.message+')');
  if(!result)throw Error('Planner storage is not accessible for this email.');
  const existing=result.payload&&Object.keys(result.payload).length?result.payload:null;
- const migrationNeeded=!!existing&&(Number(existing.strategyVersion)||0)<3;
+ const migrationNeeded=!!existing&&(Number(existing.strategyVersion)||0)<4;
  data=hydrate(existing||defaultData());
  data.bookings=liveBookings;warnStorage=false;render();
  if(migrationNeeded)save();
