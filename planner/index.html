@@ -197,7 +197,7 @@ function ico(name){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentC
 const KEY='otgg10yearplanner_v3';
 let page='overview',focusYear=2027,scenario='base',viewMode='revenue',warnStorage=false;
 function defaultData(){return {
- version:3,strategyVersion:2,goal:'Two owners, no permanent staff by 2036',created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:38000,ownerWeeks:46,maxAnnualEvents:50,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Lifestyle goal: Jordan and Dayle both operate OTGG themselves by 2036, without salaried staff. Target is £38,000 combined dividends AFTER estimated company tax/retention but BEFORE personal dividend tax. This is a starting assumption, not a verified household budget.'},
+ version:3,strategyVersion:3,goal:'£90,000 combined gross dividends by 2036, two working owners',created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:90000,ownerWeeks:46,maxAnnualEvents:50,jordanOtherIncome:0,dayleOtherIncome:0,personalDividendMode:'bands',personalAllowance:12570,dividendBasicBand:37700,dividendHigherBand:112570,dividendBasicRate:10.75,dividendHigherRate:35.75,dividendAdditionalRate:39.35,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Lifestyle goal: Jordan and Dayle both operate OTGG themselves by 2036, without salaried staff. Target is £90,000 combined gross annual dividends (for example £45,000 each on an equal split) AFTER Corporation Tax but BEFORE personal dividend tax. Personal dividend tax is paid by each shareholder separately and is not an additional company target. No permanent staff; around 50 hire events annually.'},
  dividendPlans:{2027:{jordan:100,dayle:100},2028:{jordan:250,dayle:250}},dividendRecords:[],overrides:{}, bookings:[],
  actuals:{},milestones:DEFAULT_MILESTONES.map((a,i)=>({id:'mil'+i,year:a[0],title:a[1],description:a[2],status:'Not started'})),
  opportunities:DEFAULT_OPPS.map((a,i)=>({id:'opp'+i,title:a[0],category:a[1],year:a[2],priority:a[3],detail:a[4],status:'Explore',investment:0,margin:0})),
@@ -206,10 +206,10 @@ function defaultData(){return {
 let data=defaultData();data.bookings=[];
 function hydrate(d){
  const b=defaultData();if(!d||typeof d!=='object')return b;
- const fromOld=(Number(d.strategyVersion)||0)<2;
+ const fromOld=(Number(d.strategyVersion)||0)<2;const oldGrossTarget=(Number(d.strategyVersion)||0)<3;
  const settings={...b.settings,...(d.settings||{})};
  // A former default £50k target belonged to the manager-run plan; keep bespoke owner targets intact.
- if(fromOld&&Number(settings.ownerTarget)===50000)settings.ownerTarget=38000;
+ if((fromOld&&Number(settings.ownerTarget)===50000)||(oldGrossTarget&&Number(settings.ownerTarget)===38000))settings.ownerTarget=90000;
  const oldDefaultMilestoneTitles=[
  'Deliver the first real events','Start building 2028–29 order book','Offer private celebrations',
  'Train first casual helpers','Trial corporate team events','Test 5–8 personalised products',
@@ -225,7 +225,7 @@ function hydrate(d){
    return prior?(prior.title===oldDefaultMilestoneTitles[Number(m.id.slice(3))]?{...m,status:prior.status||m.status}:prior):m;
   }).concat(extras.filter(m=>!b.milestones.some(x=>x.id===m.id)));
  }
- return {...b,...d,goal:b.goal,strategyVersion:2,settings,homeTargets:{...b.homeTargets,...(d.homeTargets||{})},
+ return {...b,...d,goal:b.goal,strategyVersion:3,settings,homeTargets:{...b.homeTargets,...(d.homeTargets||{})},
  dividendPlans:{...b.dividendPlans,...(d.dividendPlans||{})},
  dividendRecords:Array.isArray(d.dividendRecords)?d.dividendRecords:[],
  overrides:d.overrides||{},bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},
@@ -273,8 +273,56 @@ function corpTaxEstimate(taxableProfit){
  return p*.25-(upper-p)*.015;
 }
 function dividendTarget(year){let p=data.dividendPlans?.[year]||{};return {jordan:Math.max(0,Number(p.jordan)||0),dayle:Math.max(0,Number(p.dayle)||0)}}
-function dividendEstimate(amount,owner){const rate=clamp(owner==='jordan'?data.settings.jordanDividendRate:data.settings.dayleDividendRate,0,60)/100;
- return Math.max(0,(Number(amount)||0)-clamp(data.settings.dividendAllowance??500,0,100000))*rate;}
+function dividendEstimate(amount,owner){
+ const dividends=Math.max(0,Number(amount)||0), settings=data.settings;
+ if(settings.personalDividendMode==='flat'){
+  const rate=clamp(owner==='jordan'?settings.jordanDividendRate:settings.dayleDividendRate,0,60)/100;
+  return Math.max(0,dividends-clamp(settings.dividendAllowance??500,0,100000))*rate;
+ }
+ // The tax-free dividend allowance uses the tax band, even though no tax is charged on it.
+ // This is an illustrative 2026/27 English/UK dividend calculation, not a Self Assessment.
+ const otherIncome=Math.max(0,Number(owner==='jordan'?settings.jordanOtherIncome:settings.dayleOtherIncome)||0);
+ const income=otherIncome+dividends;
+ const basePA=Math.max(0,Number(settings.personalAllowance??12570)||0);
+ const pa=Math.max(0,basePA-Math.max(0,income-100000)/2);
+ const taxableOrdinary=Math.max(0,otherIncome-pa);
+ const remainingPA=Math.max(0,pa-otherIncome);
+ const dividendAfterPA=Math.max(0,dividends-remainingPA);
+ const allowance=Math.min(dividendAfterPA,clamp(settings.dividendAllowance??500,0,100000));
+ const taxableDividend=Math.max(0,dividendAfterPA-allowance);
+ const basicBand=Math.max(0,Number(settings.dividendBasicBand??37700)||0);
+ const upperBand=Math.max(basicBand,Number(settings.dividendHigherBand??112570)||0);
+ const bandStart=taxableOrdinary+allowance;
+ const basic=Math.min(taxableDividend,Math.max(0,basicBand-bandStart));
+ const higher=Math.min(taxableDividend-basic,Math.max(0,upperBand-Math.max(basicBand,bandStart)));
+ const additional=Math.max(0,taxableDividend-basic-higher);
+ return basic*clamp(settings.dividendBasicRate??10.75,0,60)/100
+       +higher*clamp(settings.dividendHigherRate??35.75,0,60)/100
+       +additional*clamp(settings.dividendAdditionalRate??39.35,0,60)/100;
+}
+function profitForGrossDividends(target,year=2036){
+ const needed=Math.max(0,Number(target)||0),settings=data.settings;
+ const v=vals(year),outflow=Math.max(0,Number(v.reserve)||0)+Math.max(0,Number(v.capex)||0);
+ const keep=1-clamp(settings.retain,0,99)/100;
+ const afterTaxNeeded=needed/keep+outflow;
+ let lo=0,hi=Math.max(150000,afterTaxNeeded*2+20000);
+ while(hi-corpTaxEstimate(hi)<afterTaxNeeded && hi<1e10)hi*=2;
+ for(let i=0;i<65;i++){const mid=(lo+hi)/2;
+  if(mid-corpTaxEstimate(mid)>=afterTaxNeeded)hi=mid;else lo=mid;}
+ return hi;
+}
+function goalFeasibility(year=2036){
+ const r=row(year),target=Math.max(0,Number(data.settings.ownerTarget)||0);
+ const requiredProfit=profitForGrossDividends(target,year);
+ const profitGap=Math.max(0,requiredProfit-r.companyProfit);
+ const marginPerShopOrder=Math.max(0,r.v.shopAov*(1-clamp(data.settings.costShop,0,100)/100-clamp(data.settings.stripePct,0,25)/100)-clamp(data.settings.stripeFixed,0,20));
+ const extraShopOrders=marginPerShopOrder>0?Math.ceil(profitGap/marginPerShopOrder):null;
+ return {target,requiredProfit,profitGap,grossDividends:r.dividendCapacity,
+  grossGap:Math.max(0,target-r.dividendCapacity),
+  shopAov:r.v.shopAov,extraShopOrders,totalShopOrders:extraShopOrders===null?null:r.v.shopOrders+extraShopOrders,
+  orderMargin:marginPerShopOrder,
+  projectedSales:r.revenue,requiredSalesShopOnly:extraShopOrders===null?null:r.revenue+extraShopOrders*r.v.shopAov};
+}
 function paidDividends(year){return (data.dividendRecords||[]).filter(x=>String(x.date||'').slice(0,4)===String(year)).reduce((a,x)=>{if(x.owner==='jordan'||x.owner==='dayle')a[x.owner]+=Number(x.amount)||0;return a},{jordan:0,dayle:0})}
 function row(year,s=scenario){let v=vals(year);let volume=s==='cautious'?data.settings.cautiousVolume/100:s==='ambitious'?data.settings.ambitiousVolume/100:1;let price=s==='cautious'?data.settings.cautiousPrice/100:s==='ambitious'?data.settings.ambitiousPrice/100:1;
  let wed=v.wedEvents*v.wedPrice*volume*price,priv=v.privEvents*v.privPrice*volume*price,corp=v.corpEvents*v.corpPrice*volume*price,shop=v.shopOrders*v.shopAov*volume*price;
@@ -671,7 +719,7 @@ async function loadLivePlan(){
  if(error)throw Error('Owner access not authorised. Sign in using the approved OTGG address. ('+error.message+')');
  if(!result)throw Error('Planner storage is not accessible for this email.');
  const existing=result.payload&&Object.keys(result.payload).length?result.payload:null;
- const migrationNeeded=!!existing&&(Number(existing.strategyVersion)||0)<2;
+ const migrationNeeded=!!existing&&(Number(existing.strategyVersion)||0)<3;
  data=hydrate(existing||defaultData());
  data.bookings=liveBookings;warnStorage=false;render();
  if(migrationNeeded)save();
