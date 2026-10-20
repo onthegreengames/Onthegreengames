@@ -227,7 +227,7 @@ function ico(name){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentC
 const KEY='otgg10yearplanner_v3';
 let page='overview',focusYear=2027,scenario='base',viewMode='revenue',warnStorage=false;
 function defaultData(){return {
- version:3,strategyVersion:6,goal:'£90,000 combined gross dividends by 2036, two working owners',created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:90000,ownerWeeks:46,vatPlanningPct:10,vatThreshold:90000,peakSeasonFactor:1.75,hoursWed:16,hoursPriv:12,hoursCorp:16,hoursShop:0.75,hoursPerHireAdmin:2,hoursCoreAdmin:150,jordanOtherIncome:0,dayleOtherIncome:0,personalDividendMode:'bands',personalAllowance:12570,dividendBasicBand:37700,dividendHigherBand:112570,dividendBasicRate:10.75,dividendHigherRate:35.75,dividendAdditionalRate:39.35,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Lifestyle goal: Jordan and Dayle both operate OTGG themselves by 2036, without salaried staff. Target is £90,000 combined gross annual dividends (for example £45,000 each on an equal split) AFTER Corporation Tax but BEFORE personal dividend tax. Personal dividend tax is paid by each shareholder separately and is not an additional company target. No permanent employees; weekday corporate events and two operating bases allow multiple hires per week as capacity and kit grow. 2036 targets are illustrative, not booked work.'},
+ version:3,strategyVersion:7,goal:'£90,000 combined gross dividends by 2036, two working owners',created:'2026-10-17',homeTargets:{2027:{delivered:5,next:10}},settings:{ownerTarget:90000,ownerWeeks:46,vatPlanningPct:10,vatThreshold:90000,peakSeasonFactor:1.75,hoursWed:16,hoursPriv:12,hoursCorp:16,hoursShop:0.75,hoursPerHireAdmin:2,hoursCoreAdmin:150,jordanOtherIncome:0,dayleOtherIncome:0,personalDividendMode:'bands',personalAllowance:12570,dividendBasicBand:37700,dividendHigherBand:112570,dividendBasicRate:10.75,dividendHigherRate:35.75,dividendAdditionalRate:39.35,tax:22,retain:10,ownerRate:17,corpTaxMode:'uk',corpAssociated:1,jordanDividendRate:10.75,dayleDividendRate:10.75,dividendAllowance:500,stripePct:1.5,stripeFixed:0.20,stripeDepositShare:80,deposit:25,balanceDays:42,wedLead1:55,wedLead2:15,privLead1:10,privLead2:0,corpLead1:25,corpLead2:0,costWed:28,costPriv:30,costCorp:35,costShop:50, cautiousVolume:70,cautiousPrice:96,ambitiousVolume:125,ambitiousPrice:104,notes:'Lifestyle goal: Jordan and Dayle both operate OTGG themselves by 2036, without salaried staff. Target is £90,000 combined gross annual dividends (for example £45,000 each on an equal split) AFTER Corporation Tax but BEFORE personal dividend tax. Personal dividend tax is paid by each shareholder separately and is not an additional company target. No permanent employees; weekday corporate events and two operating bases allow multiple hires per week as capacity and kit grow. 2036 targets are illustrative, not booked work.'},
  dividendPlans:{2027:{jordan:0,dayle:0},2028:{jordan:0,dayle:0}},dividendRecords:[],overrides:{}, bookings:[],
  actuals:{},milestones:DEFAULT_MILESTONES.map((a,i)=>({id:'mil'+i,year:a[0],title:a[1],description:a[2],status:'Not started'})),
  opportunities:DEFAULT_OPPS.map((a,i)=>({id:'opp'+i,title:a[0],category:a[1],year:a[2],priority:a[3],detail:a[4],status:'Explore',investment:0,margin:0})),
@@ -256,7 +256,7 @@ function hydrate(d){
    return prior?(prior.title===oldDefaultMilestoneTitles[Number(m.id.slice(3))]?{...m,status:prior.status||m.status}:prior):m;
   }).concat(extras.filter(m=>!b.milestones.some(x=>x.id===m.id)));
  }
- return {...b,...d,goal:b.goal,strategyVersion:6,settings,homeTargets:{...b.homeTargets,...(d.homeTargets||{})},
+ const upgraded={...b,...d,goal:b.goal,strategyVersion:7,settings,homeTargets:{...b.homeTargets,...(d.homeTargets||{})},
  dividendPlans:{...b.dividendPlans,...(d.dividendPlans||{})},
  dividendRecords:Array.isArray(d.dividendRecords)?d.dividendRecords:[],
  overrides:d.overrides||{},bookings:Array.isArray(d.bookings)?d.bookings:b.bookings,actuals:d.actuals||{},
@@ -280,6 +280,14 @@ function hydrate(d){
  return prior.title!==oldTitle?prior:{...o,status:prior.status||o.status,priority:prior.priority??o.priority,investment:prior.investment??o.investment,margin:prior.margin??o.margin};
 }).concat((d.opportunities||[]).filter(o=>!((o.id||'').startsWith('opp')&&Number.isInteger(Number((o.id||'').slice(3)))))):(Array.isArray(d.opportunities)?d.opportunities.concat(b.opportunities.filter(o=>!d.opportunities.some(p=>p.id===o.id))):b.opportunities),
  tasks:Array.isArray(d.tasks)?d.tasks:b.tasks,yearNotes:d.yearNotes||{}};
+ if((Number(d.strategyVersion)||0)<7&&upgraded.simplePlanner?.goals){
+  for(const yr of YEARS){
+   const target=upgraded.simplePlanner.goals[yr]??={};
+   for(const key of ['delivered','next','dividends'])
+    if(target[key]===undefined||target[key]===null)target[key]=SUGGESTED_TARGETS[yr][key];
+  }
+ }
+ return upgraded;
 }
 let cloudSaveTimer=null,cloudSaveBusy=false,cloudDirty=false,cloudSaveVersion=0;
 function save(){data.savedAt=new Date().toISOString();if(!plannerSession){return;}cloudDirty=true;cloudSaveVersion++;const el=document.querySelector('#save-indicator');if(el)el.textContent='Saving to Supabase…';clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(persistPlan,700)}
@@ -853,12 +861,63 @@ function downloadJson(){let date=new Date().toISOString().slice(0,10);downloadFi
 
 /* 2026 simpler planner: goal tracking + interactive pricing. Preserve the previous
    model as archived Supabase payload fields, rather than deleting users' history. */
+const SUGGESTED_TARGETS={
+ "2027": {
+  "delivered": 5,
+  "next": 10,
+  "dividends": 0
+ },
+ "2028": {
+  "delivered": 12,
+  "next": 15,
+  "dividends": 0
+ },
+ "2029": {
+  "delivered": 22,
+  "next": 25,
+  "dividends": 0
+ },
+ "2030": {
+  "delivered": 35,
+  "next": 35,
+  "dividends": 1000
+ },
+ "2031": {
+  "delivered": 50,
+  "next": 45,
+  "dividends": 4000
+ },
+ "2032": {
+  "delivered": 70,
+  "next": 60,
+  "dividends": 10000
+ },
+ "2033": {
+  "delivered": 95,
+  "next": 80,
+  "dividends": 20000
+ },
+ "2034": {
+  "delivered": 125,
+  "next": 100,
+  "dividends": 35000
+ },
+ "2035": {
+  "delivered": 155,
+  "next": 125,
+  "dividends": 55000
+ },
+ "2036": {
+  "delivered": 185,
+  "next": 150,
+  "dividends": 90000
+ }
+};
+function suggestedGoal(year){return {...SUGGESTED_TARGETS[year]};}
 function simpleStore(){
  if(!data.simplePlanner||typeof data.simplePlanner!=='object'){
   const goals={};
-  for(const y of YEARS){
-   goals[y]={delivered:data.homeTargets?.[y]?.delivered??null,next:data.homeTargets?.[y]?.next??null,dividends:y===2036?Number(data.settings?.ownerTarget)||90000:null};
-  }
+  for(const y of YEARS)goals[y]=suggestedGoal(y);
   data.simplePlanner={goals,scenarios:{}};
  }
  data.simplePlanner.goals??={};data.simplePlanner.scenarios??={};
@@ -866,7 +925,7 @@ function simpleStore(){
 }
 function simpleGoal(y){
  const store=simpleStore();
- if(!store.goals[y])store.goals[y]={delivered:null,next:null,dividends:y===2036?90000:null};
+ if(!store.goals[y])store.goals[y]=suggestedGoal(y);
  return store.goals[y];
 }
 function simpleExample(y){
@@ -928,17 +987,17 @@ function pageSimpleHome(){
 }
 function pageSimpleTargets(){
  const y=focusYear,g=simpleGoal(y);
- return simpleHead('Our targets · 2027–2036','Set the goals. Track the bookings.','Decide what success looks like for each year. Leave goals blank if you do not know yet; this is your plan, not a prediction.')+
+ return simpleHead('Our targets · 2027–2036','Set the goals. Track the bookings.','Suggested starting goals are now filled in for every year. These are targets, not forecasts, and you can change any figure whenever you like.')+
  `<div class="s-panel"><h2>${y} goals</h2><p>You can change these whenever you like. The dashboard progress bars update using real customer bookings.</p>
  <div class="s-formgrid three">
  ${[['delivered','Events to fulfil','Confirmed events that have taken place'],['next','Next-year bookings to secure','Event dates in '+(y+1)],['dividends','Combined gross dividends (£)','Money you both hope to take before personal tax']].map(([k,l,n])=>`<div class="s-field"><label>${l}</label><input type="number" min="0" step="1" data-simple-goal="${k}" data-simple-year="${y}" value="${g[k]??''}" placeholder="Not set"><small>${n}</small></div>`).join('')}
  </div><div class="s-actions"><button class="btn" data-page="overview">See dashboard →</button><button class="btn dark" data-page="pricing">Work out some prices →</button></div></div>
- <div class="s-panel"><h2>The ten-year target list</h2><p>No more predicted annual figures: choose and change your own targets.</p>
+ <div class="s-panel"><h2>The ten-year target list</h2><p>All ten years have suggested milestones. Change any booking or dividend target to suit your plans.</p>
  <div class="table-wrap"><table class="s-table"><thead><tr><th>Year</th><th>Events fulfilled</th><th>Next-year bookings</th><th>Combined gross dividends</th></tr></thead><tbody>
  ${YEARS.map(yr=>{const goal=simpleGoal(yr);return `<tr><td><button class="s-link" data-year="${yr}" data-page="targets">${yr}</button></td>
  ${['delivered','next','dividends'].map(k=>`<td><input type="number" inputmode="numeric" min="0" step="1" placeholder="—" aria-label="${yr} ${k} target" data-simple-goal="${k}" data-simple-year="${yr}" value="${goal[k]??''}"></td>`).join('')}</tr>`}).join('')}
  </tbody></table></div></div>
- <p class="s-hint">The starting 2027 targets are five fulfilled events and ten bookings for 2028. The current long-term goal is ${simpleMoney(simpleGoal(2036).dividends??90000)} combined gross dividends by 2036. Everything else is deliberately yours to decide. Changes save automatically to Supabase.</p>`;
+ <p class="s-hint">The yearly targets are suggestions, with £0 dividends for the first three years to prioritise reinvestment. The current long-term goal is ${simpleMoney(simpleGoal(2036).dividends??90000)} combined gross dividends by 2036. Everything else is deliberately yours to decide. Changes save automatically to Supabase.</p>`;
 }
 
 
@@ -1144,7 +1203,7 @@ async function loadLivePlan(){
  if(error)throw Error('Owner access not authorised. Sign in using the approved OTGG address. ('+error.message+')');
  if(!result)throw Error('Planner storage is not accessible for this email.');
  const existing=result.payload&&Object.keys(result.payload).length?result.payload:null;
- const migrationNeeded=!!existing&&(Number(existing.strategyVersion)||0)<6;
+ const migrationNeeded=!!existing&&(Number(existing.strategyVersion)||0)<7;
  data=hydrate(existing||defaultData());
  data.bookings=liveBookings;warnStorage=false;render();
  if(migrationNeeded)save();
