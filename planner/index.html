@@ -941,6 +941,148 @@ function pageSimpleTargets(){
  <p class="s-hint">The starting 2027 targets are five fulfilled events and ten bookings for 2028. The long-term goal is £90,000 combined gross dividends by 2036. Everything else is deliberately yours to decide. Changes save automatically to Supabase.</p>`;
 }
 
+
+function simpleCalc(input,year){
+ const p={...simpleExample(year),...input},n=(k)=>Math.max(0,Number(p[k])||0);
+ const upgrade=Math.min(100,n('premiumShare'))/100;
+ const avgWedding=n('weddingPrice')*(1-upgrade)+n('premiumPrice')*upgrade;
+ const wedding=n('weddings')*avgWedding,privateRev=n('private')*n('privatePrice'),corp=n('corporate')*n('corporatePrice');
+ const hires=n('weddings')+n('private')+n('corporate');
+ const hireSales=wedding+privateRev+corp,otherSales=n('shopSales'),revenue=hireSales+otherSales;
+ const fulfilment=hireSales*Math.min(100,n('costPct'))/100+otherSales*Math.min(100,n('shopCostsPct'))/100;
+ const stripeFees=revenue*Math.min(25,n('cardPct'))/100+hires*n('transactionsPerHire')*n('cardFixed');
+ const vatAllowance=revenue>n('vatThreshold')?revenue*Math.min(20,n('vatPct'))/100:0;
+ const marketing=n('marketing'),overhead=n('overhead');
+ const profitBeforeTax=revenue-fulfilment-stripeFees-vatAllowance-marketing-overhead;
+ const companyTax=corpTaxEstimate(profitBeforeTax),postTax=profitBeforeTax-companyTax;
+ const reserved=n('equipment')+n('expansion')+n('maintenance');
+ const available=Math.max(0,postTax-reserved);
+ const cashHeld=available*Math.min(99,n('keepPct'))/100;
+ const dividendHeadroom=Math.max(0,available-cashHeld);
+ const releasePct=Math.min(100,n('releasePct')||0);
+ const dividends=dividendHeadroom*releasePct/100;
+ return {revenue,hires,avgWedding,wedding,privateRev:privateRev,corporateRev:corp,fulfilment,stripeFees,vatAllowance,marketing,overhead,profitBeforeTax,companyTax,postTax,reserved,cashHeld,dividendHeadroom,dividends,releasePct,avgHire:hires?hireSales/hires:0};
+}
+function simplePriceBase(year){
+ const p=simpleScenario(year);
+ return {...p,releasePct:p.releasePct===undefined?(year<=2029?0:100):p.releasePct};
+}
+function simpleGoalGap(year,p){
+ const goal=simpleGoal(year).dividends;
+ const c=simpleCalc(p,year);
+ return goal===null||goal===undefined||goal===''?{goal:null,c,gap:null}:{goal:Number(goal)||0,c,gap:Math.max(0,Number(goal)-c.dividends)};
+}
+function simpleExtraCorp(year,p,goal,base){
+ if(!(goal>base.dividends))return 0;
+ if(Number(p.corporatePrice)<=0||Math.max(0,Number(p.releasePct)||0)===0)return null;
+ let lo=0,hi=1;
+ for(let t=0;t<17;t++){if(simpleCalc({...p,corporate:(Number(p.corporate)||0)+hi},year).dividends>=goal)break;hi*=2}
+ if(hi>25000||simpleCalc({...p,corporate:(Number(p.corporate)||0)+hi},year).dividends<goal)return null;
+ while(lo+1<hi){const mid=Math.floor((lo+hi)/2);if(simpleCalc({...p,corporate:(Number(p.corporate)||0)+mid},year).dividends>=goal)hi=mid;else lo=mid}
+ return hi;
+}
+function simpleResults(year){
+ const p=simplePriceBase(year),{goal,c,gap}=simpleGoalGap(year,p);
+ let needed=goal!==null&&gap>0?simpleExtraCorp(year,p,goal,c):null;
+ const pct=goal>0?Math.min(100,100*c.dividends/goal):0;
+ const detail=goal===null?
+  'Set a gross-dividend target above, if you want to see how close this example gets.':
+  gap===0?
+   'This example reaches your chosen target on paper. Real demand, cash flow and legally distributable profits must still be proved.':
+   (c.releasePct===0?'This year is currently set to keep all potential dividend cash in OTGG. Change the withdrawal percentage under “Costs and money to keep” to test taking some out.':
+   (needed!==null&&needed<10000?'At these example corporate prices and margins, around <strong>'+simpleNumber(needed)+' additional corporate booking(s)</strong> could close the gross-dividend gap. That is a mathematical illustration, not an expected booking volume.':'Try increasing booking numbers, prices or package take-up, or revising your cost assumptions to close the gap.'));
+ return `<div class="s-result" aria-live="polite">
+ <span class="s-kicker" style="color:#eed09b">Results of your working example · ${year}</span>
+ <div class="s-result-grid" style="margin-top:14px">
+  <div><span>Illustrative sales</span><strong>${simpleMoney(c.revenue)}</strong></div>
+  <div><span>Possible combined gross dividends</span><strong>${simpleMoney(c.dividends)}</strong></div>
+  <div><span>Dividend target${goal===null?' · not set':''}</span><strong>${goal===null?'—':simpleMoney(goal)}</strong></div>
+ </div>
+ ${goal!==null?`${simpleBar(c.dividends,goal)}<div class="s-split" style="color:#e3ebe2"><span>${Math.round(goal?c.dividends/goal*100:0)}% of target</span><span>${gap?simpleMoney(gap)+' short':'Target reached in this example'}</span></div>`:''}
+ <p>${detail}</p>
+ </div>
+ <div class="s-stats">
+  <div class="s-stat"><span>Number of hire bookings</span><strong>${simpleNumber(c.hires)}</strong></div>
+  <div class="s-stat"><span>Average hire booking value</span><strong>${simpleMoney(c.avgHire)}</strong></div>
+  <div class="s-stat"><span>Profit after estimated company tax</span><strong>${simpleMoney(c.postTax)}</strong></div>
+ </div>
+ <details class="s-detail"><summary>Show the calculation</summary>
+ <div class="table-wrap"><table class="s-table"><tbody>
+ ${[
+ ['Wedding booking revenue',c.wedding],['Private bookings',c.privateRev],['Corporate bookings',c.corporateRev],
+ ['Other sales',Number(p.shopSales)||0],['Hire fulfilment and product costs',-c.fulfilment],
+ ['Stripe fees (estimated)',-c.stripeFees],['Marketing',-c.marketing],['Overheads',-c.overhead],
+ ['VAT allowance (illustrative)',-c.vatAllowance],['Corporation Tax (estimated)',-c.companyTax],
+ ['Equipment, expansion and maintenance cash',-c.reserved],['Additional cash retained',-c.cashHeld],
+ ['Total dividend headroom before planned release',c.dividendHeadroom]
+ ].map(([name,value])=>`<tr><td>${esc(name)}</td><td style="text-align:right"><strong>${simpleMoney(value)}</strong></td></tr>`).join('')}
+ </tbody></table></div>
+ <p class="s-hint">This is a simplified test of possible annual profit. It is not a bank balance, VAT return, quotation, or confirmation that a dividend can legally be paid.</p>
+ </details>`;
+}
+function pageSimplePricing(){
+ const y=focusYear,p=simplePriceBase(y),goal=simpleGoal(y);
+ const field=(k,l,n='')=>simpleField(k,l,p[k]??0,n);
+ return simpleHead('Pricing playground','What if we charged…?','You decide the bookings and the prices. The numbers below are editable examples, not forecasts. As you change them, the result updates straight away.')+
+ `<div class="s-panel">
+ <h2>1. How many bookings could we do in ${y}?</h2><p>Try any mix. Weddings and private parties might be at weekends; corporate bookings could fill weekdays.</p>
+ <div class="s-formgrid three">
+ ${field('weddings','Wedding bookings')}
+ ${field('private','Private bookings')}
+ ${field('corporate','Corporate bookings')}
+ </div>
+ </div>
+ <div class="s-panel">
+ <h2>2. What might we charge?</h2><p>The wedding average is worked out from a basic price, a more expensive package and how many couples might choose it.</p>
+ <div class="s-formgrid">
+ ${field('weddingPrice','Standard wedding booking (£)','Illustrative starting price')}
+ ${field('premiumPrice','Premium wedding booking (£)','A package you might offer later')}
+ ${field('premiumShare','Couples choosing premium (%)','Try 0%, 25%, 50%…')}
+ ${field('privatePrice','Private booking (£)')}
+ ${field('corporatePrice','Corporate booking (£)','Weekday hires, packages or team days')}
+ </div>
+ </div>
+ <div class="s-panel">
+ <h2>3. What's the dividend goal?</h2>
+ <p>Your target is <strong>combined gross dividends before personal tax</strong>. Leave it blank if you're not setting one yet.</p>
+ <div class="s-formgrid"><div class="s-field"><label for="s-gross-goal">Annual gross-dividend goal (£)</label>
+ <input id="s-gross-goal" type="number" step="100" min="0" data-simple-gross-goal value="${goal.dividends??''}" placeholder="Not set">
+ <small>2036 starts at £90,000 combined. Other years are your decision.</small></div></div>
+ <details class="s-detail"><summary>Costs, marketing and how much to keep in OTGG</summary>
+ <p class="s-hint">These are adjustable example costs. Marketing is an annual expense. Kit and expansion savings come out before any dividend. Stripe defaults to 1.5% + 20p per payment.</p>
+ <div class="s-formgrid">
+ ${field('costPct','Delivery and equipment-running costs (% of hire sales)')}
+ ${field('marketing','Annual marketing spend (£)')}
+ ${field('overhead','Insurance, software and other overhead (£)')}
+ ${field('equipment','Buying new equipment (£)')}
+ ${field('expansion','Keep for future expansion (£)')}
+ ${field('maintenance','Maintenance cash reserve (£)')}
+ ${field('keepPct','Extra cash retained after budgets (%)')}
+ ${field('releasePct','Available dividend cash to withdraw (%)','0% for reinvestment, 100% to model a full withdrawal')}
+ ${field('vatPct','Net VAT allowance (%)','Approximation only if turnover crosses the threshold')}
+ ${field('vatThreshold','VAT turnover threshold (£)')}
+ ${field('cardPct','Stripe fee (%)')}
+ ${field('cardFixed','Stripe fee per payment (£)')}
+ ${field('transactionsPerHire','Expected card payments per hire','1 = full, 2 = deposit + balance')}
+ ${field('shopSales','Other sales / shop revenue (£)')}
+ ${field('shopCostsPct','Shop production costs (%)')}
+ </div></details></div>
+ <div id="simple-output">${simpleResults(y)}</div>
+ <div class="s-actions"><button class="btn" data-page="targets">Edit yearly targets</button><button class="btn" id="simple-reset">Reset this example</button></div>
+ <p class="s-hint">A £400 standard wedding booking is an illustrative starting point based on your current mini-golf price. Other prices and booking counts are <strong>not claims about your future prices, actual packages or demand</strong>. This model uses estimated costs, Stripe fees, Corporation Tax and a rough VAT allowance, not an accountant-approved forecast. Saved test scenarios are independent for each year.</p>`;
+}
+function pageSimpleBookings(){
+ const current=(data.bookings||[]).filter(b=>b.status!=='cancelled').sort((a,b)=>String(a.event).localeCompare(String(b.event)));
+ const actualPaid=current.reduce((sum,b)=>sum+paid(b),0),total=current.reduce((sum,b)=>sum+Number(b.total||0),0);
+ const rows=current.map(b=>`<tr><td>${esc(b.event||'—')}</td><td>${esc(b.client||'OTGG booking')}</td><td>${simpleMoney(b.total||0)}</td><td>${simpleMoney(paid(b))}</td><td>${simpleMoney(Math.max(0,Number(b.total||0)-paid(b)))}</td></tr>`).join('');
+ return simpleHead('Live bookings','What customers have actually booked','This is read straight from Supabase. The target and pricing pages cannot change customer bookings, payments or your OTGG booking calendar.')+
+ `<div class="s-stats"><div class="s-stat"><span>Confirmed bookings</span><strong>${current.length}</strong></div><div class="s-stat"><span>Total contracted value</span><strong>${simpleMoney(total)}</strong></div><div class="s-stat"><span>Actual payments received</span><strong>${simpleMoney(actualPaid)}</strong></div></div>
+ <div class="s-panel"><h2>Booking diary</h2><p>Includes confirmed and part-paid bookings; excludes cancelled and expired checkouts.</p>
+ <div class="table-wrap"><table class="s-table"><thead><tr><th>Event date</th><th>Booking reference</th><th>Value</th><th>Paid</th><th>Still due</th></tr></thead><tbody>
+ ${rows||'<tr><td colspan="5">No confirmed bookings found yet.</td></tr>'}</tbody></table></div></div>
+ <p class="s-hint">Dates in the past are treated as fulfilled in progress tracking unless cancelled; confirm delivery status separately. Booking totals represent contracted values, not necessarily income earned in the same tax year.</p>`;
+}
+
 function renderNav(){
 for(const g of ['primary','finance','work'])document.querySelector('#nav-'+g).innerHTML=NAV.filter(n=>n.group===g).map(n=>`<button class="nav-button ${page===n.id?'active':''}" data-page="${n.id}">${ico(n.icon)}<span>${n.label}</span></button>`).join('');
 document.querySelector('#mobile-nav').innerHTML=NAV.map(n=>`<button class="${page===n.id?'active':''}" data-page="${n.id}">${ico(n.icon)}<span>${n.id==='overview'?'Home':n.id==='targets'?'Goals':n.id==='pricing'?'Pricing':'Bookings'}</span></button>`).join('');
