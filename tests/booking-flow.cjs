@@ -44,7 +44,7 @@ function boot(saved = {}) {
             : { error: "Test checkout outage" },
     };
   };
-  w.eval(js + "\nwindow.testApi={checkout,applyPromo};");
+  w.eval(js + "\nwindow.testApi={checkout,applyPromo,isApprovedCheckoutUrl};");
   // The real date checker calls this only after validating Supabase availability and fee.
   if (!w.sessionStorage.getItem("oggPendingBookingId")) {
     assert.equal(w.document.getElementById("stepDate").hidden, false);
@@ -67,6 +67,21 @@ const $ = (id) => w.document.getElementById(id),
   };
 (async () => {
   boot();
+  // The live Stripe checkout uses an OTGG custom host, not checkout.stripe.com.
+  for (const valid of [
+    "https://checkout.stripe.com/c/pay/cs_live_test",
+    "https://pay.onthegreengames.co.uk/c/pay/cs_live_test",
+  ]) assert.equal(w.testApi.isApprovedCheckoutUrl(valid), true, valid);
+  for (const invalid of [
+    "http://pay.onthegreengames.co.uk/c/pay/cs_live_test",
+    "https://pay.onthegreengames.co.uk.evil.example/c/pay/foo",
+    "https://onthegreengames.co.uk/c/pay/foo",
+    "https://evil.example/c/pay/foo",
+    "https://checkout.stripe.com@evil.example/c/pay/foo",
+    "https://user:pass@pay.onthegreengames.co.uk/c/pay/foo",
+    "javascript:alert(1)",
+    "not a URL",
+  ]) assert.equal(w.testApi.isApprovedCheckoutUrl(invalid), false, invalid);
   click("[data-package=mini_golf_3]");
   click("#next0");
   change("[data-mode=extra][data-game=cornhole]");
