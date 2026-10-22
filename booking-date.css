@@ -450,3 +450,5 @@ body.date-active .mobile-bar { display:none !important; }
  #stepDate .cal-legend { gap:8px; }
  #stepDate .cal-selected-label { font-size:12px; }
 }
+
+#stepDate #checkBtn.loading { opacity:.7; pointer-events:none; }
