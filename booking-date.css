@@ -1,0 +1,452 @@
+/* Existing OTGG date checker styling, now inside accordion step one */
+
+  .check-wrap{
+    max-width:620px;
+    margin:0 auto;
+  }
+
+  .check-card{
+    background:var(--cream-card);
+    border:1px solid var(--green-line);
+    border-radius:22px;
+    padding:40px;
+    box-shadow:0 24px 50px -34px rgba(27,42,32,0.25);
+  }
+
+  .mileage-line{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(30,71,52,0.06);
+    border-radius:12px;
+    padding:14px 18px;
+    font-size:14px;
+    font-weight:600;
+    margin-top:6px;
+    min-height:20px;
+  }
+
+  .mileage-line.empty{
+    display:none;
+  }
+
+  .avail-result{
+    margin-top:22px;
+    padding:20px;
+    border-radius:14px;
+    display:none;
+  }
+
+  .avail-result.show{
+    display:block;
+  }
+
+  .avail-result.available{
+    background:rgba(192,145,60,0.12);
+    border:1px solid rgba(192,145,60,0.35);
+  }
+
+  .avail-result.unavailable{
+    background:rgba(217,122,87,0.12);
+    border:1px solid rgba(217,122,87,0.35);
+  }
+
+  .avail-result h4{
+    font-family:'Playfair Display';
+    font-weight:600;
+    font-size:17px;
+    margin-bottom:6px;
+  }
+
+  .avail-result p{
+    font-size:13.5px;
+    color:rgba(27,42,32,0.7);
+    margin:0;
+  }
+
+  .check-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-top:16px;
+  }
+
+  .check-total .label{
+    font-size:13.5px;
+    color:rgba(27,42,32,0.6);
+  }
+
+  .check-total .amount{
+    font-family:'Playfair Display';
+    font-weight:600;
+    font-size:20px;
+    color:var(--green-deep);
+  }
+
+  .field-error{
+    font-size:12.5px;
+    color:#B3492F;
+    margin-top:6px;
+    display:none;
+    font-weight:600;
+  }
+
+  .field-error.show{
+    display:block;
+  }
+
+  .field.has-error input{
+    border-color:#B3492F;
+  }
+
+  .field.is-valid input{
+    border-color:var(--green-mid);
+  }
+
+  .btn.loading{
+    opacity:0.7;
+    pointer-events:none;
+  }
+
+  .btn:disabled,
+  .btn.disabled{
+    opacity:0.45;
+    pointer-events:none;
+  }
+
+  .booking-open-note{
+    background:rgba(192,145,60,0.10);
+    border:1px solid rgba(192,145,60,0.30);
+    border-radius:12px;
+    padding:12px 15px;
+    margin-bottom:12px;
+    font-size:12.5px;
+    line-height:1.5;
+    color:rgba(27,42,32,0.75);
+  }
+
+  .booking-open-note strong{
+    color:var(--green-deep);
+  }
+
+  .cal-widget{
+    border:1.5px solid var(--green-line);
+    border-radius:14px;
+    padding:18px;
+  }
+
+  .cal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+
+  .cal-title{
+    font-family:'Playfair Display';
+    font-weight:600;
+    font-size:15px;
+    color:var(--green-deep);
+  }
+
+  .cal-nav{
+    background:none;
+    border:1px solid var(--green-line);
+    border-radius:8px;
+    width:30px;
+    height:30px;
+    font-size:16px;
+    cursor:pointer;
+    color:var(--green-deep);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.15s;
+  }
+
+  .cal-nav:hover{
+    background:rgba(30,71,52,0.06);
+  }
+
+  .cal-nav:disabled{
+    opacity:0.3;
+    cursor:not-allowed;
+  }
+
+  .cal-weekdays{
+    display:grid;
+    grid-template-columns:repeat(7, minmax(0,1fr));
+    text-align:center;
+    font-size:11px;
+    font-weight:700;
+    color:rgba(27,42,32,0.45);
+    letter-spacing:0.04em;
+    margin-bottom:6px;
+  }
+
+  .cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7, minmax(0,1fr));
+    gap:3px;
+  }
+
+  .cal-day{
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    font-weight:500;
+    border-radius:8px;
+    cursor:pointer;
+    background:none;
+    border:1.5px solid transparent;
+    color:var(--ink);
+    transition:.12s;
+    box-sizing:border-box;
+    padding:0;
+    margin:0;
+    min-width:0;
+    width:100%;
+    font-family:inherit;
+    appearance:none;
+    -webkit-appearance:none;
+  }
+
+  .cal-day:hover:not(.cal-disabled):not(.cal-blocked):not(.cal-not-open){
+    background:rgba(30,71,52,0.08);
+  }
+
+  .cal-day.cal-empty{
+    cursor:default;
+  }
+
+  .cal-day.cal-today{
+    border-color:var(--green-mid);
+    font-weight:700;
+  }
+
+  .cal-day.cal-selected{
+    background:var(--green-deep);
+    color:#fff;
+    font-weight:700;
+  }
+
+  .cal-day.cal-disabled{
+    color:rgba(27,42,32,0.25);
+    cursor:not-allowed;
+  }
+
+  .cal-day.cal-not-open{
+    color:rgba(27,42,32,0.35);
+    cursor:not-allowed;
+    background:rgba(27,42,32,0.035);
+  }
+
+  .cal-day.cal-blocked{
+    color:rgba(217,122,87,0.85);
+    cursor:not-allowed;
+    background:repeating-linear-gradient(
+      135deg,
+      rgba(217,122,87,0.08) 0 4px,
+      transparent 4px 8px
+    );
+    text-decoration:line-through;
+  }
+
+  .cal-legend{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-top:14px;
+    font-size:11.5px;
+    color:rgba(27,42,32,0.55);
+  }
+
+  .cal-legend .cal-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    display:inline-block;
+    margin-right:5px;
+  }
+
+  .cal-dot-avail{
+    background:var(--green-mid);
+  }
+
+  .cal-dot-not-open{
+    background:rgba(27,42,32,0.25);
+  }
+
+  .cal-dot-blocked{
+    background:#D97A57;
+  }
+
+  .cal-selected-label{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid var(--green-line);
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--green-deep);
+  }
+
+  @media(max-width:600px){
+    .check-card{
+      padding:24px 18px;
+    }
+
+    .cal-widget{
+      padding:14px;
+    }
+
+    .cal-legend{
+      gap:10px 14px;
+    }
+  }
+
+  /* Desktop-only layout.
+     The main card now matches the full journey-progress width.
+     Calendar uses the left 60%; venue/details/notice/result/CTA use the right 40%.
+     Mobile/tablet styles and markup are left untouched. */
+  @media (min-width:1001px){
+    .page-hero{
+      padding:18px 0 14px;
+    }
+
+    /* Join the progress bar directly onto the main card on desktop. */
+    .journey-progress{
+      margin-bottom:0 !important;
+      border-radius:22px 22px 0 0;
+      border-bottom:0;
+      overflow:hidden;
+    }
+
+    .check-wrap{
+      max-width:none;
+      width:100%;
+      margin:0;
+    }
+
+    .check-card{
+      border-radius:0 0 22px 22px;
+      border-top-left-radius:0;
+      border-top-right-radius:0;
+      display:grid;
+      grid-template-columns:minmax(0, 60fr) minmax(0, 40fr);
+      grid-template-rows:auto auto auto 1fr;
+      align-items:start;
+      gap:16px 28px;
+      padding:24px;
+    }
+
+    /* Right-hand column: venue details first */
+    .check-col-details{
+      grid-column:2;
+      grid-row:1;
+      min-width:0;
+    }
+
+    /* On desktop only, let the calendar field's children participate
+       directly in the main card grid. This keeps the existing mobile DOM
+       order exactly as-is. */
+    .check-col-calendar,
+    .check-col-calendar > .field{
+      display:contents;
+    }
+
+    /* The month heading inside the calendar is enough on desktop.
+       Keep the Wedding date label untouched for mobile/tablet. */
+    .check-col-calendar > .field > label{
+      display:none;
+    }
+
+    /* Calendar occupies the full left-hand 60% column and starts at the top. */
+    .cal-widget{
+      grid-column:1;
+      grid-row:1 / span 4;
+      width:100%;
+      max-width:none;
+      box-sizing:border-box;
+      padding:20px;
+      align-self:start;
+    }
+
+    /* Booking-opening notice moves into the right-hand column on desktop. */
+    .booking-open-note{
+      grid-column:2;
+      grid-row:2;
+      margin:0;
+      padding:12px 14px;
+    }
+
+    /* Availability result and CTA remain together underneath the notice. */
+    .check-col-result{
+      grid-column:2;
+      grid-row:3 / span 2;
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+      align-self:stretch;
+    }
+
+    .check-col-result #checkBtn{
+      margin-top:16px !important;
+      align-self:stretch;
+    }
+
+    .cal-title{
+      font-size:17px;
+    }
+
+    .cal-nav{
+      width:34px;
+      height:34px;
+    }
+
+    .cal-weekdays{
+      margin-bottom:8px;
+      font-size:12px;
+    }
+
+    .cal-grid{
+      gap:5px;
+    }
+
+    .cal-day{
+      font-size:15px;
+    }
+
+    .cal-legend{
+      margin-top:16px;
+      font-size:12px;
+    }
+
+    .cal-selected-label{
+      margin-top:16px;
+      padding-top:16px;
+      font-size:14px;
+    }
+  }
+
+#stepDate .check-wrap { max-width:none; width:100%; margin:0; }
+#stepDate .check-card { box-shadow:none; background:#fffdf8; }
+#stepDate .check-card .field label { display:block; margin-bottom:7px; font-weight:600; }
+#stepDate .check-card input { max-width:100%; width:100%; box-sizing:border-box; }
+#stepDate .cal-grid .cal-day { max-width:none; }
+#stepDate .date-continue { margin-top:20px; display:block; width:100%; }
+body.date-active .layout { grid-template-columns:minmax(0,1fr); }
+body.date-active #desktopSummarySlot,
+body.date-active .mobile-bar { display:none !important; }
+@media (min-width:1001px) {
+ #stepDate .check-card { border-radius:15px; border-top:1px solid var(--green-line); }
+}
+@media (max-width:740px) {
+ #stepDate .check-card { padding:16px 12px; }
+ #stepDate .check-col-calendar { margin-top:12px; }
+ #stepDate .cal-widget { padding:10px; }
+ #stepDate .cal-day { min-height:35px; font-size:12px; }
+ #stepDate .cal-legend { gap:8px; }
+ #stepDate .cal-selected-label { font-size:12px; }
+}
