@@ -53,7 +53,7 @@ const change = selector => {
 };
 (async () => {
   w.eval(tracking);
-  w.eval(booking);
+  w.eval(booking + "\\nwindow.testApi = { checkout, applyPromo };");
   w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
   assert.equal(eventCount("page_view"), 1);
   assert.equal(eventCount("booking_started"), 1);
@@ -74,11 +74,10 @@ const change = selector => {
   assert.equal(eventCount("extras_completed"), 1);
   assert.equal(eventCount("details_reached"), 1);
   $("promoInput").value = "INVALID";
-  w.eval("window.testApplyPromo = applyPromo");
-  await w.testApplyPromo();
+  await w.testApi.applyPromo();
   assert.equal(eventCount("promo_code_applied"), 0, "Invalid promos must not count");
   $("promoInput").value = "OCT50";
-  await w.testApplyPromo();
+  await w.testApi.applyPromo();
   assert.equal(eventCount("promo_code_applied"), 1);
   assert.equal(events.find(e=>e.eventName==="promo_code_applied").promoCode,"OCT50");
   change('input[name="payment"][value="full"]');
@@ -87,8 +86,7 @@ const change = selector => {
   $("lastName").value = "Customer";
   $("email").value = "test@example.invalid";
   $("termsAgreed").checked = true;
-  w.eval("window.testCheckout = checkout");
-  await w.testCheckout();
+  await w.testApi.checkout();
   assert.equal(eventCount("payment_started"), 1);
   assert.equal(events.find(e=>e.eventName==="payment_started").eventDetail,"full");
   assert(events.every(e => !JSON.stringify(e).includes("Private Venue") &&
