@@ -1,0 +1,28 @@
+name: Booking flow checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  booking-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install test-only DOM dependency
+        run: npm install --prefix "$RUNNER_TEMP/otgg-test-deps" --no-audit --no-fund --save=false jsdom@26
+      - name: Check browser script syntax
+        run: |
+          node --check booking.js
+          node --check booking-date.js
+          node --check nav.js
+      - name: Test the booking and date-step DOM
+        run: NODE_PATH="$RUNNER_TEMP/otgg-test-deps/node_modules" node tests/booking-flow.cjs
+      - name: Test integrated calendar and venue flow
+        run: NODE_PATH="$RUNNER_TEMP/otgg-test-deps/node_modules" node tests/unified-date-checker.cjs
+      - name: Test booking endpoint transport
+        run: node tests/booking-endpoints.cjs

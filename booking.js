@@ -98,19 +98,21 @@ try {
 } catch {}
 if (!context?.weddingDate || !context?.venueName || !context?.venuePostcode)
   context = null;
+const previousContext = context;
+context = null; // Restore only after revalidating current availability and travel.
 const state = {
-  step: 0,
-  unlocked: 0,
+  step: -1,
+  unlocked: -1,
   choice: null,
   included: [],
   extras: [],
   custom: [],
   golf: null,
   promo: false,
-  date: context?.weddingDate || "",
-  venue: context?.venueName || "Check your date and venue",
-  postcode: context?.venuePostcode || "",
-  travel: Number(context?.travelFee ?? context?.mileageCharge ?? 0) || 0,
+  date: previousContext?.weddingDate || "",
+  venue: previousContext?.venueName || "Check your date and venue",
+  postcode: previousContext?.venuePostcode || "",
+  travel: Number(previousContext?.travelFee ?? previousContext?.mileageCharge ?? 0) || 0,
   payment: "deposit",
   pending: false,
 };
@@ -344,12 +346,22 @@ function accordionSummary() {
       " · " +
       (state.payment === "deposit" ? "25% deposit" : "Pay in full")
     : "Just your name and email to get booked";
+  const dateOpen = state.step === -1;
+  $("accordionSummaryDate").textContent = context && state.date
+    ? dateText(state.date) + " · " + state.venue + " · " + state.postcode +
+      (state.travel ? " · " + money(state.travel) + " travel" : " · Travel included")
+    : "Choose your date and tell us where to deliver";
+  $("stepDate").hidden = !dateOpen;
+  $("accordionDate").classList.toggle("is-open", dateOpen);
+  $("accordionHeaderDate").setAttribute("aria-expanded", String(dateOpen));
+  $("accordionStatusDate").textContent = dateOpen ? "Open" : context ? "Edit" : "Up next";
+  document.body.classList.toggle("date-active", dateOpen);
   [0, 1, 2].forEach((i) => {
     const open = i === state.step,
       button = $("accordionHeader" + i);
     $("step" + i).hidden = !open;
     $("accordion" + i).classList.toggle("is-open", open);
-    button.disabled = i > state.unlocked;
+    button.disabled = i > state.unlocked || !context;
     button.setAttribute("aria-expanded", String(open));
     $("accordionStatus" + i).textContent = open
       ? "Open"
@@ -359,6 +371,8 @@ function accordionSummary() {
   });
 }
 function go(step, shouldScroll = true) {
+  if (busy || pending) return;
+  if (step >= 0 && !context) step = -1;
   if (step > 0 && !state.choice) {
     go(0);
     showError(0, "Choose a package or Build Your Own to get started.");
@@ -374,13 +388,13 @@ function go(step, shouldScroll = true) {
   render();
   if (shouldScroll)
     requestAnimationFrame(() => {
-      $("accordion" + step).scrollIntoView({
+      $(step === -1 ? "accordionDate" : "accordion" + step).scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
           ? "instant"
           : "smooth",
         block: "start",
       });
-      $("accordionHeader" + step).focus({ preventScroll: true });
+      $(step === -1 ? "accordionHeaderDate" : "accordionHeader" + step).focus({ preventScroll: true });
     });
 }
 
@@ -467,8 +481,6 @@ function render() {
   const q = quote();
   latestQuote = q;
   const p = pkg();
-  $("dateLabel").textContent = dateText(state.date);
-  $("venueLabel").textContent = state.venue + " · " + state.postcode;
   let lines = "";
   if (!state.choice)
     lines =
@@ -832,8 +844,7 @@ async function checkout() {
     return;
   }
   if (!context) {
-    $("contextNotice").hidden = false;
-    $("contextNotice").scrollIntoView();
+    go(-1);
     return;
   }
   if (selectionError()) {
@@ -963,7 +974,8 @@ document.addEventListener("click", (e) => {
   }
   if (b.id === "restartBooking") {
     clearPending();
-    location.assign("/check-date");
+    sessionStorage.removeItem("oggBooking");
+    location.assign("/booking");
     return;
   }
   if (busy || pending) return;
@@ -1003,7 +1015,7 @@ $("byoCard").onclick = () => choose("byo");
 $("next0").onclick = () => go(1);
 $("next1").onclick = () => go(2);
 $("mobileNext").onclick = () =>
-  state.step < 2 ? go(state.step + 1) : reviewSummary();
+  state.step === -1 ? $("checkBtn").click() : state.step < 2 ? go(state.step + 1) : reviewSummary();
 $("viewSummary").onclick = reviewSummary;
 $("bookingForm").onsubmit = (e) => {
   e.preventDefault();
@@ -1031,19 +1043,39 @@ $("removePromo").onclick = () => {
   $("promoFeedback").textContent = "Code removed.";
   render();
 };
-$("editDate").onclick = () => {
-  if (busy || pending) return;
-  saveSelection();
-  location.assign("/check-date");
+window.OTGGDateVerified = (data, restored = false) => {
+  if (busy || pending || !data?.weddingDate || !data?.venueName || !data?.venuePostcode) return;
+  context = data;
+  state.date = data.weddingDate;
+  state.venue = data.venueName;
+  state.postcode = data.venuePostcode;
+  state.travel = Number(data.travelFee) || 0;
+  state.promo = false; // Venue changes can invalidate discounts.
+  ++promoRequest;
+  state.unlocked = Math.max(state.unlocked, 0);
+  sessionStorage.setItem("oggBooking", JSON.stringify(data));
+  render();
+  go(0, !restored);
 };
+window.OTGGDateDirty = () => {
+  if (busy || pending) return;
+  context = null;
+  state.promo = false;
+  ++promoRequest;
+  render();
+};
+
 $("bookingForm").addEventListener("input", accordionSummary);
 optionalFields();
 renderCards();
 placeSummary();
-restoreSelection();
+const requested = new URLSearchParams(location.search);
+const requestedPackage = requested.get("package");
+if (P.some(p => p.id === requestedPackage)) choose(requestedPackage);
+else if (requested.get("selection") === "minigolf") choose("mini_golf_3");
+else restoreSelection();
 render();
-go(0, false);
-$("contextNotice").hidden = Boolean(context);
+go(-1, false);
 try {
   const id = sessionStorage.getItem("oggPendingBookingId");
   if (id) {

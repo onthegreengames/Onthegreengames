@@ -45,6 +45,14 @@ function boot(saved = {}) {
     };
   };
   w.eval(js + "\nwindow.testApi={checkout,applyPromo};");
+  // The real date checker calls this only after validating Supabase availability and fee.
+  if (!w.sessionStorage.getItem("oggPendingBookingId")) {
+    assert.equal(w.document.getElementById("stepDate").hidden, false);
+    w.OTGGDateVerified(
+      JSON.parse(w.sessionStorage.getItem("oggBooking")), true
+    );
+    assert.equal(w.document.getElementById("stepDate").hidden, true);
+  }
   return dom;
 }
 const $ = (id) => w.document.getElementById(id),
@@ -120,7 +128,26 @@ const $ = (id) => w.document.getElementById(id),
   change("[data-mode=extra][data-game=giant_jenga]");
   assert($("discountLine").hidden);
   assert($("promoFeedback").textContent.includes("changed"));
+  // Moving back to the date step must preserve chosen extras and invalidate the old context.
+  boot();
+  click("[data-package=mini_golf_3]");
+  click("#next0");
+  change("[data-mode=extra][data-game=cornhole]");
+  click("#accordionHeaderDate");
+  assert(!$("stepDate").hidden);
+  w.OTGGDateDirty();
+  assert($("accordionHeader0").disabled);
+  w.OTGGDateVerified({
+    weddingDate: "2027-08-21", venueName: "Changed Venue",
+    venuePostcode: "L1 1AA", travelFee: 80
+  }, false);
+  assert(!$("step0").hidden);
+  assert($("accordionSummaryDate").textContent.includes("Changed Venue"));
+  assert.equal($("totalPrice").textContent, "£605");
+  click("#next0");
+  assert(w.document.querySelector("[data-mode=extra][data-game=cornhole]").checked);
+  assert.equal($("accordionHeader0").disabled, false);
   console.log(
-    "PASS: accordion, package extras, Mix rules, BYO minimum, promo and travel, mobile summary order, payload, saved-booking recovery, promo invalidation",
+    "PASS: four-step date gate, retained game extras, changed venue/travel, promotion invalidation, package rules, mobile summary, payload and saved checkout recovery"
   );
 })();
