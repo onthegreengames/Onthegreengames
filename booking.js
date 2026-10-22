@@ -88,6 +88,11 @@ const esc = (s) =>
         c
       ],
   );
+// First-party, consent-gated analytics. Never include names, venue or postcode.
+function trackBookingEvent(name, options = {}) {
+  if (window.OTGGAnalytics && typeof window.OTGGAnalytics.track === "function")
+    window.OTGGAnalytics.track(name, options);
+}
 const today = new Date();
 today.setHours(0, 0, 0, 0);
 const iso = (d) =>
@@ -383,9 +388,20 @@ function go(step, shouldScroll = true) {
     showError(1, selectionError());
     return;
   }
+  const previousStep = state.step;
   state.unlocked = Math.max(state.unlocked, step);
   state.step = step;
   render();
+  if (step === 1 && previousStep !== 1)
+    trackBookingEvent("package_selected", { detail: state.choice });
+  if (step === 2 && previousStep !== 2) {
+    trackBookingEvent("extras_completed", {
+      detail: state.choice + "|games:" +
+        (state.choice === "byo" ? state.custom.length : state.extras.length) +
+        "|holes:" + (state.golf || 0),
+    });
+    trackBookingEvent("details_reached");
+  }
   if (shouldScroll)
     requestAnimationFrame(() => {
       $(step === -1 ? "accordionDate" : "accordion" + step).scrollIntoView({
@@ -695,6 +711,8 @@ async function applyPromo() {
     }
     state.promo = result.valid ? { ...result, signature: key } : false;
     render();
+    if (result.valid)
+      trackBookingEvent("promo_code_applied", { promoCode: code });
     if (!result.valid)
       $("promoFeedback").textContent =
         result.message || "That code is not available for this booking.";
@@ -836,6 +854,9 @@ async function openCheckout(type) {
     expiresAt: result.expiresAt || pending.expiresAt,
   };
   storePending();
+  // A payment start means Stripe has provided a valid checkout URL,
+  // not merely that somebody changed the deposit/full-payment selector.
+  trackBookingEvent("payment_started", { detail: type });
   location.assign(url.href);
 }
 async function resume(type) {
@@ -1021,8 +1042,11 @@ $("customControls").addEventListener("change", (e) => {
         : t.dataset.mode === "extra"
           ? "extras"
           : "custom";
-    if (t.checked) state[key].push(t.dataset.game);
-    else state[key] = state[key].filter((id) => id !== t.dataset.game);
+    if (t.checked) {
+      state[key].push(t.dataset.game);
+      if (key === "extras" || key === "custom")
+        trackBookingEvent("extra_game_added", { detail: t.dataset.game });
+    } else state[key] = state[key].filter((id) => id !== t.dataset.game);
     state.extras = state.extras.filter((id) => !state.included.includes(id));
     renderCustom();
   }
@@ -1073,6 +1097,8 @@ window.OTGGDateVerified = (data, restored = false) => {
   ++promoRequest;
   state.unlocked = Math.max(state.unlocked, 0);
   sessionStorage.setItem("oggBooking", JSON.stringify(data));
+  if (!restored)
+    trackBookingEvent("check_date_continue", { detail: "unified_v2" });
   render();
   go(0, !restored);
 };

@@ -205,8 +205,9 @@
   }
 
   function setupCheckDateTracking(path) {
-    if (path !== '/check-date') return;
-    track('check_date_started');
+    if (path !== '/check-date' && path !== '/booking') return;
+    // This step is embedded in /booking from the four-step launch onwards.
+    track('check_date_started', { detail: path === '/booking' ? 'unified_v2' : 'legacy' });
 
     var result = document.getElementById('availResult');
     var lastResultSignature = '';
@@ -245,9 +246,11 @@
       }
 
       var continueButton = event.target.closest('#checkBtn');
-      if (continueButton) {
+      if (continueButton && path === '/check-date') {
+        // Legacy page only. The unified page emits this after server-side
+        // availability and postcode checks have actually succeeded.
         var available = result && result.classList.contains('show') && result.classList.contains('available');
-        if (available) track('check_date_continue');
+        if (available) track('check_date_continue', { detail: 'legacy' });
       }
     });
   }
@@ -256,43 +259,9 @@
     if (path !== '/booking') return;
     track('booking_started');
 
-    var promoMessage = document.getElementById('promoMessage');
-    var promoInput = document.getElementById('promoCodeInput');
-    var seenPromoCodes = {};
-
-    function recordPromo() {
-      if (!promoMessage || !promoInput) return;
-      var code = String(promoInput.value || '').trim().toUpperCase();
-      var success = promoMessage.classList.contains('show') && promoMessage.classList.contains('success');
-      if (!success || !code || seenPromoCodes[code]) return;
-      seenPromoCodes[code] = true;
-      track('promo_code_applied', { promoCode: code });
-    }
-
-    if (promoMessage && 'MutationObserver' in window) {
-      new MutationObserver(recordPromo).observe(promoMessage, {
-        attributes: true,
-        childList: true,
-        subtree: true
-      });
-      recordPromo();
-    }
-
-    document.addEventListener('click', function (event) {
-      var button = event.target.closest('#payDepositBtn, #payFullBtn, #resumePaymentBtn');
-      if (!button) return;
-      if (button.classList.contains('disabled') || button.getAttribute('aria-disabled') === 'true') return;
-
-      var terms = document.getElementById('fAgreeTerms');
-      if (terms && !terms.checked) return;
-
-      var detail = button.id === 'payDepositBtn'
-        ? 'deposit'
-        : button.id === 'payFullBtn'
-          ? 'full'
-          : 'resume';
-      track('payment_started', { detail: detail });
-    });
+    // The unified booking UI emits these events only after the relevant
+    // step validation has succeeded. Do not infer them from old element IDs.
+    // booking_started remains a page entry event for historic compatibility.
   }
 
   function readCompletedBookings() {
