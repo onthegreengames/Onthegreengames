@@ -1586,7 +1586,7 @@ async function fetchBlockedDates(){
 
 
           btn.textContent =
-            'Continue to Customise →';
+            'Check availability & continue ↓';
 
         }
 
