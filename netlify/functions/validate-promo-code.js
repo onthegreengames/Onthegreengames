@@ -135,6 +135,9 @@ function normaliseInput(body) {
     throw new Error('The selected games are not valid.');
   }
 
+  const extras = body.extraGameCodes ?? body.extra_game_codes ?? [];
+  if (!Array.isArray(extras) || extras.length > 7) throw new Error('The extra games are not valid.');
+  const extraGameCodes = extras.map(value => text(value, 100)?.toLowerCase()).filter(Boolean);
   const cleanGameCodes = gameCodes.map(value => text(value, 100)?.toLowerCase()).filter(Boolean);
   const miniGolfHoles = Number(body.miniGolfHoles ?? body.mini_golf_holes ?? 0);
   if (!Number.isInteger(miniGolfHoles) || miniGolfHoles < 0 || miniGolfHoles > 3) {
@@ -146,6 +149,7 @@ function normaliseInput(body) {
     selectionType,
     packageCode: selectionType === 'package' ? packageCode : null,
     gameCodes: cleanGameCodes,
+    extraGameCodes,
     miniGolfHoles,
     eventDate
   };
@@ -158,12 +162,13 @@ exports.handler = async function handler(event) {
   try {
     const input = normaliseInput(parseBody(event));
 
-    const result = await supabaseRpc('quote_promo_code_v1', {
+    const result = await supabaseRpc('quote_promo_code_v2', {
       p_code: input.code,
       p_selection_type: input.selectionType,
       p_package_code: input.packageCode,
       p_game_codes: input.gameCodes,
       p_mini_golf_holes: input.miniGolfHoles,
+      p_extra_game_codes: input.extraGameCodes,
       p_event_date: input.eventDate
     });
 

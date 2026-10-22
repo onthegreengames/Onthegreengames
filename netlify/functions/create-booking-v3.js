@@ -311,6 +311,7 @@ function normaliseInput(body) {
   );
 
   const gameCodes = normaliseGameCodes(requestedGameCodes);
+  const extraGameCodes = normaliseGameCodes(booking.extra_game_codes ?? booking.extraGameCodes);
 
   const miniGolfHoles = parseGolfHoleCount(
     firstDefined(
@@ -465,6 +466,7 @@ function normaliseInput(body) {
       package_code: packageCode,
 
       game_codes: gameCodes,
+      extra_game_codes: extraGameCodes,
       mini_golf_holes: miniGolfHoles,
       promo_code: promoCode,
 
@@ -660,6 +662,8 @@ function buildRpcPayload(input) {
 
       game_codes:
         input.booking.game_codes,
+
+      extra_game_codes: input.booking.extra_game_codes,
 
       mini_golf_holes:
         input.booking.mini_golf_holes,
