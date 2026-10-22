@@ -172,9 +172,16 @@ const $ = (id) => w.document.getElementById(id),
   fill("lastName", "DirectCheckout");
   fill("email", "direct@example.invalid");
   $("termsAgreed").checked = true;
-  w.eval("openCheckout = async () => { window.stripeRedirectStarted = true; };");
+  const previousFetch = w.fetch;
+  w.fetch = async (url, opts) => url.includes("create-checkout-session")
+    ? { ok: true, json: async () => ({
+        checkoutUrl: "https://pay.onthegreengames.co.uk/c/pay/cs_live_test",
+        expiresAt: new Date(Date.now() + 1800000).toISOString()
+      }) }
+    : previousFetch(url, opts);
   await w.testApi.checkout();
-  assert(w.stripeRedirectStarted);
+  const savedCheckout = JSON.parse(w.sessionStorage.getItem("oggPendingPayment"));
+  assert(savedCheckout?.checkoutUrl?.startsWith("https://pay.onthegreengames.co.uk/"), "Approved custom Stripe URL must be stored");
   assert($("pendingPanel").hidden, "Recovery panel should remain hidden when Stripe opens");
   assert(!($("bookingLayout").hidden), "Main booking page should not disappear before Stripe redirect");
   console.log(
