@@ -18,6 +18,7 @@
     />
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="/booking.css" />
+    <link rel="stylesheet" href="/booking-date.css" />
   </head>
   <body>
     <div class="offer">
@@ -47,11 +48,6 @@
         <p>Choose your games. Make it yours. Get it booked in minutes.</p>
       </div>
 
-      <div class="notice" id="contextNotice" hidden>
-        Please
-        <a href="/check-date">check your wedding date and venue</a> before
-        booking.
-      </div>
       <section
         class="block"
         id="pendingPanel"
@@ -60,14 +56,209 @@
       ></section>
       <div class="layout" id="bookingLayout">
         <main class="content-col" id="mainContent">
-          <div class="date-strip">
-            <span class="date-icon" aria-hidden="true">▦</span>
-            <div>
-              <strong id="dateLabel"></strong><span id="venueLabel"></span>
-            </div>
-            <button class="text-button" type="button" id="editDate">
-              Edit
+
+          <div class="accordion-section" id="accordionDate">
+            <button type="button" class="accordion-header" id="accordionHeaderDate"
+              data-accordion="-1" aria-expanded="true" aria-controls="stepDate">
+              <span class="accordion-number">1</span>
+              <span class="accordion-copy"><strong>Check your date &amp; venue</strong>
+                <span id="accordionSummaryDate">Choose your date and tell us where to deliver</span></span>
+              <span class="accordion-status" id="accordionStatusDate">Open</span>
+              <span class="accordion-chevron" aria-hidden="true">⌄</span>
             </button>
+            <section id="stepDate" aria-labelledby="accordionHeaderDate">
+              <div class="section-head">
+                <div><h2>First, let's check your date.</h2>
+                  <p>Choose your wedding date and venue. We'll check availability and confirm any travel fee.</p></div>
+              </div>
+<div class="check-wrap">
+
+<div class="check-card">
+
+<div class="check-col check-col-details">
+
+<div class="field">
+
+<label>
+Venue name
+</label>
+
+<input
+id="cVenue"
+placeholder="Venue name"
+type="text"
+/>
+
+</div>
+
+
+<div class="field" id="postcodeField">
+
+<label>
+Venue postcode
+</label>
+
+<input
+id="cPostcode"
+placeholder="e.g. M1 1AE"
+type="text"
+/>
+
+<div
+class="mileage-line empty"
+id="mileageLine">
+</div>
+
+<div
+class="field-error"
+id="postcodeError">
+</div>
+
+</div>
+
+</div>
+
+
+<div class="check-col check-col-calendar">
+
+<div class="field">
+
+<label>
+Wedding date
+</label>
+
+<div
+class="booking-open-note"
+id="bookingOpenNote">
+Loading booking dates…
+</div>
+
+<div
+class="cal-widget"
+id="calWidget">
+
+<div class="cal-head">
+
+<button
+aria-label="Previous month"
+class="cal-nav"
+id="calPrev"
+type="button">
+‹
+</button>
+
+<span
+class="cal-title"
+id="calTitle">
+</span>
+
+<button
+aria-label="Next month"
+class="cal-nav"
+id="calNext"
+type="button">
+›
+</button>
+
+</div>
+
+
+<div class="cal-weekdays">
+
+<span>Mo</span>
+<span>Tu</span>
+<span>We</span>
+<span>Th</span>
+<span>Fr</span>
+<span>Sa</span>
+<span>Su</span>
+
+</div>
+
+
+<div
+class="cal-grid"
+id="calGrid">
+</div>
+
+
+<div class="cal-legend">
+
+<span>
+<i class="cal-dot cal-dot-avail"></i>
+Available
+</span>
+
+<span>
+<i class="cal-dot cal-dot-not-open"></i>
+Bookings not open yet
+</span>
+
+<span>
+<i class="cal-dot cal-dot-blocked"></i>
+Booked
+</span>
+
+</div>
+
+
+<div
+class="cal-selected-label"
+id="calSelected">
+No date selected yet
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="check-col check-col-result">
+
+<div
+class="avail-result"
+id="availResult">
+
+<h4 id="availTitle"></h4>
+
+<p id="availBody"></p>
+
+<div
+class="check-total"
+id="checkTotal"
+style="display:none;">
+
+<span class="label">
+Travel fee for this area
+</span>
+
+<span
+class="amount"
+id="checkMileageAmount">
+—
+</span>
+
+</div>
+
+</div>
+
+
+<button type="button" class="primary date-continue" id="checkBtn">Check availability &amp; continue ↓</button>
+
+
+<p
+id="formError"
+style="color:#B3492F; font-size:13px; margin-top:12px; display:none;">
+Please fill in venue name, postcode and your wedding date first.
+</p>
+
+</div>
+
+</div>
+</div>
+            </section>
           </div>
           <div class="accordion-section" id="accordion0">
             <button
@@ -78,7 +269,7 @@
               aria-expanded="true"
               aria-controls="step0"
             >
-              <span class="accordion-number">1</span
+              <span class="accordion-number">2</span
               ><span class="accordion-copy"
                 ><strong>Choose your package</strong
                 ><span id="accordionSummary0"
@@ -90,7 +281,7 @@
             <section id="step0" aria-labelledby="chooseHeading">
               <div class="section-head">
                 <div>
-                  <div class="step-kicker">STEP 01</div>
+                  <div class="step-kicker">STEP 02</div>
                   <h2 id="chooseHeading">Start with something you love.</h2>
                   <p>
                     Every package is all-day hire. Add extra games below once
@@ -130,7 +321,7 @@
               aria-controls="step1"
               disabled
             >
-              <span class="accordion-number">2</span
+              <span class="accordion-number">3</span
               ><span class="accordion-copy"
                 ><strong>Add extras & choose your games</strong
                 ><span id="accordionSummary1"
@@ -143,7 +334,7 @@
             <section id="step1" hidden aria-labelledby="customHeading">
               <div class="section-head">
                 <div>
-                  <div class="step-kicker">STEP 02</div>
+                  <div class="step-kicker">STEP 03</div>
                   <h2 id="customHeading">A little more you.</h2>
                   <p id="customSubtitle"></p>
                 </div>
@@ -173,7 +364,7 @@
               aria-controls="step2"
               disabled
             >
-              <span class="accordion-number">3</span
+              <span class="accordion-number">4</span
               ><span class="accordion-copy"
                 ><strong>Your details & payment</strong
                 ><span id="accordionSummary2"
@@ -186,7 +377,7 @@
             <section id="step2" hidden aria-labelledby="detailsHeading">
               <div class="section-head">
                 <div>
-                  <div class="step-kicker">STEP 03</div>
+                  <div class="step-kicker">STEP 04</div>
                   <h2 id="detailsHeading">Let's make it a date.</h2>
                   <p>
                     Just your name and email are enough to book. The finer
@@ -356,6 +547,7 @@
       </button>
     </div>
     <script src="/booking.js" defer></script>
+    <script src="/booking-date.js" defer></script>
     <script src="/nav.js" defer></script>
 
   </body>
