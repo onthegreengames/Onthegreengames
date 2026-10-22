@@ -162,6 +162,21 @@ const $ = (id) => w.document.getElementById(id),
   click("#next0");
   assert(w.document.querySelector("[data-mode=extra][data-game=cornhole]").checked);
   assert.equal($("accordionHeader0").disabled, false);
+  // Successful checkout should take the customer directly to Stripe,
+  // without displaying the pending-booking recovery panel first.
+  boot();
+  click("[data-package=mini_golf_3]");
+  click("#next0");
+  click("#next1");
+  fill("firstName", "Test");
+  fill("lastName", "DirectCheckout");
+  fill("email", "direct@example.invalid");
+  $("termsAgreed").checked = true;
+  w.eval("openCheckout = async () => { window.stripeRedirectStarted = true; };");
+  await w.testApi.checkout();
+  assert(w.stripeRedirectStarted);
+  assert($("pendingPanel").hidden, "Recovery panel should remain hidden when Stripe opens");
+  assert(!($("bookingLayout").hidden), "Main booking page should not disappear before Stripe redirect");
   console.log(
     "PASS: four-step date gate, retained game extras, changed venue/travel, promotion invalidation, package rules, mobile summary, payload and saved checkout recovery"
   );
