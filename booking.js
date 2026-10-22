@@ -96,7 +96,7 @@ let context = null;
 try {
   context = JSON.parse(sessionStorage.getItem("oggBooking") || "null");
 } catch {}
-if (!previousContext?.weddingDate || !previousContext?.venueName || !previousContext?.venuePostcode)
+if (!context?.weddingDate || !context?.venueName || !context?.venuePostcode)
   context = null;
 const previousContext = context;
 context = null; // Restore only after revalidating current availability and travel.
