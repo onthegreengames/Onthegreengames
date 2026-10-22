@@ -162,6 +162,28 @@ const $ = (id) => w.document.getElementById(id),
   click("#next0");
   assert(w.document.querySelector("[data-mode=extra][data-game=cornhole]").checked);
   assert.equal($("accordionHeader0").disabled, false);
+  // Successful checkout should take the customer directly to Stripe,
+  // without displaying the pending-booking recovery panel first.
+  boot();
+  click("[data-package=mini_golf_3]");
+  click("#next0");
+  click("#next1");
+  fill("firstName", "Test");
+  fill("lastName", "DirectCheckout");
+  fill("email", "direct@example.invalid");
+  $("termsAgreed").checked = true;
+  const previousFetch = w.fetch;
+  w.fetch = async (url, opts) => url.includes("create-checkout-session")
+    ? { ok: true, json: async () => ({
+        checkoutUrl: "https://pay.onthegreengames.co.uk/c/pay/cs_live_test",
+        expiresAt: new Date(Date.now() + 1800000).toISOString()
+      }) }
+    : previousFetch(url, opts);
+  await w.testApi.checkout();
+  const savedCheckout = JSON.parse(w.sessionStorage.getItem("oggPendingPayment"));
+  assert(savedCheckout?.checkoutUrl?.startsWith("https://pay.onthegreengames.co.uk/"), "Approved custom Stripe URL must be stored");
+  assert($("pendingPanel").hidden, "Recovery panel should remain hidden when Stripe opens");
+  assert(!($("bookingLayout").hidden), "Main booking page should not disappear before Stripe redirect");
   console.log(
     "PASS: four-step date gate, retained game extras, changed venue/travel, promotion invalidation, package rules, mobile summary, payload and saved checkout recovery"
   );
