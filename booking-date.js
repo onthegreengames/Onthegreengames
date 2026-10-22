@@ -358,6 +358,7 @@
 
   async function updateAreaFee(){
 
+    const requestId = ++feeLookupSerial;
     const pc =
       document
         .getElementById(
@@ -441,6 +442,9 @@
         district
       );
 
+    // Do not apply an older response after the postcode has been edited.
+    if (requestId !== feeLookupSerial || document.getElementById('cPostcode').value !== pc) return;
+
 
     if(
       fee === null ||
@@ -490,6 +494,7 @@
 
 
   let pcDebounce;
+  let feeLookupSerial = 0;
 
 
   document
@@ -1564,6 +1569,7 @@ async function fetchBlockedDates(){
           'none';
 
 
+        clearTimeout(pcDebounce);
         if(
           !feeReady
         ){
@@ -1650,7 +1656,15 @@ async function fetchBlockedDates(){
 
 
   ['cVenue', 'cPostcode'].forEach(id => {
-    document.getElementById(id).addEventListener('input', () => window.OTGGDateDirty?.());
+    document.getElementById(id).addEventListener('input', () => {
+      if (id === 'cPostcode') {
+        postcodeValid = false;
+        feeReady = false;
+        travelFee = 0;
+        ++feeLookupSerial;
+      }
+      window.OTGGDateDirty?.();
+    });
   });
   document.getElementById('calGrid').addEventListener('click', event => {
     const day = event.target.closest('button.cal-day');
