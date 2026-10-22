@@ -925,7 +925,8 @@ async function checkout() {
       eventDate: state.date,
     };
     storePending();
-    showPending();
+    // Keep the booking UI visible while opening Stripe. Recovery is only shown if it fails.
+    $("payButton").textContent = "Opening secure payment…";
     await openCheckout(state.payment);
   } catch (error) {
     if (pending) showPending(error.message);
