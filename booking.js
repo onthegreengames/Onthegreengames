@@ -797,6 +797,24 @@ function showPending(message = "") {
     `<h2>${expired ? "Your payment window has ended" : "Your booking is ready for payment"}</h2><p>${esc(pending.bookingReference || "")} · Total ${money(Number(pending.total || 0))}</p><p>${expired ? "Please check availability again before starting a new booking. If you have already paid, check your confirmation email first." : "Your selection is saved and temporarily held. Continue with this booking to avoid creating a duplicate."}</p>${message ? '<div class="error" role="alert">' + esc(message) + "</div>" : ""}${expired ? '<button class="primary" id="restartBooking">Check availability again</button>' : `${!short ? '<button class="primary" data-resume="deposit">Pay deposit · ' + money(Number(pending.depositDue || 0)) + "</button> " : ""}<button class="secondary" data-resume="full">Pay in full · ${money(Number(pending.total || 0))}</button>`}<p class="mini-help">Need help? <a href="mailto:bookings@onthegreengames.co.uk">Contact us with your booking reference</a>.</p>`;
   $("pendingPanel").scrollIntoView({ block: "start", behavior: "smooth" });
 }
+// Stripe uses the OTGG custom hosted-checkout domain in production.
+// Only accept Stripe's normal domain or the exact configured OTGG payment host.
+function isApprovedCheckoutUrl(value) {
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    return false;
+  }
+  return (
+    url.protocol === "https:" &&
+    (url.hostname === "checkout.stripe.com" ||
+      url.hostname === "pay.onthegreengames.co.uk") &&
+    !url.username &&
+    !url.password &&
+    !url.port
+  );
+}
 async function openCheckout(type) {
   const result = await post("create-checkout-session", {
     bookingId: pending.bookingId,
@@ -807,7 +825,7 @@ async function openCheckout(type) {
       "No checkout link was returned. Please retry your saved booking.",
     );
   const url = new URL(result.checkoutUrl);
-  if (url.protocol !== "https:" || url.hostname !== "checkout.stripe.com")
+  if (!isApprovedCheckoutUrl(url.href))
     throw new Error(
       "The secure checkout link was not valid. Please contact us.",
     );
