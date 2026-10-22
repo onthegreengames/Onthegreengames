@@ -54,6 +54,7 @@ const change = selector => {
 (async () => {
   w.eval(tracking);
   w.eval(booking);
+  w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
   assert.equal(eventCount("page_view"), 1);
   assert.equal(eventCount("booking_started"), 1);
   assert.equal(eventCount("check_date_started"), 1);
