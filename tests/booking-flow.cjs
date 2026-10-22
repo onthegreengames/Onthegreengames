@@ -145,7 +145,7 @@ const $ = (id) => w.document.getElementById(id),
   assert($("accordionSummaryDate").textContent.includes("Changed Venue"));
   assert.equal($("totalPrice").textContent, "£605");
   click("#next0");
-  assert($('[data-mode=extra][data-game=cornhole]').checked);
+  assert(w.document.querySelector("[data-mode=extra][data-game=cornhole]").checked);
   assert.equal($("accordionHeader0").disabled, false);
   console.log(
     "PASS: four-step date gate, retained game extras, changed venue/travel, promotion invalidation, package rules, mobile summary, payload and saved checkout recovery"
