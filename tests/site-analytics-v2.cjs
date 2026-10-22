@@ -53,7 +53,7 @@ const change = selector => {
 };
 (async () => {
   w.eval(tracking);
-  w.eval(booking + "\\nwindow.testApi = { checkout, applyPromo };");
+  w.eval(booking + "\nwindow.testApi = { checkout, applyPromo };");
   w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
   assert.equal(eventCount("page_view"), 1);
   assert.equal(eventCount("booking_started"), 1);
