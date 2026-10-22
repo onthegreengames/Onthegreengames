@@ -206,3 +206,9 @@ document.addEventListener('DOMContentLoaded', function () {
   script.setAttribute('data-otgg-site-analytics', '');
   document.head.appendChild(script);
 })();
+
+/* All historic Check Your Date links now use the unified booking page. */
+document.querySelectorAll('a[href^="/check-date"]').forEach(link => {
+ const href = link.getAttribute("href");
+ link.setAttribute("href", "/booking" + href.substring("/check-date".length));
+});
