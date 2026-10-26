@@ -11,19 +11,7 @@ function text(value,max){return String(value||'').trim().slice(0,max);}
 function cleanDate(value){
   if(!value)return null;
   const raw=String(value);
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(raw))return undefined;
-  const d=new Date(raw+'T12:00:00Z');
-  return !isNaN(d.getTime())&&d.toISOString().slice(0,10)===raw?raw:undefined;
-}
-function verifiedPopupIdentity(data,key){
-  // Signed by returning-help-eligibility; do not trust a client-supplied source alone.
-  if(Date.now()>=POPUP_END)return {error:'This enquiry popup has ended.',status:410};
-  const token=String(data.token||'');
-  if(!token||token.length>512)return {error:'Please reopen the enquiry form.',status:403};
-  let parts;
-  try{parts=Buffer.from(token,'base64url').toString('utf8').split('.');}
-  catch(_){return {error:'Please reopen the enquiry form.',status:403};}
-  if(parts.length!==5||!UUID.test(parts[0])||!UUID.test(parts[1])||!/^\\d{13}$/.test(parts[2])||! /^[0-9a-f]{16}$/.test(parts[3])||! /^[0-9a-f]{64}$/.test(parts[4]))return {error:'Please reopen the enquiry form.',status:403};
+  if(!/^[0-9]{13}$/.test(parts[2])||! /^[0-9a-f]{16}$/.test(parts[3])||! /^[0-9a-f]{64}$/.test(parts[4]))return {error:'Please reopen the enquiry form.',status:403};
   const age=Date.now()-Number(parts[2]);
   if(!Number.isFinite(age)||age<0||age>60*60*1000)return {error:'Session expired. Please reopen the enquiry form.',status:403};
   const payload=parts.slice(0,4).join('.');
