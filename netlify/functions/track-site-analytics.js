@@ -25,7 +25,13 @@ const EVENT_TYPES = new Set([
   'promo_code_applied',
   'payment_started',
   'booking_completed',
-  'balance_payment_completed'
+  'balance_payment_completed',
+  'enquiry_form_opened',
+  'enquiry_form_started',
+  'enquiry_form_submitted',
+  'enquiry_form_error',
+  'enquiry_form_closed',
+  'enquiry_form_abandoned'
 ]);
 const DEVICE_TYPES = new Set(['mobile', 'tablet', 'desktop', 'unknown']);
 
