@@ -153,6 +153,32 @@ document.addEventListener('DOMContentLoaded', function () {
     links.appendChild(mobileSocials);
   }
 
+  // Footer-only Contact Us link, consistently placed on every standard page.
+  var footerLinks = document.querySelector('footer .foot-links');
+  if (footerLinks && !footerLinks.querySelector('a[href="/contact"]')) {
+    var contactLink = document.createElement('a');
+    contactLink.href = '/contact';
+    contactLink.textContent = 'Contact Us';
+    if (window.location.pathname.replace(/\\.html$/, '') === '/contact') {
+      contactLink.className = 'current';
+      contactLink.setAttribute('aria-current', 'page');
+    }
+    var termsLink = footerLinks.querySelector('a[href="/terms"]');
+    if (termsLink) termsLink.insertAdjacentElement('beforebegin', contactLink);
+    else footerLinks.appendChild(contactLink);
+  }
+
+  // The compact booking footer also gets a Contact Us link.
+  var bookingFooter = document.querySelector('footer.footer-note > div');
+  if (bookingFooter && !bookingFooter.querySelector('a[href="/contact"]')) {
+    var bookingContact = document.createElement('a');
+    bookingContact.href = '/contact';
+    bookingContact.textContent = 'Contact Us';
+    var separator = document.createTextNode(' · ');
+    bookingFooter.appendChild(separator);
+    bookingFooter.appendChild(bookingContact);
+  }
+
   // Booking-page marketing preference. PECR soft opt-in requires a clear
   // opportunity to refuse marketing when the email address is collected.
   var emailField = document.getElementById('emailField');
@@ -204,6 +230,16 @@ document.addEventListener('DOMContentLoaded', function () {
   script.src = '/site-analytics.js';
   script.async = true;
   script.setAttribute('data-otgg-site-analytics', '');
+  document.head.appendChild(script);
+})();
+
+// One shared enquiry widget across public pages, without modifying each template.
+(function () {
+  if (document.querySelector('script[data-otgg-enquiry-widget]')) return;
+  var script = document.createElement('script');
+  script.src = '/enquiry-widget.js';
+  script.async = true;
+  script.setAttribute('data-otgg-enquiry-widget', '');
   document.head.appendChild(script);
 })();
 
