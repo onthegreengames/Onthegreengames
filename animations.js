@@ -345,3 +345,12 @@ document.addEventListener('DOMContentLoaded', function () {
   script.setAttribute('data-otgg-return-offer', '');
   document.head.appendChild(script);
 })();
+
+(function () {
+  if (document.querySelector('script[data-otgg-returning-help]')) return;
+  var script = document.createElement('script');
+  script.src = '/returning-help.js';
+  script.async = true;
+  script.setAttribute('data-otgg-returning-help', '');
+  document.head.appendChild(script);
+})();
