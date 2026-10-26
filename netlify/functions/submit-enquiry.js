@@ -71,7 +71,11 @@ exports.handler=async function(event){
   let sent=false,providerId=null;
   const resendKey=process.env.RESEND_API_KEY;
   const from=String(process.env.RESEND_FROM_EMAIL||'').trim();
-  if(resendKey&&from){
+  // Send straight to the same Gmail inbox used by inbound forwarding. An
+  // email addressed to bookings@ on our own sending domain may not complete
+  // the separate inbound/forwarding route even after Resend accepts it.
+  const notificationTo=String(process.env.BOOKINGS_FORWARD_TO||'onthegreengames@gmail.com').trim();
+  if(resendKey&&from&&EMAIL.test(notificationTo)){
     const body=[
       'New website enquiry','',
       'From: '+firstName+' '+lastName,
@@ -90,7 +94,7 @@ exports.handler=async function(event){
        headers:{'Authorization':'Bearer '+resendKey,'Content-Type':'application/json','Idempotency-Key':'otgg-enquiry-'+submissionId},
        body:JSON.stringify({
         from:'On The Green Games <'+from+'>',
-        to:['bookings@onthegreengames.co.uk'],
+        to:[notificationTo],
         reply_to:email,
         subject:'New website enquiry: '+firstName+' '+lastName,
         text:body
