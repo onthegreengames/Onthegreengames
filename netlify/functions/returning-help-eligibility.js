@@ -21,7 +21,9 @@ exports.handler=async function(event){
     const events=await r.json();
     // Historical session IDs count even when sessions predate deployment.
     const previous=new Set(),completed=events.some(e=>e.event_name==='booking_completed');
-    for(const e of events){if(e.session_id && e.session_id!==session)previous.add(e.session_id);}
+    // iOS may resume the same analytics session ID after a long dormant tab.
+    const resumed=body.resumedAfterIdle===true;
+    for(const e of events){if(e.session_id && (resumed||e.session_id!==session))previous.add(e.session_id);}
     const eligible=!completed&&previous.size>=2;
     if(!eligible)return send(200,{eligible:false});
     // Short-lived signed token prevents the public enquiry endpoint being an open mail relay.
