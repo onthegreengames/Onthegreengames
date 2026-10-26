@@ -100,7 +100,7 @@ function successful(){
  panel.querySelector('.otgg-help__actions button').addEventListener('click',hide);
 }
 function sendQuestion(ev){
- ev.preventDefault();if(inFlight||!eligibilityToken||!nowOK()||!panel)return;
+ ev.preventDefault();if(inFlight||!eligibilityToken||Date.now()>=END||!allowed()||!panel)return;
  var formEl=ev.currentTarget,email=formEl.elements.email.value.trim(),message=formEl.elements.message.value.trim();
  var error=panel.querySelector('#otgg-help-error'),button=panel.querySelector('[type="submit"][form]');
  if(!formEl.reportValidity())return;
