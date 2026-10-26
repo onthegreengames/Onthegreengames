@@ -228,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (document.querySelector('script[data-otgg-site-analytics]')) return;
   var script = document.createElement('script');
   script.src = '/site-analytics.js';
-  script.async = true;
+  script.async = false;
   script.setAttribute('data-otgg-site-analytics', '');
   document.head.appendChild(script);
 })();
@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
   if (document.querySelector('script[data-otgg-enquiry-widget]')) return;
   var script = document.createElement('script');
   script.src = '/enquiry-widget.js';
-  script.async = true;
+  script.async = false;
   script.setAttribute('data-otgg-enquiry-widget', '');
   document.head.appendChild(script);
 })();
