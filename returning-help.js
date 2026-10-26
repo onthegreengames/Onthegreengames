@@ -29,6 +29,7 @@ function isNewVisit(time){
 function clearTimer(){if(timer){clearTimeout(timer);timer=null;}}
 function hide(){
  clearTimer();if(panel&&panel.parentNode)panel.parentNode.removeChild(panel);panel=null;
+ document.body.classList.remove('otgg-help-open');
 }
 function trackActivity(){
  if(!allowed()||document.visibilityState==='hidden')return;
@@ -68,7 +69,8 @@ function styles(){
  '.otgg-help__error{color:#9a2929;font-size:12px;margin:7px 0 0}',
  '.otgg-help__note{color:#647368;font-size:11px;line-height:1.35;margin:7px 0 0}',
  '.otgg-help__honeypot{display:none!important}',
- '@media(max-width:600px){.otgg-help{right:12px;left:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));width:auto;height:33vh;height:33dvh;max-height:33vh;max-height:33dvh;border-radius:14px;padding:10px 12px;gap:6px}.otgg-help__title{font-size:20px;margin:2px 0 5px}.otgg-help__copy{font-size:12px;line-height:1.35}.otgg-help__offer{margin-top:7px;padding:7px;font-size:10px}.otgg-help__button{min-height:30px;font-size:12px;padding:6px 8px}.otgg-help__actions{gap:5px}.otgg-help__label{margin:6px 0 3px}.otgg-help__textarea{min-height:60px}.otgg-help__brand{font-size:10px}}',
+ '.otgg-help__top{min-height:44px}',
+ '@media(max-width:600px){body.otgg-help-open{overflow:hidden}.otgg-help{inset:0;z-index:10030;width:100%;height:100vh;height:100dvh;max-height:none;min-height:0;border:0;border-radius:0;box-shadow:none;padding:calc(15px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px));gap:16px}.otgg-help__close{min-width:44px;min-height:44px;font-size:27px}.otgg-help__body{padding:6px 2px}.otgg-help--intro .otgg-help__body,.otgg-help--success .otgg-help__body{display:flex;flex-direction:column;justify-content:center}.otgg-help__title{font-size:32px;margin:6px 0 16px}.otgg-help__copy{font-size:16px;line-height:1.55}.otgg-help__offer{margin-top:25px;padding:15px 12px;font-size:12px}.otgg-help__actions{gap:11px;padding-top:8px}.otgg-help__button{min-height:50px;font-size:15px;padding:12px 14px}.otgg-help__back{margin-bottom:10px}.otgg-help__label{font-size:13px;margin:20px 0 7px}.otgg-help__input{min-height:46px;padding:11px}.otgg-help__textarea{min-height:140px;max-height:40dvh}.otgg-help__note{margin-top:15px;font-size:12px}.otgg-help__brand{font-size:12px}}',
  '@media(prefers-reduced-motion:reduce){.otgg-help{animation:none}}'
  ].join('\n');document.head.appendChild(css);
 }
@@ -77,9 +79,11 @@ function shell(){
  panel.innerHTML='<div class="otgg-help__top"><span class="otgg-help__brand">ON THE GREEN GAMES</span><button class="otgg-help__close" type="button" aria-label="Dismiss message">&times;</button></div><div class="otgg-help__body"></div><div class="otgg-help__actions"></div>';
  panel.querySelector('.otgg-help__close').addEventListener('click',function(){report('dismiss','close_button');set(STORAGE.dismissed,'1');hide();});
  document.body.appendChild(panel);
+ document.body.classList.add('otgg-help-open');
 }
 function intro(){
  if(!panel)return;
+ panel.classList.remove('otgg-help--form','otgg-help--success');panel.classList.add('otgg-help--intro');
  panel.querySelector('.otgg-help__body').innerHTML='<h2 class="otgg-help__title">Any questions before booking?</h2><p class="otgg-help__copy">We’re happy to help with packages, delivery or anything else you’re unsure about.</p><div class="otgg-help__offer">OCT50 50% OFF CODE ENDS OCTOBER 31ST</div>';
  panel.querySelector('.otgg-help__actions').innerHTML='<button type="button" class="otgg-help__button otgg-help__primary" data-action="question">Ask us a question</button><a href="/booking" class="otgg-help__button otgg-help__secondary" data-action="booking">Continue booking</a>';
  panel.querySelector('[data-action="question"]').addEventListener('click',function(){report('form_open','ask_question');form();});
@@ -87,6 +91,7 @@ function intro(){
 }
 function form(){
  if(!panel)return;
+ panel.classList.remove('otgg-help--intro','otgg-help--success');panel.classList.add('otgg-help--form');
  var b=panel.querySelector('.otgg-help__body');
  b.innerHTML='<button class="otgg-help__back" type="button">← Back</button><h2 class="otgg-help__title">Ask us anything</h2><p class="otgg-help__copy">Send us a quick question and we’ll get back to you by email.</p><form id="otgg-help-form"><label class="otgg-help__label" for="otgg-help-email">Email address</label><input class="otgg-help__input" id="otgg-help-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"><label class="otgg-help__label" for="otgg-help-message">Your question</label><textarea class="otgg-help__input otgg-help__textarea" id="otgg-help-message" name="message" required minlength="5" maxlength="1600" placeholder="What would you like to know?"></textarea><input class="otgg-help__honeypot" tabindex="-1" autocomplete="off" name="website" aria-hidden="true"><p class="otgg-help__note">We’ll use your email only to respond to your question. <a href="/privacy" target="_blank" rel="noopener noreferrer">Privacy policy</a>.</p><p id="otgg-help-error" class="otgg-help__error" role="alert" hidden></p></form>';
  panel.querySelector('.otgg-help__actions').innerHTML='<button class="otgg-help__button otgg-help__primary" type="submit" form="otgg-help-form">Send question</button>';
@@ -95,6 +100,7 @@ function form(){
 }
 function successful(){
  if(!panel)return;
+ panel.classList.remove('otgg-help--intro','otgg-help--form');panel.classList.add('otgg-help--success');
  panel.querySelector('.otgg-help__body').innerHTML='<h2 class="otgg-help__title">Thank you!</h2><p class="otgg-help__copy">Your question has been sent. We’ll get back to you by email.</p>';
  panel.querySelector('.otgg-help__actions').innerHTML='<button class="otgg-help__button otgg-help__secondary" type="button">Close</button>';
  panel.querySelector('.otgg-help__actions button').addEventListener('click',hide);
