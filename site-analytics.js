@@ -3,7 +3,7 @@
 
   var ENDPOINT = '/.netlify/functions/track-site-analytics';
   var CONSENT_KEY = 'otgg_cookie_consent_v1';
-  var CONSENT_VERSION = 2;
+  var CONSENT_VERSION = 3;
   var SESSION_TIMEOUT_MS = 30 * 60 * 1000;
   var KEYS = {
     visitor: 'otgg_analytics_visitor_v1',
@@ -173,6 +173,10 @@
     if (!current) return;
 
     touchSession();
+    // Reuse validated booking milestones; send only their allowlisted names.
+    try {
+      if (window.OTGGClarity) window.OTGGClarity.track(eventName);
+    } catch (e) { /* Optional replay must never interrupt booking analytics. */ }
     options = options || {};
 
     var payload = JSON.stringify({

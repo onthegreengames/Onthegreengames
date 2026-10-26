@@ -50,7 +50,7 @@
 
       <section
         class="block"
-        id="pendingPanel"
+        id="pendingPanel" data-clarity-mask="true"
         hidden
         aria-live="polite"
       ></section>
@@ -62,11 +62,11 @@
               data-accordion="-1" aria-expanded="true" aria-controls="stepDate">
               <span class="accordion-number">1</span>
               <span class="accordion-copy"><strong>Check your date &amp; venue</strong>
-                <span id="accordionSummaryDate">Choose your date and tell us where to deliver</span></span>
+                <span id="accordionSummaryDate" data-clarity-mask="true">Choose your date and tell us where to deliver</span></span>
               <span class="accordion-status" id="accordionStatusDate">Open</span>
               <span class="accordion-chevron" aria-hidden="true">⌄</span>
             </button>
-            <section id="stepDate" aria-labelledby="accordionHeaderDate">
+            <section id="stepDate" data-clarity-mask="true" aria-labelledby="accordionHeaderDate">
               <div class="section-head">
                 <div><h2>First, let's check your date.</h2>
                   <p>Choose your wedding date and venue. We'll check availability and confirm any travel fee.</p></div>
@@ -249,7 +249,7 @@ id="checkMileageAmount">
 
 
 <p
-id="formError"
+id="formError" data-clarity-mask="true"
 style="color:#B3492F; font-size:13px; margin-top:12px; display:none;">
 Please fill in venue name, postcode and your wedding date first.
 </p>
@@ -367,7 +367,7 @@ Please fill in venue name, postcode and your wedding date first.
               <span class="accordion-number">4</span
               ><span class="accordion-copy"
                 ><strong>Your details & payment</strong
-                ><span id="accordionSummary2"
+                ><span id="accordionSummary2" data-clarity-mask="true"
                   >A few details and you’re ready to book</span
                 ></span
               ><span class="accordion-status" id="accordionStatus2"
@@ -385,7 +385,7 @@ Please fill in venue name, postcode and your wedding date first.
                   </p>
                 </div>
               </div>
-              <form id="bookingForm" novalidate>
+              <form id="bookingForm" data-clarity-mask="true" novalidate>
                 <div class="block">
                   <h3>Your details</h3>
                   <div class="fields">
@@ -471,7 +471,7 @@ Please fill in venue name, postcode and your wedding date first.
                       >.</span
                     ></label
                   >
-                  <div class="error" id="error2" role="alert" hidden></div>
+                  <div class="error" id="error2" data-clarity-mask="true" role="alert" hidden></div>
                   <button
                     class="primary book-button"
                     type="submit"

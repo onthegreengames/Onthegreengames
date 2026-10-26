@@ -6,7 +6,7 @@
   var RETURN_GAP_MS = 30 * 60 * 1000;
   var MAX_OFFER_SHOWS = 3;
   var CONSENT_STORAGE_KEY = 'otgg_cookie_consent_v1';
-  var CONSENT_VERSION = 2;
+  var CONSENT_VERSION = 3;
   var TRACK_URL = '/.netlify/functions/track-returning-offer';
   var initialisedForConsent = false;
   var STORAGE = {

@@ -2,7 +2,7 @@
   'use strict';
 
   const STORAGE_KEY = 'otgg_cookie_consent_v1';
-  const CONSENT_VERSION = 2;
+  const CONSENT_VERSION = 3;
   const MAX_AGE_MS = 180 * 24 * 60 * 60 * 1000;
 
   window.dataLayer = window.dataLayer || [];
@@ -62,18 +62,100 @@
     }
   }
 
-  function clearDisallowedGoogleCookies(choice) {
+  function clearDisallowedCookies(choice) {
     const names = document.cookie ? document.cookie.split(';').map(function (part) {
       return part.split('=')[0].trim();
     }) : [];
     names.forEach(function (name) {
-      const analyticsCookie = name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0;
+      const analyticsCookie = name === '_ga' || name === '_gid' || name === '_gat' || name.indexOf('_ga_') === 0 || name === '_clck' || name === '_clsk';
       const advertisingCookie = name.indexOf('_gcl_') === 0 || name.indexOf('_gac_') === 0;
       if ((!choice.analytics && analyticsCookie) || (!choice.advertising && advertisingCookie)) {
         clearCookie(name);
       }
     });
   }
+
+  // Load Microsoft only after an informed Analytics choice. Keep private,
+  // token-bearing and unexpected URLs out of replay entirely.
+  let clarityLoaded = false;
+  const CLARITY_PROJECT = 'z3ovvo5gsr';
+  const CLARITY_PATHS = new Set([
+    '/', '/index', '/booking', '/check-date', '/packages', '/mini-golf',
+    '/giant-games', '/gallery', '/areas-we-cover', '/booking-info', '/privacy',
+    '/terms', '/venue-partners', '/wedding-games-hire-cheshire',
+    '/wedding-games-hire-greater-manchester', '/wedding-games-hire-lancashire',
+    '/wedding-games-hire-merseyside'
+  ]);
+  const CLARITY_EVENTS = new Set([
+    'page_view', 'check_date_started', 'date_selected', 'availability_available',
+    'availability_unavailable', 'check_date_continue', 'booking_started',
+    'package_selected', 'extra_game_added', 'extras_completed', 'details_reached',
+    'promo_code_applied', 'payment_started'
+  ]);
+
+  function replayUrlAllowed(value) {
+    try {
+      const url = new URL(value, window.location.origin);
+      // These are the site's public acquisition and package-selection parameters.
+      // Never forward arbitrary query parameters (email, booking tokens, etc.).
+      const allowed = /^(utm_source|utm_medium|utm_campaign|utm_content|utm_term|gclid|dclid|gbraid|wbraid|fbclid|msclkid|package|selection|payment)$/;
+      for (const [key, val] of url.searchParams) {
+        if (!allowed.test(key) || !/^[a-zA-Z0-9_.~+ /:-]{0,250}$/.test(val)) return false;
+      }
+      return !url.hash || /^#[a-zA-Z0-9_-]{1,80}$/.test(url.hash);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function clarityAllowedHere() {
+    const path = window.location.pathname.toLowerCase().replace(/\.html$/, '').replace(/\/$/, '') || '/';
+    return /^(www\.)?onthegreengames\.co\.uk$/.test(window.location.hostname) &&
+      CLARITY_PATHS.has(path) && replayUrlAllowed(window.location.href) &&
+      (!document.referrer || replayUrlAllowed(document.referrer));
+  }
+
+  function updateClarity(choice) {
+    const current = normaliseChoice(choice);
+    if (!clarityAllowedHere()) return;
+    if (!current.analytics) {
+      if (clarityLoaded) {
+        window.clarity('consentv2', { analytics_Storage: 'denied', ad_Storage: 'denied' });
+        // Stop the already-loaded recorder as well as withdrawing cookie access.
+        window.clarity('stop');
+      }
+      return;
+    }
+    if (!clarityLoaded) {
+      window.clarity = window.clarity || function () {
+        (window.clarity.q = window.clarity.q || []).push(arguments);
+      };
+      window.clarity('consentv2', {
+        analytics_Storage: 'granted',
+        ad_Storage: current.advertising ? 'granted' : 'denied'
+      });
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = 'https://www.clarity.ms/tag/' + CLARITY_PROJECT;
+      script.setAttribute('data-otgg-clarity', '');
+      document.head.appendChild(script);
+      clarityLoaded = true;
+    } else {
+      window.clarity('consentv2', {
+        analytics_Storage: 'granted',
+        ad_Storage: current.advertising ? 'granted' : 'denied'
+      });
+      window.clarity('start');
+    }
+  }
+
+  window.OTGGClarity = {
+    track: function (name) {
+      if (!clarityLoaded || !activeChoice || !activeChoice.analytics || !clarityAllowedHere()) return;
+      // Names only: no customer IDs, promo text, booking references or event detail.
+      if (CLARITY_EVENTS.has(name)) window.clarity('event', name);
+    }
+  };
 
   function saveChoice(choice) {
     const current = normaliseChoice(choice);
@@ -90,7 +172,8 @@
       // The choice still applies for this page even if storage is unavailable.
     }
     window.gtag('consent', 'update', consentPayload(current));
-    clearDisallowedGoogleCookies(current);
+    updateClarity(current);
+    clearDisallowedCookies(current);
     window.dispatchEvent(new CustomEvent('otgg:consent-changed', { detail: { choice: current } }));
     return current;
   }
@@ -102,7 +185,7 @@
       <div class="cookie-banner" id="cookieBanner" role="region" aria-label="Cookie choices" hidden>
         <div class="cookie-banner__copy">
           <div class="cookie-banner__title">Cookies &amp; privacy</div>
-          <p>We use optional personalisation storage to remember previous visits and show relevant offers, analytics storage and cookies to understand how the website is used, and advertising measurement cookies to tell us whether Google Ads lead to bookings. We do not use these for personalised advertising.</p>
+          <p>We use optional personalisation storage to remember previous visits and show relevant offers, analytics cookies and Microsoft Clarity session replays to understand how the website is used, and advertising measurement cookies to tell us whether Google Ads lead to bookings. We do not use these for personalised advertising.</p>
           <a href="/privacy">Privacy &amp; cookie policy</a>
         </div>
         <div class="cookie-banner__actions">
@@ -138,7 +221,7 @@
           <label class="cookie-choice" for="cookieAnalytics">
             <div>
               <div class="cookie-choice__title">Analytics</div>
-              <p>Allows our first-party analytics and Google Analytics to help us understand visits, journeys through the site, popular pages and what leads to bookings.</p>
+              <p>Allows our first-party analytics, Google Analytics and Microsoft Clarity heatmaps and session replays to help us understand website visits and improve booking. Personal form details are masked.</p>
             </div>
             <input id="cookieAnalytics" type="checkbox">
           </label>
@@ -257,6 +340,8 @@
       saveChoice: saveChoice
     };
 
+    clearDisallowedCookies(currentChoice());
+    updateClarity(currentChoice());
     if (!storedChoice) showBanner();
   }
 
