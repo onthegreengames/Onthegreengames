@@ -1,7 +1,7 @@
 // Returns eligibility based on consented historical sessions, without exposing visitor history.
 'use strict';
 const crypto=require('crypto');
-const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i;
+const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const END=Date.parse('2026-11-01T00:00:00Z');
 function send(code,data){return {statusCode:code,headers:{'Content-Type':'application/json','Cache-Control':'no-store'},body:JSON.stringify(data)};}
 exports.handler=async function(event){
