@@ -77,7 +77,7 @@ function field(id,label,type,placeholder,required,extra){
 }
 function markup(prefix,standalone){
  var id=function(k){return prefix+'-'+k;};
- var x='<div class="otgg-enquiry"><div class="otgg-enquiry__intro"><h2 class="otgg-enquiry__title">Get in touch</h2><p class="otgg-enquiry__subtitle">Have a question about your wedding entertainment? We’d love to help.</p></div>';
+ var x='<div class="otgg-enquiry">'+(standalone?'':'<div class="otgg-enquiry__intro"><h2 class="otgg-enquiry__title">Get in touch</h2><p class="otgg-enquiry__subtitle">Have a question about your wedding entertainment? We’d love to help.</p></div>');
  x+='<form class="otgg-enquiry__form" novalidate><div class="otgg-enquiry__scroll">';
  x+=field(id('email'),'Email address','email','you@example.com',true,' autocomplete="email" maxlength="254"');
  x+='<div class="otgg-enquiry__grid">';
@@ -126,13 +126,13 @@ function formHandler(root,source){
    }).catch(function(e){analytics('enquiry_form_error',source);error.textContent=e.message||'Please try again.';error.hidden=false;})
    .finally(function(){pending=false;if(submit.isConnected){submit.disabled=false;submit.textContent='Send enquiry →';}});
  });
- return {abandoned:function(){if(started&&!done)analytics('enquiry_form_closed',source);}};
+ return {abandoned:function(){if(started&&!done)analytics('enquiry_form_abandoned',source);}};
 }
 function init(){
  if(initialised||!document.body)return;
  initialised=true;css();
  var page=document.querySelector('[data-otgg-contact-page]');
- if(page){page.classList.add('otgg-enquiry-page');formHandler(page,'contact_page');}
+ if(page){page.classList.add('otgg-enquiry-page');formHandler(page,'contact_page');analytics('enquiry_form_opened','contact_page');}
  // The standalone page already has the form in full. No redundant floating duplicate there.
  if(normalPath()==='/contact')return;
  chatButton=document.createElement('button');chatButton.type='button';chatButton.className='otgg-enquiry-toggle';chatButton.setAttribute('aria-label','Open contact form');chatButton.setAttribute('aria-expanded','false');chatButton.setAttribute('aria-controls','otgg-enquiry-panel');chatButton.innerHTML=ICON;chatButton.title='Get in touch';
