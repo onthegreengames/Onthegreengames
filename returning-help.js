@@ -4,7 +4,7 @@
 var CAMPAIGN='RETURNING_VISITOR_HELP';
 var END=Date.parse('2026-11-01T00:00:00Z');
 var GAP=30*60*1000;
-var STORAGE={last:'otgg_help_last_active_v1',shown:'otgg_help_show_count_v1',session:'otgg_help_shown_visit_v1',dismissed:'otgg_help_dismissed_v1',done:'otgg_help_submitted_v1'};
+var STORAGE={last:'otgg_help_last_active_v1',visit:'otgg_help_visit_id_v1',shown:'otgg_help_show_count_v1',session:'otgg_help_shown_visit_v1',dismissed:'otgg_help_dismissed_v1',done:'otgg_help_submitted_v1'};
 var activeVisit='',panel=null,timer=null,loading=false,started=false,impressionId='',eligibilityToken='',inFlight=false,everVisitedThisPage=false;
 function get(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function set(k,v){try{localStorage.setItem(k,String(v));}catch(e){}}
@@ -39,9 +39,7 @@ function trackActivity(){
 function initVisit(force){
  if(!nowOK())return false;
  var t=Date.now(),fresh=isNewVisit(t);
- if(!activeVisit||fresh||force&&fresh){
-  activeVisit=uuid();
- }
+ if(!activeVisit||fresh){activeVisit=fresh?uuid():(get(STORAGE.visit)||uuid());set(STORAGE.visit,activeVisit);}
  set(STORAGE.last,t);
  return fresh;
 }
@@ -137,7 +135,9 @@ function activate(resumed){
  if(!nowOK()){hide();return;}
  var t=Date.now(),isNew=isNewVisit(t);
  if(!activeVisit||isNew){
-  activeVisit=uuid();eligibilityToken='';everVisitedThisPage=false;
+  activeVisit=isNew?uuid():(get(STORAGE.visit)||uuid());
+  set(STORAGE.visit,activeVisit);
+  eligibilityToken='';everVisitedThisPage=false;
  }
  set(STORAGE.last,t);
  if(get(STORAGE.session)===activeVisit||panel)return;
@@ -152,9 +152,11 @@ function onConsent(){
 }
 document.addEventListener('visibilitychange',function(){
  if(document.visibilityState==='hidden')clearTimer();
+ else if(Date.now()>=END||!allowed()){hide();}
  else if(!panel)activate(true);
 });
-window.addEventListener('pageshow',function(e){if(e.persisted&&!panel)activate(true);});
+window.setTimeout(function(){if(Date.now()>=END)hide();},Math.max(0,END-Date.now()+100));
+window.addEventListener('pageshow',function(e){if(Date.now()>=END){hide();return;}if(e.persisted&&!panel)activate(true);});
 window.addEventListener('focus',function(){if(!panel&&document.visibilityState==='visible')trackActivity();});
 ['pointerdown','keydown','scroll','touchmove'].forEach(function(name){
  window.addEventListener(name,trackActivity,{passive:true});
