@@ -153,6 +153,7 @@ function onConsent(){
 document.addEventListener('visibilitychange',function(){
  if(document.visibilityState==='hidden')clearTimer();
  else if(Date.now()>=END||!allowed()){hide();}
+ else if(panel&&isNewVisit(Date.now())){hide();activate(true);}
  else if(!panel)activate(true);
 });
 window.setTimeout(function(){if(Date.now()>=END)hide();},Math.max(0,END-Date.now()+100));
