@@ -1,7 +1,7 @@
 // Public website enquiry endpoint: validates, rate-limits, stores in Supabase and notifies by Resend.
 'use strict';
 const crypto = require('crypto');
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const EMAIL = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/;
 const ALLOWED_ORIGINS = new Set(['https://onthegreengames.co.uk','https://www.onthegreengames.co.uk']);
 const ALLOWED_SOURCES = new Set(['floating_form','contact_page']);
