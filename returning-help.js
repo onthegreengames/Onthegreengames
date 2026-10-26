@@ -105,7 +105,7 @@ function sendQuestion(ev){
  var error=panel.querySelector('#otgg-help-error'),button=panel.querySelector('[type="submit"][form]');
  if(!formEl.reportValidity())return;
  inFlight=true;button.disabled=true;button.textContent='Sending…';error.hidden=true;
- fetch('/.netlify/functions/submit-popup-enquiry',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,message:message,website:formEl.elements.website.value,impressionId:impressionId,token:eligibilityToken})})
+ fetch('/.netlify/functions/submit-popup-enquiry',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,message:message,website:formEl.elements.website.value,impressionId:impressionId,token:eligibilityToken,pagePath:path()})})
  .then(function(r){return r.json().catch(function(){return {};}).then(function(b){if(!r.ok||!b.ok)throw Error(b.error||'Could not send your question.');});})
  .then(function(){report('form_submit','sent');set(STORAGE.done,'1');successful();})
  .catch(function(e){report('form_error','send_failed');error.textContent=e.message||'Please try again.';error.hidden=false;})
