@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var contactLink = document.createElement('a');
     contactLink.href = '/contact';
     contactLink.textContent = 'Contact Us';
-    if (window.location.pathname.replace(/\\.html$/, '') === '/contact') {
+    if (window.location.pathname.replace(/\.html$/, '') === '/contact') {
       contactLink.className = 'current';
       contactLink.setAttribute('aria-current', 'page');
     }
