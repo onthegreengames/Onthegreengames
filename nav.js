@@ -153,6 +153,30 @@ document.addEventListener('DOMContentLoaded', function () {
     links.appendChild(mobileSocials);
   }
 
+
+  // About Us is a first-level navigation item on every standard public page.
+  if (links && !links.querySelector('a[href="/about-us"]')) {
+    var aboutLink = document.createElement('a');
+    aboutLink.href = '/about-us';
+    aboutLink.textContent = 'About Us';
+    if (window.location.pathname.replace(/\.html$/, '') === '/about-us') {
+      aboutLink.className = 'current';
+      aboutLink.setAttribute('aria-current', 'page');
+    }
+    var bookButton = links.querySelector('a.btn[href="/check-date"], a.btn[href="/booking"]');
+    if (bookButton) bookButton.insertAdjacentElement('beforebegin', aboutLink);
+    else links.appendChild(aboutLink);
+  }
+  var footerAboutLinks = document.querySelector('footer .foot-links');
+  if (footerAboutLinks && !footerAboutLinks.querySelector('a[href="/about-us"]')) {
+    var footerAbout = document.createElement('a');
+    footerAbout.href = '/about-us';
+    footerAbout.textContent = 'About Us';
+    var faqLink = footerAboutLinks.querySelector('a[href="/booking-info"]');
+    if (faqLink) faqLink.insertAdjacentElement('beforebegin', footerAbout);
+    else footerAboutLinks.appendChild(footerAbout);
+  }
+
   // Footer-only Contact Us link, consistently placed on every standard page.
   var footerLinks = document.querySelector('footer .foot-links');
   if (footerLinks && !footerLinks.querySelector('a[href="/contact"]')) {
