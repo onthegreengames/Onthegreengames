@@ -32,7 +32,7 @@
 <style>
 .otgg-about{overflow:hidden}
 .otgg-about .about-wrap{max-width:1180px;margin:0 auto;padding-left:32px;padding-right:32px}
-.otgg-about .about-hero{display:grid;grid-template-columns:1fr 1.06fr;align-items:center;gap:52px;padding-top:70px;padding-bottom:70px}
+.otgg-about .about-hero{display:grid;grid-template-columns:1fr 1.06fr;align-items:center;gap:52px;padding-top:70px;padding-bottom:26px}
 .otgg-about .about-eyebrow{font:700 12px/1.5 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--green-mid);margin-bottom:18px}
 .otgg-about h1{font:600 clamp(42px,5vw,68px)/1.11 'Playfair Display',Georgia,serif;letter-spacing:-.025em;color:var(--green-deep)}
 .otgg-about h2{font:600 clamp(29px,3.3vw,44px)/1.2 'Playfair Display',Georgia,serif;color:var(--green-deep)}
@@ -51,7 +51,11 @@
 .otgg-about .about-contact-section{padding-bottom:0}
 .otgg-about .about-gallery{padding-top:55px;padding-bottom:55px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .otgg-about .about-gallery figure{position:relative;margin:0;border-radius:17px;overflow:hidden;aspect-ratio:1.5;background:#d9e1d2;box-shadow:var(--shadow)}
-.otgg-about .about-gallery img{width:100%;height:100%;object-fit:cover;display:block}
+.otgg-about .about-gallery-link{display:block;min-width:0;border-radius:17px;outline-offset:5px}
+.otgg-about .about-gallery-link:focus-visible{outline:3px solid var(--green-mid)}
+.otgg-about .about-gallery img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .2s ease}
+@media(hover:hover){.otgg-about .about-gallery-link:hover img{transform:scale(1.035)}}
+@media(prefers-reduced-motion:reduce){.otgg-about .about-gallery img{transition:none}}
 .otgg-about .about-gallery figure::after{content:"";position:absolute;inset:50% 0 0;background:linear-gradient(transparent,rgba(9,33,24,.55))}
 .otgg-about .about-gallery figcaption{position:absolute;z-index:1;left:20px;bottom:18px;color:white;font:600 25px 'Playfair Display',Georgia,serif}
 .otgg-about .about-approach{background:var(--green-deep);padding-top:62px;padding-bottom:62px}
@@ -63,7 +67,7 @@
 .otgg-about .about-final h2{font-size:clamp(28px,3vw,39px);max-width:680px}
 .otgg-about .about-final .btn{flex-shrink:0}
 @media(max-width:880px){
- .otgg-about .about-hero{grid-template-columns:1fr;gap:32px;padding-top:45px;padding-bottom:45px}
+ .otgg-about .about-hero{grid-template-columns:1fr;gap:32px;padding-top:45px;padding-bottom:22px}
  .otgg-about .about-founder:first-child{transform:none}
  .otgg-about .about-contact{grid-template-columns:1fr;gap:24px;padding:30px}
  .otgg-about .about-contact-options{border-left:0;border-top:1px solid var(--green-line);padding-left:0;padding-top:23px}
@@ -141,8 +145,12 @@
 <div class="about-contact-options"><span class="about-eyebrow">Get in touch</span><a class="about-mail" href="mailto:bookings@onthegreengames.co.uk">bookings@onthegreengames.co.uk</a><a class="btn" href="/contact">Contact Us →</a></div>
 </div></section>
 <section class="about-gallery about-wrap" aria-label="Our wedding entertainment">
-<figure><img src="/assets/images/mini-golf-gateway-obstacle-640.webp" alt="A portable mini golf hole on a lawn" width="640" height="640" loading="lazy" decoding="async"><figcaption>Our mini golf</figcaption></figure>
-<figure><img src="/assets/images/games-premium-640.webp" alt="Giant garden games on a lawn" width="640" height="640" loading="lazy" decoding="async"><figcaption>Our giant games</figcaption></figure>
+<a href="/mini-golf" class="about-gallery-link" aria-label="Explore our wedding mini golf">
+<figure><img src="/assets/images/mini-golf-gateway-obstacle-640.webp" alt="A portable mini golf hole on a lawn" width="640" height="640" loading="lazy" decoding="async"><figcaption>Our mini golf <span aria-hidden="true">→</span></figcaption></figure>
+</a>
+<a href="/giant-games" class="about-gallery-link" aria-label="Explore our giant garden games">
+<figure><img src="/assets/images/giant-noughts-and-crosses-game-1.webp" alt="Giant wooden Noughts and Crosses wedding game set up on grass" width="1400" height="1050" loading="lazy" decoding="async"><figcaption>Our giant games <span aria-hidden="true">→</span></figcaption></figure>
+</a>
 </section>
 <section class="about-approach"><div class="about-wrap about-approach-inner">
 <div><div class="about-eyebrow">Our approach</div><h2>Less planning. More fun.</h2></div>
