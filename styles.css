@@ -4102,3 +4102,51 @@ html.js [data-reveal].is-visible{
 @media (max-width:880px){
   .hero-visual-card.area-map-card img.area-map-hero{height:auto;}
 }
+
+
+/* Package photography: original game photographs in photo-grid compositions. */
+.package-photo-collage {
+  box-sizing: border-box;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  gap: 1%;
+  background: #f8f9f3;
+}
+.package-photo-collage > img,
+.pkg-card .pkg-art .package-photo-collage > img,
+.games-offer-card .art-wrap .package-photo-collage > img,
+.choice-card .choice-art .package-photo-collage > img {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0;
+  filter: none;
+}
+.package-photo-collage--classic,
+.package-photo-collage--mix {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.package-photo-collage--premium {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.package-photo-collage--premium > img:first-child { grid-row: 1 / 3; }
+.package-photo-collage--all {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+.package-photo-collage--all > img:nth-child(-n+3) { grid-column: span 4; }
+.package-photo-collage--all > img:nth-child(n+4) { grid-column: span 3; }
+.games-offer-card .art-wrap:has(.package-photo-collage) {
+  height: 190px;
+}
