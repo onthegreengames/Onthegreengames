@@ -4,13 +4,13 @@ const site = 'https://onthegreengames.co.uk';
 
 const previews = {
   'index.html': {
-    image: '/assets/images/giant-connect-four-game-1.webp',
+    image: '/assets/images/game-connect-4-1200.webp',
     alt: 'Giant wooden Connect 4 wedding game set up on grass',
     width: 1400,
     height: 1050,
   },
   'booking-info.html': {
-    image: '/assets/images/giant-connect-four-game-1.webp',
+    image: '/assets/images/game-connect-4-1200.webp',
     alt: 'Giant wooden Connect 4 wedding game set up on grass',
     width: 1400,
     height: 1050,
