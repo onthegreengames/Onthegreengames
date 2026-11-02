@@ -194,17 +194,23 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
 
-  // About Us is a first-level navigation item on every standard public page.
-  if (links && !links.querySelector('a[href="/about-us"]')) {
-    var aboutLink = document.createElement('a');
-    aboutLink.href = '/about-us';
-    aboutLink.textContent = 'About Us';
+  // Keep About Us in the same position on every page, including mobile.
+  // Booking CTAs may contain package or selection query parameters.
+  if (links) {
+    var aboutLink = links.querySelector('a[href="/about-us"]');
+    if (!aboutLink) {
+      aboutLink = document.createElement('a');
+      aboutLink.href = '/about-us';
+      aboutLink.textContent = 'About Us';
+    }
     if (window.location.pathname.replace(/\.html$/, '') === '/about-us') {
       aboutLink.className = 'current';
       aboutLink.setAttribute('aria-current', 'page');
     }
-    var bookButton = links.querySelector('a.btn[href="/booking"], a.btn[href="/booking"]');
+    var bookButton = links.querySelector('a.btn[href^="/booking"]');
+    var mobileSocials = links.querySelector('.otgg-mobile-socials');
     if (bookButton) bookButton.insertAdjacentElement('beforebegin', aboutLink);
+    else if (mobileSocials) mobileSocials.insertAdjacentElement('beforebegin', aboutLink);
     else links.appendChild(aboutLink);
   }
   var footerAboutLinks = document.querySelector('footer .foot-links');
