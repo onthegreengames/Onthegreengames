@@ -18,6 +18,7 @@ const check=s=>{const e=w.document.querySelector(s);assert(e,s);e.checked=true;e
 (async()=>{
   w.eval(script+"\nwindow.offerTest={loadAutomaticOffer};");
   await w.offerTest.loadAutomaticOffer();
+  assert.equal($("bookingNovemberOffer").hidden,false);
   w.OTGGDateVerified({weddingDate:"2027-08-14",venueName:"Test venue",venuePostcode:"CH1 1AA",travelFee:40},true);
   click('[data-package="classic_collection"]');
   click("#next0");
@@ -34,6 +35,7 @@ const check=s=>{const e=w.document.querySelector(s);assert(e,s);e.checked=true;e
   click("#next0");
   assert.equal($("totalPrice").textContent,"£315");
   assert.equal($("automaticDiscountLine").hidden,true);
+  assert.equal($("bookingNovemberOffer").hidden,false,"Offer message stays visible even with standalone golf selected");
   click('[data-go="0"]');
   click("#byoCard");
   click("#next0");
@@ -49,6 +51,7 @@ const check=s=>{const e=w.document.querySelector(s);assert(e,s);e.checked=true;e
   assert.equal($("totalPrice").textContent,"£465");
   offerActive=false;
   await w.offerTest.loadAutomaticOffer();
+  assert.equal($("bookingNovemberOffer").hidden,true);
   assert.equal($("totalPrice").textContent,"£565");
   assert.equal($("automaticDiscountLine").hidden,true);
   console.log("PASS: November free hole, 1/2/3 holes, standalone exclusion, BYO minimum and offer toggle");

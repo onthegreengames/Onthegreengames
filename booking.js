@@ -138,6 +138,7 @@ async function loadAutomaticOffer(){
     if(!response.ok) return;
     const data=await response.json(),prev=JSON.stringify(automaticOffer);
     automaticOffer={active:data.active===true&&data.code==="FREEHOLE_NOV26",discountAmount:Number(data.discountAmount)||0};
+    $("bookingNovemberOffer").hidden = !automaticOffer.active;
     if(prev!==JSON.stringify(automaticOffer)){
       if(state.promo){
         state.promo=false;
@@ -211,9 +212,12 @@ function dueDate() {
   return dateText(iso(d));
 }
 function renderCards() {
-  $("packageCards").innerHTML = P.map(
-    (p) =>
-      `<button class="pack ${p.golf ? "golf-pack" : ""} ${state.choice === p.id ? "selected" : ""}" type="button" data-package="${p.id}" aria-pressed="${state.choice === p.id}">${p.golf ? '<svg class="golf-art" viewBox="0 0 60 80" aria-hidden="true"><rect x="3" y="2" width="50" height="75" rx="22" fill="#39644b" stroke="#E7CE9B"/><ellipse cx="28" cy="61" rx="9" ry="4" fill="#183929"/><path d="M28 61V16l17 7-17 7" stroke="#E7CE9B" fill="none" stroke-width="2"/><circle cx="18" cy="45" r="3" fill="#FFFDF6"/></svg>' : ""}<div><h3>${p.name}</h3><p>${p.desc}</p></div><div class="price">${money(p.price)} <small>/ all day</small></div></button>`,
+  const featured = P.find((p) => p.id === "the_mix");
+  const others = P.filter((p) => p.id !== "the_mix" && p.id !== "mini_golf_3");
+  const miniGolf = P.find((p) => p.id === "mini_golf_3");
+  const cards = [featured, ...others, miniGolf];
+  $("packageCards").innerHTML = cards.map((p) =>
+    `<button class="pack ${p.id === "the_mix" ? "featured-pack" : ""} ${state.choice === p.id ? "selected" : ""}" type="button" data-package="${p.id}" aria-pressed="${state.choice === p.id}"><div><h3>${p.name}</h3><p>${p.desc}</p></div><div class="price">${money(p.price)} <small>/ all day</small></div></button>`,
   ).join("");
   $("byoCard").classList.toggle("selected", state.choice === "byo");
   $("byoCard").setAttribute("aria-pressed", state.choice === "byo");
@@ -1164,7 +1168,13 @@ const requested = new URLSearchParams(location.search);
 const requestedPackage = requested.get("package");
 if (P.some(p => p.id === requestedPackage)) choose(requestedPackage);
 else if (requested.get("selection") === "minigolf") choose("mini_golf_3");
-else restoreSelection();
+else if (requested.get("selection") === "games") choose("the_mix");
+else {
+  // Honour an in-progress selection. Otherwise feature The Mix, including
+  // visitors who came from the Mini Golf page's general "Check Your Date" links.
+  restoreSelection();
+  if (!state.choice) choose("the_mix");
+}
 render();
 go(-1, false);
 loadAutomaticOffer();
