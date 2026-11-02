@@ -90,7 +90,7 @@ BEGIN
    'subtotal',round(v_gross_subtotal-v_automatic_discount,2)
  );
 END;
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION public.create_booking_v3(p_payload jsonb)
  RETURNS jsonb
@@ -1525,7 +1525,7 @@ BEGIN
 
 END;
 
-$function$
+$function$;
 
 CREATE OR REPLACE FUNCTION public.get_active_automatic_offer_v1()
 RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER SET search_path TO ''
