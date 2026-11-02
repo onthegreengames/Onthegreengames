@@ -1,6 +1,7 @@
 -- One complimentary mini golf hole with eligible giant garden games bookings.
 -- Automatic discount calculated before promo codes and excluded from travel.
 -- Existing booking snapshots and deposits are not modified.
+-- Promotion intentionally starts inactive; activate only after Netlify publishes the matching booking UI.
 
 CREATE TABLE private.automatic_offers (
  code text PRIMARY KEY, description text, active boolean NOT NULL DEFAULT false,
@@ -17,7 +18,7 @@ REVOKE ALL ON TABLE private.automatic_offers FROM PUBLIC, anon, authenticated;
 INSERT INTO private.automatic_offers
  (code,description,active,starts_on,expires_on,discount_amount,requires_giant_games,allow_build_your_own,stack_with_promo_codes)
 VALUES ('FREEHOLE_NOV26','One complimentary mini golf hole with a qualifying games booking',
- true,'2026-11-01','2026-11-30',100,true,true,true);
+ false,'2026-11-01','2026-11-30',100,true,true,true);
 
 ALTER TABLE public.bookings
  ADD COLUMN automatic_offer_code text,
