@@ -1,0 +1,56 @@
+// November promotion frontend regression test. Supabase and Netlify HTTP mocked.
+const assert=require("node:assert/strict"),fs=require("node:fs"),{JSDOM}=require("jsdom");
+const html=fs.readFileSync("booking.html","utf8"),script=fs.readFileSync("booking.js","utf8");
+const dom=new JSDOM(html,{url:"https://example.test/booking",runScripts:"outside-only",pretendToBeVisual:true});
+const w=dom.window;
+w.HTMLElement.prototype.scrollIntoView=function(){};
+w.matchMedia=q=>({matches:q.includes("740"),addEventListener(){}});
+let offerActive=true;
+w.fetch=async(url,options)=>{
+  if(String(url).includes("automatic-offer-status"))
+    return {ok:true,json:async()=>offerActive?{active:true,code:"FREEHOLE_NOV26",discountAmount:100,expiresOn:"2026-11-30"}:{active:false}};
+  if(String(url).includes("validate-promo-code"))return {ok:true,json:async()=>({valid:true,code:"TEEOFF25",discountAmount:162.5})};
+  throw new Error("Unexpected test request: "+url);
+};
+const $=id=>w.document.getElementById(id);
+const click=s=>w.document.querySelector(s).click();
+const check=s=>{const e=w.document.querySelector(s);assert(e,s);e.checked=true;e.dispatchEvent(new w.Event("change",{bubbles:true}));};
+(async()=>{
+  w.eval(script+"\nwindow.offerTest={loadAutomaticOffer};");
+  await w.offerTest.loadAutomaticOffer();
+  w.OTGGDateVerified({weddingDate:"2027-08-14",venueName:"Test venue",venuePostcode:"CH1 1AA",travelFee:40},true);
+  click('[data-package="classic_collection"]');
+  click("#next0");
+  check('[name=golf][value="1"]');
+  assert.equal($("totalPrice").textContent,"£240");
+  assert.match($("automaticDiscountLine").textContent,/£100/);
+  assert.match($("customControls").textContent,/FREE/);
+  check('[name=golf][value="2"]');
+  assert.equal($("totalPrice").textContent,"£340");
+  check('[name=golf][value="3"]');
+  assert.equal($("totalPrice").textContent,"£415");
+  click('[data-go="0"]');
+  click('[data-package="mini_golf_3"]');
+  click("#next0");
+  assert.equal($("totalPrice").textContent,"£315");
+  assert.equal($("automaticDiscountLine").hidden,true);
+  click('[data-go="0"]');
+  click("#byoCard");
+  click("#next0");
+  check('[data-mode=custom][data-game=cornhole]');
+  check('[data-mode=custom][data-game=giant_connect_4]');
+  check('[name=golf][value="1"]');
+  assert.equal($("totalPrice").textContent,"£290");
+  assert.match($("error1").textContent,/£300/);
+  check('[name=golf][value="2"]');
+  assert.equal($("totalPrice").textContent,"£390");
+  assert.equal($("error1").hidden,true);
+  check('[name=golf][value="3"]');
+  assert.equal($("totalPrice").textContent,"£465");
+  offerActive=false;
+  await w.offerTest.loadAutomaticOffer();
+  assert.equal($("totalPrice").textContent,"£565");
+  assert.equal($("automaticDiscountLine").hidden,true);
+  console.log("PASS: November free hole, 1/2/3 holes, standalone exclusion, BYO minimum and offer toggle");
+  dom.window.close();
+})().catch(e=>{console.error(e);process.exitCode=1;dom.window.close();});
