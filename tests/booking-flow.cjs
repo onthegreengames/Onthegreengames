@@ -6,9 +6,9 @@ const html = fs.readFileSync("booking.html", "utf8"),
   js = fs.readFileSync("booking.js", "utf8");
 let posts = [];
 let w;
-function boot(saved = {}) {
+function boot(saved = {}, route = "/booking") {
   const dom = new JSDOM(html, {
-    url: "https://example.test/booking",
+    url: "https://example.test" + route,
     runScripts: "outside-only",
     pretendToBeVisual: true,
   });
@@ -67,6 +67,22 @@ const $ = (id) => w.document.getElementById(id),
   };
 (async () => {
   boot();
+  // The Mix is featured and selected by default on general booking routes.
+  assert.equal(w.document.querySelector("#packageCards .pack").dataset.package, "the_mix");
+  assert.equal(w.document.querySelector('[data-package="the_mix"]').getAttribute("aria-pressed"), "true");
+  assert(w.document.querySelector('[data-package="the_mix"]').classList.contains("featured-pack"));
+  assert(!w.document.querySelector('[data-package="mini_golf_3"]').classList.contains("featured-pack"));
+  boot({}, "/booking?from=mini-golf");
+  assert.equal(w.document.querySelector('[data-package="the_mix"]').getAttribute("aria-pressed"), "true");
+  boot({}, "/booking?selection=minigolf");
+  assert.equal(w.document.querySelector('[data-package="mini_golf_3"]').getAttribute("aria-pressed"), "true");
+  boot({}, "/booking?package=mini_golf_3");
+  assert.equal(w.document.querySelector('[data-package="mini_golf_3"]').getAttribute("aria-pressed"), "true");
+  boot();
+  // General links on the mini golf page do not request golf preselection.
+  const golfPage = fs.readFileSync("mini-golf.html", "utf8");
+  assert.equal((golfPage.match(/href="\/check-date\?selection=minigolf"/g) || []).length, 1);
+  assert.match(golfPage, /href="\/check-date\?selection=minigolf">Choose Mini Golf/);
   // The live Stripe checkout uses an OTGG custom host, not checkout.stripe.com.
   for (const valid of [
     "https://checkout.stripe.com/c/pay/cs_live_test",

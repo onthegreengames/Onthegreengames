@@ -270,7 +270,7 @@ button:disabled {
   color: #738074;
   font-size: 10px;
 }
-.pack.golf-pack {
+.pack.featured-pack {
   grid-column: 1/-1;
   min-height: 143px;
   flex-direction: row;
@@ -279,31 +279,26 @@ button:disabled {
   background: var(--green-deep);
   color: var(--cream-card);
 }
-.golf-pack.selected {
+.featured-pack.selected {
   border-color: var(--gold);
   background: var(--green-deep);
 }
-.golf-pack .pack-kind,
-.golf-pack .price small {
+.featured-pack .pack-kind,
+.featured-pack .price small {
   color: var(--gold-soft);
 }
-.golf-pack p {
+.featured-pack p {
   color: #d3ded4;
   margin-bottom: 0;
 }
-.golf-pack .price {
+.featured-pack .price {
   margin: 0 0 0 auto;
   white-space: nowrap;
 }
-.golf-pack h3 {
+.featured-pack h3 {
   font-size: 26px;
 }
-.golf-art {
-  width: 56px;
-  height: 72px;
-  flex-shrink: 0;
-}
-.golf-pack.selected:after {
+.featured-pack.selected:after {
   background: var(--gold-soft);
   color: var(--green-deep);
 }
@@ -1011,14 +1006,14 @@ button:disabled {
   .pack .price {
     font-size: 19px;
   }
-  .pack.golf-pack {
+  .pack.featured-pack {
     min-height: 127px;
     padding: 20px 15px;
   }
-  .golf-pack .price {
+  .featured-pack .price {
     font-size: 21px;
   }
-  .golf-pack h3 {
+  .featured-pack h3 {
     font-size: 24px;
   }
   .byo {
@@ -1299,10 +1294,10 @@ button:disabled {
   .accordion-section .pack h3 {
     font-size: 18px;
   }
-  .accordion-section .pack.golf-pack {
+  .accordion-section .pack.featured-pack {
     padding: 17px 12px;
   }
-  .accordion-section .golf-pack h3 {
+  .accordion-section .featured-pack h3 {
     font-size: 23px;
   }
   .accordion-section .pack .pack-kind {
@@ -1390,4 +1385,17 @@ button:disabled {
 }
 .offer .promo-code {
   color: var(--gold-soft);
+}
+
+/* Show the November offer on the package-choice step for every selection. */
+.package-offer-note {
+  margin: 0 0 17px;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.package-offer-note strong {
+  display: block;
+  color: var(--green-deep);
+  margin-bottom: 2px;
 }
