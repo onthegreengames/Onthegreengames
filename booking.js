@@ -1168,6 +1168,7 @@ const requested = new URLSearchParams(location.search);
 const requestedPackage = requested.get("package");
 if (P.some(p => p.id === requestedPackage)) choose(requestedPackage);
 else if (requested.get("selection") === "minigolf") choose("mini_golf_3");
+else if (requested.get("selection") === "games") choose("the_mix");
 else {
   // Honour an in-progress selection. Otherwise feature The Mix, including
   // visitors who came from the Mini Golf page's general "Check Your Date" links.

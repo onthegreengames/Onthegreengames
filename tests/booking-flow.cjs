@@ -72,7 +72,7 @@ const $ = (id) => w.document.getElementById(id),
   assert.equal(w.document.querySelector('[data-package="the_mix"]').getAttribute("aria-pressed"), "true");
   assert(w.document.querySelector('[data-package="the_mix"]').classList.contains("featured-pack"));
   assert(!w.document.querySelector('[data-package="mini_golf_3"]').classList.contains("featured-pack"));
-  boot({}, "/booking?from=mini-golf");
+  boot({}, "/booking?selection=games");
   assert.equal(w.document.querySelector('[data-package="the_mix"]').getAttribute("aria-pressed"), "true");
   boot({}, "/booking?selection=minigolf");
   assert.equal(w.document.querySelector('[data-package="mini_golf_3"]').getAttribute("aria-pressed"), "true");
@@ -83,6 +83,7 @@ const $ = (id) => w.document.getElementById(id),
   const golfPage = fs.readFileSync("mini-golf.html", "utf8");
   assert.equal((golfPage.match(/href="\/check-date\?selection=minigolf"/g) || []).length, 1);
   assert.match(golfPage, /href="\/check-date\?selection=minigolf">Choose Mini Golf/);
+  assert.equal((golfPage.match(/href="\/check-date\?selection=games"/g) || []).length, 5);
   // The live Stripe checkout uses an OTGG custom host, not checkout.stripe.com.
   for (const valid of [
     "https://checkout.stripe.com/c/pay/cs_live_test",
