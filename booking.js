@@ -27,7 +27,7 @@ const P = [
   {
     id: "mini_golf_3",
     name: "3-Hole Mini Golf",
-    price: 400,
+    price: 275,
     p: 0,
     c: 0,
     golf: 3,
@@ -71,7 +71,7 @@ const P = [
     kind: "THE WHOLE COLLECTION",
   },
 ];
-const golfPrices = [0, 150, 275, 375];
+const golfPrices = [0, 100, 200, 275];
 const $ = (id) => document.getElementById(id),
   money = (n) =>
     new Intl.NumberFormat("en-GB", {
@@ -143,7 +143,7 @@ function quote() {
   const golf = p?.golf
     ? 0
     : state.choice === "byo"
-      ? (state.golf || 0) * 200
+      ? golfPrices[state.golf || 0]
       : golfPrices[state.golf || 0];
   const sub = base + extras + golf,
     discount = state.promo ? state.promo.discountAmount : 0,
@@ -240,7 +240,7 @@ function gamesMarkup(games, mode) {
     .join("");
 }
 function golfMarkup(custom = false) {
-  return `<div class="block"><div class="block-top"><h3>${custom ? "Choose your mini golf" : "Add mini golf"}</h3><span class="tag gold">OPTIONAL</span></div><p class="section-lead">${custom ? "Add individual holes at £200 each." : "Make more of your day with 1, 2 or all 3 holes."}</p><div class="golf-options">${[0, 1, 2, 3].map((n) => `<label class="golf-option"><input type="radio" name="golf" value="${n}" ${state.golf === n ? "checked" : ""}><strong>${n === 0 ? "No mini golf" : n + " " + (n === 1 ? "hole" : "holes")}</strong><small>${n === 0 ? "£0" : "+" + money(custom ? n * 200 : golfPrices[n])}</small></label>`).join("")}</div></div>`;
+  return `<div class="block"><div class="block-top"><h3>${custom ? "Choose your mini golf" : "Add mini golf"}</h3><span class="tag gold">OPTIONAL</span></div><p class="section-lead">${custom ? "Add 1 or 2 holes at £100 each, or all 3 for £275." : "Make more of your day with 1, 2 or all 3 holes."}</p><div class="golf-options">${[0, 1, 2, 3].map((n) => `<label class="golf-option"><input type="radio" name="golf" value="${n}" ${state.golf === n ? "checked" : ""}><strong>${n === 0 ? "No mini golf" : n + " " + (n === 1 ? "hole" : "holes")}</strong><small>${n === 0 ? "£0" : "+" + money(golfPrices[n])}</small></label>`).join("")}</div></div>`;
 }
 function renderCustom() {
   const p = pkg();

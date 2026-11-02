@@ -32,13 +32,13 @@ function boot(saved = {}) {
       ok: !url.includes("create-checkout-session"),
       json: async () =>
         url.includes("validate-promo-code")
-          ? { valid: true, code: data.code, discountAmount: 287.5 }
+          ? { valid: true, code: data.code, discountAmount: 225 }
           : url.includes("create-booking-v3")
             ? {
                 bookingId: "test-id",
                 bookingReference: "TEST-123",
-                total: 327.5,
-                depositDue: 81.88,
+                total: 265,
+                depositDue: 66.25,
                 expiresAt: new Date(Date.now() + 1800000).toISOString(),
               }
             : { error: "Test checkout outage" },
@@ -86,11 +86,11 @@ const $ = (id) => w.document.getElementById(id),
   click("#next0");
   change("[data-mode=extra][data-game=cornhole]");
   change("[data-mode=extra][data-game=limbo]");
-  assert.equal($("totalPrice").textContent, "£615");
+  assert.equal($("totalPrice").textContent, "£490");
   click("#next1");
   fill("promoInput", "OCT50");
   await w.testApi.applyPromo();
-  assert.equal($("totalPrice").textContent, "£327.50");
+  assert.equal($("totalPrice").textContent, "£265");
   assert.equal($("summary").parentElement.id, "mobileSummarySlot");
   assert($("promoDetails").open);
   assert(
@@ -124,7 +124,7 @@ const $ = (id) => w.document.getElementById(id),
     change(`[data-mode=included][data-game=${code}]`);
   change("[data-mode=extra][data-game=giant_dominoes]");
   change('[name=golf][value="1"]');
-  assert.equal($("totalPrice").textContent, "£565");
+  assert.equal($("totalPrice").textContent, "£515");
   click("#next1");
   assert(!$("step2").hidden);
   click('[data-go="0"]');
@@ -158,7 +158,7 @@ const $ = (id) => w.document.getElementById(id),
   }, false);
   assert(!$("step0").hidden);
   assert($("accordionSummaryDate").textContent.includes("Changed Venue"));
-  assert.equal($("totalPrice").textContent, "£605");
+  assert.equal($("totalPrice").textContent, "£480");
   click("#next0");
   assert(w.document.querySelector("[data-mode=extra][data-game=cornhole]").checked);
   assert.equal($("accordionHeader0").disabled, false);
@@ -184,6 +184,25 @@ const $ = (id) => w.document.getElementById(id),
   assert(savedCheckout?.checkoutUrl?.startsWith("https://pay.onthegreengames.co.uk/"), "Approved custom Stripe URL must be stored");
   assert($("pendingPanel").hidden, "Recovery panel should remain hidden when Stripe opens");
   assert(!($("bookingLayout").hidden), "Main booking page should not disappear before Stripe redirect");
+  // Verify one, two and three-hole prices for packages and Build Your Own.
+  boot();
+  click("[data-package=classic_collection]");
+  click("#next0");
+  change('[name=golf][value="1"]');
+  assert.equal($("totalPrice").textContent, "£340");
+  change('[name=golf][value="2"]');
+  assert.equal($("totalPrice").textContent, "£440");
+  change('[name=golf][value="3"]');
+  assert.equal($("totalPrice").textContent, "£515");
+  boot();
+  click("#byoCard");
+  click("#next0");
+  change("[data-mode=custom][data-game=cornhole]");
+  change('[name=golf][value="2"]');
+  assert.equal($("totalPrice").textContent, "£365");
+  change('[name=golf][value="3"]');
+  assert.equal($("totalPrice").textContent, "£440");
+  console.log("PASS: mini golf 1/2/3-hole add-ons and Build Your Own");
   console.log(
     "PASS: four-step date gate, retained game extras, changed venue/travel, promotion invalidation, package rules, mobile summary, payload and saved checkout recovery"
   );
