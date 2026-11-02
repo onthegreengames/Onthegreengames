@@ -1128,7 +1128,7 @@ function pageSimplePricing(){
  </div></details></div>
  <div id="simple-output">${simpleResults(y)}</div>
  <div class="s-actions"><button class="btn" data-page="targets">Edit yearly targets</button><button class="btn" id="simple-reset">Reset this example</button></div>
- <p class="s-hint">A £400 standard wedding booking is an illustrative starting point based on your current mini-golf price. Other prices and booking counts are <strong>not claims about your future prices, actual packages or demand</strong>. This model uses estimated costs, Stripe fees, Corporation Tax and a rough VAT allowance, not an accountant-approved forecast. Saved test scenarios are independent for each year.</p>`;
+ <p class="s-hint">A £400 standard wedding booking is an illustrative planning assumption, not the current mini golf price or a guaranteed average booking value. Other prices and booking counts are <strong>not claims about your future prices, actual packages or demand</strong>. This model uses estimated costs, Stripe fees, Corporation Tax and a rough VAT allowance, not an accountant-approved forecast. Saved test scenarios are independent for each year.</p>`;
 }
 function pageSimpleBookings(){
  const current=(data.bookings||[]).filter(b=>b.status!=='cancelled').sort((a,b)=>String(a.event).localeCompare(String(b.event)));
