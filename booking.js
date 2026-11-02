@@ -146,7 +146,7 @@ async function loadAutomaticOffer(){
       }
       const banner=document.querySelector(".offer .promo-bar-text");
       if(banner)banner.innerHTML=automaticOffer.active
-        ? "<strong>FREE mini golf hole</strong> with games bookings this November. Plus 25% off qualifying hire over £400 with <b>TEEOFF25</b>. Free hole ends 30 November."
+        ? "<strong>FREE mini golf</strong> with games bookings this November. Plus 25% off qualifying hire over £400 with <b>TEEOFF25</b>."
         : "25% off hire over £400. Use code <b>TEEOFF25</b>. Ends 31 December 2026.";
       renderCustom();render();
     }
