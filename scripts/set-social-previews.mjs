@@ -45,6 +45,12 @@ const previews = {
     width: 1200,
     height: 1200,
   },
+  'wedding-games-hire-cumbria.html': {
+    image: '/assets/images/area-south-lakes-map-1200.webp',
+    alt: 'Illustrated map of the South Lakes coverage area',
+    width: 1200,
+    height: 1200,
+  },
 };
 
 function escapeRegExp(value) {
