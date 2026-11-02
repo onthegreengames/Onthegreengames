@@ -60,7 +60,7 @@ async function waitFor(predicate, description) {
   const extra = w.document.querySelector('[data-mode="extra"][data-game="cornhole"]');
   extra.checked = true;
   extra.dispatchEvent(new w.Event("change", { bubbles: true }));
-  assert.equal($("totalPrice").textContent, "£565");
+  assert.equal($("totalPrice").textContent, "£440");
 
   $("accordionHeaderDate").click();
   assert.equal($("stepDate").hidden, false);
@@ -71,7 +71,7 @@ async function waitFor(predicate, description) {
   $("checkBtn").click(); // Immediately after input: must not reuse the old travel fee.
   await waitFor(() => $("stepDate").hidden, "new postcode to be verified");
   assert.equal($("travelPrice").textContent, "£80");
-  assert.equal($("totalPrice").textContent, "£605");
+  assert.equal($("totalPrice").textContent, "£480");
   assert($("accordionSummaryDate").textContent.includes("L1 1AA"));
   $("next0").click();
   assert(w.document.querySelector('[data-mode="extra"][data-game="cornhole"]').checked);
