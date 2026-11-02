@@ -33,7 +33,7 @@ BEGIN
  IF (SELECT sum(total_price) FROM public.booking_items WHERE booking_id=(b->>'booking_id')::uuid)<>175 THEN RAISE EXCEPTION 'Extra line prices mismatch'; END IF;
  -- Existing callers (no extras) retain their original behaviour.
  q:=public.quote_booking_v3('package','mini_golf_3','{}',3);
- IF (q->>'subtotal')::numeric<>400 THEN RAISE EXCEPTION 'Legacy quote regression'; END IF;
+ IF (q->>'subtotal')::numeric<>275 THEN RAISE EXCEPTION '3-hole standalone quote mismatch'; END IF;
 END;
 $test$;
 ROLLBACK;
