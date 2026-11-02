@@ -42,16 +42,20 @@
   async function update(){
     try{
       const response=await fetch('/.netlify/functions/automatic-offer-status',{cache:'no-store'});
-      if(!response.ok) return;
+      if(!response.ok) throw new Error('Campaign status unavailable');
       const offer=await response.json();
       if(offer.active!==true || offer.code!=='FREEHOLE_NOV26'){
         if(applied)window.location.reload();
+        else document.querySelectorAll('.promo-bar-text').forEach(function(el){el.classList.add('campaign-ready');});
         return;
       }
       if(applied)return;
       applied=true;
       const banner=document.querySelector('.promo-bar-text');
-      if(banner)banner.innerHTML='<span class="november-primary">FREE mini golf with games bookings this November</span><span class="november-secondary">Plus 25% off hire over £400 with <span class="promo-code">TEEOFF25</span>.</span>';
+      if(banner){
+        banner.innerHTML='<span class="november-primary">FREE mini golf with games bookings this November</span><span class="november-secondary">Plus 25% off hire over £400 with <span class="promo-code">TEEOFF25</span>.</span>';
+        banner.classList.add('campaign-ready');
+      }
       const feature=document.querySelector('.promo-feature');
       if(feature){
         const h=feature.querySelector('h2'),p=feature.querySelector('.lede'),fine=feature.querySelector('.promo-feature-fine');
