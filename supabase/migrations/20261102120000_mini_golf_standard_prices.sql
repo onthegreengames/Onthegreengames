@@ -3,8 +3,6 @@
 -- One hole £100, two £200, all three £275 across packages and Build Your Own.
 -- November's free-hole promotion is intentionally not included here.
 
-BEGIN;
-
 DO $guard$
 BEGIN
   IF (SELECT count(*) FROM private.booking_pricing_settings
@@ -587,4 +585,3 @@ END;
 
 $function$;
 
-COMMIT;
