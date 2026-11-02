@@ -1399,3 +1399,7 @@ button:disabled {
   color: var(--green-deep);
   margin-bottom: 2px;
 }
+
+/* The campaign is selected before banner copy is revealed, preventing offer flashes. */
+.promo-bar-text{visibility:hidden;}
+.promo-bar-text.campaign-ready{visibility:visible;}
