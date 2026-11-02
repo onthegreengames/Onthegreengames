@@ -4150,3 +4150,11 @@ html.js [data-reveal].is-visible{
 .games-offer-card .art-wrap:has(.package-photo-collage) {
   height: 190px;
 }
+
+/* November offer: single brand-colour banner and clear optional hire prices. */
+.promo-bar-text .november-primary,.promo-bar-text .november-secondary{display:block}
+.promo-bar-text .november-primary{font-weight:700;font-size:14px;color:#fff}
+.promo-bar-text .november-secondary{font-weight:500;font-size:12px;color:rgba(255,255,255,.9);margin-top:3px}
+.november-note{border-left:3px solid var(--gold-soft);padding:12px 16px;background:rgba(231,206,155,.13);border-radius:4px;font-size:14px;line-height:1.55;margin:16px 0}
+.mini-addon-table s,.golf-options s{color:#777;opacity:.76;margin-right:5px;font-weight:400}
+@media(max-width:740px){.promo-bar-text .november-primary{font-size:12px}.promo-bar-text .november-secondary{font-size:11px}}
