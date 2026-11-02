@@ -26,6 +26,10 @@ jobs:
         run: NODE_PATH="$RUNNER_TEMP/otgg-test-deps/node_modules" node tests/booking-flow.cjs
       - name: Test integrated calendar and venue flow
         run: NODE_PATH="$RUNNER_TEMP/otgg-test-deps/node_modules" node tests/unified-date-checker.cjs
+      - name: Test November automatic mini golf offer
+        run: NODE_PATH="$RUNNER_TEMP/otgg-test-deps/node_modules" node tests/automatic-offer.cjs
+      - name: Check automatic-offer endpoint syntax
+        run: node --check netlify/functions/automatic-offer-status.js
       - name: Test unified booking analytics and consent
         run: NODE_PATH="$RUNNER_TEMP/otgg-test-deps/node_modules" node tests/site-analytics-v2.cjs
       - name: Test booking endpoint transport
