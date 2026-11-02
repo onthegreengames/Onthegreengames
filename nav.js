@@ -35,6 +35,46 @@
   }
 })();
 
+
+/* November auto offer is managed in Supabase. Revert to standard banner if disabled/expired. */
+(function(){
+  let applied=false;
+  async function update(){
+    try{
+      const response=await fetch('/.netlify/functions/automatic-offer-status',{cache:'no-store'});
+      if(!response.ok) return;
+      const offer=await response.json();
+      if(offer.active!==true || offer.code!=='FREEHOLE_NOV26'){
+        if(applied)window.location.reload();
+        return;
+      }
+      if(applied)return;
+      applied=true;
+      const banner=document.querySelector('.promo-bar-text');
+      if(banner)banner.innerHTML='<span class="november-primary">FREE mini golf hole with qualifying garden games bookings this November</span><span class="november-secondary">Plus 25% off hire over £400 with <span class="promo-code">TEEOFF25</span>. Free hole ends 30 November.</span>';
+      const feature=document.querySelector('.promo-feature');
+      if(feature){
+        const h=feature.querySelector('h2'),p=feature.querySelector('.lede'),fine=feature.querySelector('.promo-feature-fine');
+        if(h)h.textContent='A FREE mini golf hole for your wedding';
+        if(p)p.innerHTML='Book a garden games collection this November and we’ll include one mini golf hole free. Add more holes if you like. Plus, save another 25% on qualifying hire over £400 with <span class="promo-code promo-code-lg">TEEOFF25</span>.';
+        if(fine)fine.textContent='Free-hole offer ends 30 November. TEEOFF25 ends 31 December. Travel is excluded.';
+      }
+      const addon=document.querySelector('.mini-addon-table tbody');
+      if(addon){
+        const rows=addon.querySelectorAll('tr');
+        [['£100','FREE'],['£200','£100'],['£275','£175']].forEach(function(v,i){if(rows[i]?.lastElementChild)rows[i].lastElementChild.innerHTML='<s>'+v[0]+'</s> <strong>'+v[1]+'</strong>';});
+        const head=document.querySelector('.mini-addon-copy .section-head');
+        if(head)head.insertAdjacentHTML('afterend','<p class="november-note"><strong>November offer:</strong> Your first mini golf hole is free with garden games, including qualifying Build Your Own bookings. Prices below include the £100 saving.</p>');
+      }
+      const golf=document.querySelector('.online-booking-note');
+      if(golf)golf.insertAdjacentHTML('beforebegin','<div class="online-booking-note november-note"><strong>November offer:</strong> Add mini golf to a qualifying giant garden games booking and your first hole is FREE. Applied automatically when booking. Standalone 3-hole hire remains £275.</div>');
+    }catch{}
+  }
+  function init(){update();window.addEventListener('focus',update);}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+})();
+
 document.addEventListener('DOMContentLoaded', function () {
   var toggle = document.getElementById('navToggle');
   var links = document.getElementById('navLinks');

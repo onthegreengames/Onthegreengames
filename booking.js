@@ -123,6 +123,35 @@ const state = {
 };
 const memories = {};
 let latestQuote = null;
+let automaticOffer = {active:false,discountAmount:0};
+function offerAvailableForGames(){
+  if(!automaticOffer.active || Date.now() >= Date.parse("2026-12-01T00:00:00Z")) return false;
+  return state.choice === "byo" ? state.custom.length > 0 : !!(state.choice && state.choice !== "mini_golf_3");
+}
+function automaticOfferSaving(){
+  return offerAvailableForGames() && (state.golf || 0) > 0
+    ? Math.min(golfPrices[state.golf], automaticOffer.discountAmount) : 0;
+}
+async function loadAutomaticOffer(){
+  try{
+    const response = await fetch("/.netlify/functions/automatic-offer-status",{cache:"no-store"});
+    if(!response.ok) return;
+    const data=await response.json(),prev=JSON.stringify(automaticOffer);
+    automaticOffer={active:data.active===true&&data.code==="FREEHOLE_NOV26",discountAmount:Number(data.discountAmount)||0};
+    if(prev!==JSON.stringify(automaticOffer)){
+      if(state.promo){
+        state.promo=false;
+        $("promoFeedback").textContent="Your offer changed. Please apply your promo code again.";
+      }
+      const banner=document.querySelector(".offer .promo-bar-text");
+      if(banner)banner.innerHTML=automaticOffer.active
+        ? "<strong>FREE mini golf hole</strong> with games bookings this November. Plus 25% off qualifying hire over £400 with <b>TEEOFF25</b>. Free hole ends 30 November."
+        : "25% off hire over £400. Use code <b>TEEOFF25</b>. Ends 31 December 2026.";
+      renderCustom();render();
+    }
+  }catch{}
+}
+
 function pkg() {
   return P.find((p) => p.id === state.choice);
 }
@@ -145,7 +174,9 @@ function quote() {
     : state.choice === "byo"
       ? golfPrices[state.golf || 0]
       : golfPrices[state.golf || 0];
-  const sub = base + extras + golf,
+  const grossSub = base + extras + golf,
+    automaticDiscount = automaticOfferSaving(),
+    sub = grossSub - automaticDiscount,
     discount = state.promo ? state.promo.discountAmount : 0,
     total = round(sub - discount + state.travel),
     deposit = round(total * 0.25);
@@ -153,6 +184,8 @@ function quote() {
     base,
     extras,
     golf,
+    grossSub,
+    automaticDiscount,
     sub,
     discount,
     total,
@@ -240,7 +273,17 @@ function gamesMarkup(games, mode) {
     .join("");
 }
 function golfMarkup(custom = false) {
-  return `<div class="block"><div class="block-top"><h3>${custom ? "Choose your mini golf" : "Add mini golf"}</h3><span class="tag gold">OPTIONAL</span></div><p class="section-lead">${custom ? "Add 1 or 2 holes at £100 each, or all 3 for £275." : "Make more of your day with 1, 2 or all 3 holes."}</p><div class="golf-options">${[0, 1, 2, 3].map((n) => `<label class="golf-option"><input type="radio" name="golf" value="${n}" ${state.golf === n ? "checked" : ""}><strong>${n === 0 ? "No mini golf" : n + " " + (n === 1 ? "hole" : "holes")}</strong><small>${n === 0 ? "£0" : "+" + money(golfPrices[n])}</small></label>`).join("")}</div></div>`;
+  const offer=offerAvailableForGames();
+  const description=offer
+    ? "Your first mini golf hole is FREE with these giant garden games this November. Choose up to 3 holes."
+    : custom
+      ? "Choose 1 or 2 holes at £100 each, or all 3 for £275. Add a giant garden game to qualify for the November free-hole offer."
+      : "Make more of your day with 1, 2 or all 3 holes.";
+  return `<div class="block"><div class="block-top"><h3>${custom ? "Choose your mini golf" : "Add mini golf"}</h3><span class="tag gold">${offer ? "NOVEMBER OFFER" : "OPTIONAL"}</span></div><p class="section-lead">${description}</p><div class="golf-options">${[0,1,2,3].map(n=>{
+    const usual=golfPrices[n],price=offer&&n>0?Math.max(0,usual-automaticOffer.discountAmount):usual;
+    const label=offer&&n>0?`<s>${money(usual)}</s> ${price?"+"+money(price):"FREE"}`:n===0?"£0":"+"+money(usual);
+    return `<label class="golf-option"><input type="radio" name="golf" value="${n}" ${state.golf===n?"checked":""}><strong>${n===0?"No mini golf":n+" "+(n===1?"hole":"holes")}</strong><small>${label}</small></label>`;
+  }).join("")}</div></div>`;
 }
 function renderCustom() {
   const p = pkg();
@@ -299,7 +342,7 @@ function selectionError() {
   if (pkg() && !pkg().golf && state.golf === null)
     return "Please choose a mini golf option, including “No mini golf” if you don’t want to add it.";
   if (state.choice === "byo" && quote().sub < 300)
-    return `Add ${money(300 - quote().sub)} more to reach the £300 Build Your Own minimum before discounts and travel.`;
+    return `Add ${money(300 - quote().sub)} more to reach the £300 Build Your Own minimum after the free-hole offer, before promo codes and travel.`;
   return "";
 }
 function showError(step, message) {
@@ -440,7 +483,8 @@ function bestDeal() {
     const cost =
       p.price +
       extras.reduce((n, id) => n + G.find((g) => g.id === id).price, 0) +
-      (p.golf ? 0 : golfPrices[holes]);
+      (p.golf ? 0 : golfPrices[holes]) -
+      (offerAvailableForGames() && !p.golf && holes>0 ? Math.min(automaticOffer.discountAmount,golfPrices[holes]) : 0);
     if (cost < quote().sub && (!best || cost < best.cost))
       best = {
         p,
@@ -519,6 +563,8 @@ function render() {
   $("travelPrice").textContent = state.travel
     ? money(state.travel)
     : "Included";
+  $("automaticDiscountLine").hidden = !q.automaticDiscount;
+  $("automaticDiscountLine").innerHTML="<span>November free mini golf hole</span><span>−"+money(q.automaticDiscount)+"</span>";
   $("discountLine").hidden = !state.promo;
   $("discountLine").innerHTML =
     "<span>" +
@@ -1121,6 +1167,8 @@ else if (requested.get("selection") === "minigolf") choose("mini_golf_3");
 else restoreSelection();
 render();
 go(-1, false);
+loadAutomaticOffer();
+window.addEventListener("focus",loadAutomaticOffer);
 try {
   const id = sessionStorage.getItem("oggPendingBookingId");
   if (id) {
