@@ -72,7 +72,11 @@
       }
       const golf=document.querySelector('.online-booking-note');
       if(golf)golf.insertAdjacentHTML('beforebegin','<div class="online-booking-note november-note"><strong>November offer:</strong> Add mini golf to a qualifying giant garden games booking and your first hole is FREE. Applied automatically when booking. Standalone 3-hole hire remains £275.</div>');
-    }catch{}
+    }catch{
+      // Outside November, restore the standard TEEOFF25 banner if the offer lookup fails.
+      const month = new Intl.DateTimeFormat('en-GB',{month:'2-digit',timeZone:'Europe/London'}).format(new Date());
+      if(month!=='11') document.querySelectorAll('.promo-bar-text').forEach(function(el){el.classList.add('campaign-ready');});
+    }
   }
   function init(){update();window.addEventListener('focus',update);document.addEventListener('visibilitychange',function(){if(!document.hidden)update();});}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
