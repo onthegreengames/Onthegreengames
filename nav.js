@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
       aboutLink.className = 'current';
       aboutLink.setAttribute('aria-current', 'page');
     }
-    var bookButton = links.querySelector('a.btn[href="/check-date"], a.btn[href="/booking"]');
+    var bookButton = links.querySelector('a.btn[href="/booking"], a.btn[href="/booking"]');
     if (bookButton) bookButton.insertAdjacentElement('beforebegin', aboutLink);
     else links.appendChild(aboutLink);
   }
@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
 })();
 
 /* All historic Check Your Date links now use the unified booking page. */
-document.querySelectorAll('a[href^="/check-date"]').forEach(link => {
+document.querySelectorAll('a[href^="/booking"]').forEach(link => {
  const href = link.getAttribute("href");
- link.setAttribute("href", "/booking" + href.substring("/check-date".length));
+ link.setAttribute("href", "/booking" + href.substring("/booking".length));
 });
