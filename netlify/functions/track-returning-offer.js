@@ -1,8 +1,8 @@
-// Pop-up interaction collection. Legacy clients still default to BIRDIE40.
+// Pop-up interaction collection. Legacy clients without offerCode still default to BIRDIE40.
 'use strict';
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i;
 const TYPES = new Set(['impression','book_now_click','copy_code_click','dismiss','form_open','form_submit','form_error']);
-const CODES = new Set(['BIRDIE40','RETURNING_VISITOR_HELP']);
+const CODES = new Set(['BIRDIE30','BIRDIE40','RETURNING_VISITOR_HELP']);
 function response(statusCode,body){return {statusCode,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'},body:JSON.stringify(body)};}
 exports.handler = async function(event) {
   if(event.httpMethod!=='POST')return response(405,{error:'Method not allowed'});

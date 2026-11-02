@@ -51,7 +51,7 @@
       if(applied)return;
       applied=true;
       const banner=document.querySelector('.promo-bar-text');
-      if(banner)banner.innerHTML='<span class="november-primary">FREE mini golf hole with qualifying garden games bookings this November</span><span class="november-secondary">Plus 25% off hire over £400 with <span class="promo-code">TEEOFF25</span>. Free hole ends 30 November.</span>';
+      if(banner)banner.innerHTML='<span class="november-primary">FREE mini golf with games bookings this November</span><span class="november-secondary">Plus 25% off hire over £400 with <span class="promo-code">TEEOFF25</span>.</span>';
       const feature=document.querySelector('.promo-feature');
       if(feature){
         const h=feature.querySelector('h2'),p=feature.querySelector('.lede'),fine=feature.querySelector('.promo-feature-fine');

@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  var OFFER_CODE = 'BIRDIE40';
+  var OFFER_CODE = 'BIRDIE30';
   var OCTOBER_CAMPAIGN_END = Date.parse('2026-11-01T00:00:00+00:00');
   var RETURN_GAP_MS = 30 * 60 * 1000;
   var MAX_OFFER_SHOWS = 3;
@@ -9,6 +9,7 @@
   var CONSENT_VERSION = 3;
   var TRACK_URL = '/.netlify/functions/track-returning-offer';
   var initialisedForConsent = false;
+  // Keep the historical birdie40 storage keys to retain existing show limits and visits.
   var STORAGE = {
     firstSeen: 'otgg_first_seen_v1',
     lastSeen: 'otgg_last_seen_v1',
@@ -131,7 +132,8 @@
       impressionId: impressionId,
       eventType: eventType,
       eventDetail: eventDetail || null,
-      pagePath: normalisePath()
+      pagePath: normalisePath(),
+      offerCode: OFFER_CODE
     });
 
     try {
@@ -222,15 +224,15 @@
       '<h2 class="otgg-return-offer__title" id="otggReturnOfferTitle">Still thinking it over?</h2>',
       '<p class="otgg-return-offer__intro" id="otggReturnOfferIntro">We’d love to have you with us.</p>',
       '<div class="otgg-return-offer__deal">',
-      '<div class="otgg-return-offer__amount">40% OFF</div>',
+      '<div class="otgg-return-offer__amount">30% OFF</div>',
       '<div class="otgg-return-offer__label">Use code</div>',
       '<div class="otgg-return-offer__code-row">',
-      '<div class="otgg-return-offer__code" aria-label="Promo code BIRDIE40">BIRDIE40</div>',
+      '<div class="otgg-return-offer__code" aria-label="Promo code BIRDIE30">BIRDIE30</div>',
       '<button class="otgg-return-offer__copy" type="button">Copy code</button>',
       '</div>',
       '</div>',
       '<a class="otgg-return-offer__cta" href="/check-date">Book Now&nbsp;&nbsp;→</a>',
-      '<p class="otgg-return-offer__fine">Offer available for a limited time.</p>',
+      '<p class="otgg-return-offer__fine">Thanks for coming back. Applies to hire, excluding travel. One promo code per booking.</p>',
       '<span class="otgg-return-offer__sr" aria-live="polite"></span>',
       '</section>'
     ].join('');
@@ -263,7 +265,7 @@
 
       function copied() {
         copyButton.textContent = 'Copied';
-        live.textContent = 'Promo code BIRDIE40 copied.';
+        live.textContent = 'Promo code BIRDIE30 copied.';
         window.setTimeout(function () { copyButton.textContent = 'Copy code'; }, 1800);
       }
 
@@ -374,8 +376,8 @@
   }
 
   function startForConsent() {
-    // Pause the returning-visitor 40% offer while the public 50% October promotion runs.
-    // The original returning-visitor offer resumes automatically on 1 November 2026.
+    // Pause the returning-visitor offer while the public 50% October promotion runs.
+    // The returning-visitor offer resumes automatically on 1 November 2026.
     if (Date.now() < OCTOBER_CAMPAIGN_END) {
       removeOpenOffer();
       return;
