@@ -70,7 +70,7 @@
       if(golf)golf.insertAdjacentHTML('beforebegin','<div class="online-booking-note november-note"><strong>November offer:</strong> Add mini golf to a qualifying giant garden games booking and your first hole is FREE. Applied automatically when booking. Standalone 3-hole hire remains £275.</div>');
     }catch{}
   }
-  function init(){update();window.addEventListener('focus',update);}
+  function init(){update();window.addEventListener('focus',update);document.addEventListener('visibilitychange',function(){if(!document.hidden)update();});}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
 })();

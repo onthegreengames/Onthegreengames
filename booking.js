@@ -1169,6 +1169,7 @@ render();
 go(-1, false);
 loadAutomaticOffer();
 window.addEventListener("focus",loadAutomaticOffer);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) loadAutomaticOffer(); });
 try {
   const id = sessionStorage.getItem("oggPendingBookingId");
   if (id) {
