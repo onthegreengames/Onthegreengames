@@ -4162,3 +4162,6 @@ html.js [data-reveal].is-visible{
 /* The campaign is selected before banner copy is revealed, preventing offer flashes. */
 .promo-bar-text{visibility:hidden;}
 .promo-bar-text.campaign-ready{visibility:visible;}
+
+/* Footer links wrap with the Wedding Guides item included. */
+footer .foot-links{flex-wrap:wrap;row-gap:12px}

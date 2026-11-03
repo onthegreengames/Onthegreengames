@@ -231,6 +231,33 @@ document.addEventListener('DOMContentLoaded', function () {
     else footerAboutLinks.appendChild(footerAbout);
   }
 
+  // Add wedding guides to Explore and the shared footer.
+  var guidesPanel = document.getElementById('explorePanel');
+  var viewingGuides = window.location.pathname.indexOf('/wedding-guides') === 0;
+  if (guidesPanel && !guidesPanel.querySelector('a[href="/wedding-guides"]')) {
+    var menuGuides = document.createElement('a');
+    menuGuides.href = '/wedding-guides';
+    menuGuides.className = 'mega-item';
+    menuGuides.innerHTML = '<div class="mega-item-title">Wedding Guides</div>' +
+      '<div class="mega-item-desc">Planning advice about games and mini golf.</div>';
+    if (viewingGuides) {
+      menuGuides.classList.add('current');
+      var exploreLink = document.getElementById('exploreTrigger');
+      if (exploreLink) exploreLink.classList.add('current');
+    }
+    guidesPanel.appendChild(menuGuides);
+  }
+  var footerGuideLinks = document.querySelector('footer .foot-links');
+  if (footerGuideLinks && !footerGuideLinks.querySelector('a[href="/wedding-guides"]')) {
+    var footerGuideLink = document.createElement('a');
+    footerGuideLink.href = '/wedding-guides';
+    footerGuideLink.textContent = 'Wedding Guides';
+    if (viewingGuides) footerGuideLink.setAttribute('aria-current', 'page');
+    var faqGuideAnchor = footerGuideLinks.querySelector('a[href="/booking-info"]');
+    if (faqGuideAnchor) faqGuideAnchor.insertAdjacentElement('beforebegin', footerGuideLink);
+    else footerGuideLinks.appendChild(footerGuideLink);
+  }
+
   // Footer-only Contact Us link, consistently placed on every standard page.
   var footerLinks = document.querySelector('footer .foot-links');
   if (footerLinks && !footerLinks.querySelector('a[href="/contact"]')) {
