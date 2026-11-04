@@ -81,9 +81,9 @@ const $ = (id) => w.document.getElementById(id),
   boot();
   // General links on the mini golf page do not request golf preselection.
   const golfPage = fs.readFileSync("mini-golf.html", "utf8");
-  assert.equal((golfPage.match(/href="\/check-date\?selection=minigolf"/g) || []).length, 1);
-  assert.match(golfPage, /href="\/check-date\?selection=minigolf">Choose Mini Golf/);
-  assert.equal((golfPage.match(/href="\/check-date\?selection=games"/g) || []).length, 5);
+  assert.equal((golfPage.match(/href="\/booking\?selection=minigolf"/g) || []).length, 1);
+  assert.match(golfPage, /href="\/booking\?selection=minigolf">Choose Mini Golf/);
+  assert.equal((golfPage.match(/href="\/booking\?selection=games"/g) || []).length, 5);
   // The live Stripe checkout uses an OTGG custom host, not checkout.stripe.com.
   for (const valid of [
     "https://checkout.stripe.com/c/pay/cs_live_test",
