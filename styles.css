@@ -278,9 +278,9 @@ nav{
   line-height:1.4;
 }
 
-/* Full-width item on the second row of the two-column mega panel */
+/* Keep all four Explore menu links in an even two-column grid on desktop. */
 .mega-item--wide{
-  grid-column:1 / -1;
+  grid-column:auto;
 }
 
 
