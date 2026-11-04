@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Shared templates can carry a stale .current on Areas We Cover.
   // Keep page-current metadata accurate, but do not use it as persistent hover styling.
   if (guidesPanel) {
-    var path = window.location.pathname.replace(/\\.html$/, '').replace(/\\/$/, '') || '/';
+    var path = window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
     guidesPanel.querySelectorAll('a.mega-item').forEach(function (item) {
       var href = item.getAttribute('href') || '';
       var isCurrent = href === '/wedding-guides'
