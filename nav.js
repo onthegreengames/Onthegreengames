@@ -247,6 +247,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     guidesPanel.appendChild(menuGuides);
   }
+  // Shared templates can carry a stale .current on Areas We Cover.
+  // Keep page-current metadata accurate, but do not use it as persistent hover styling.
+  if (guidesPanel) {
+    var path = window.location.pathname.replace(/\\.html$/, '').replace(/\\/$/, '') || '/';
+    guidesPanel.querySelectorAll('a.mega-item').forEach(function (item) {
+      var href = item.getAttribute('href') || '';
+      var isCurrent = href === '/wedding-guides'
+        ? path === '/wedding-guides' || path.indexOf('/wedding-guides/') === 0
+        : path === href;
+      item.classList.toggle('current', isCurrent);
+      if (isCurrent) item.setAttribute('aria-current', 'page');
+      else item.removeAttribute('aria-current');
+    });
+  }
   var footerGuideLinks = document.querySelector('footer .foot-links');
   if (footerGuideLinks && !footerGuideLinks.querySelector('a[href="/wedding-guides"]')) {
     var footerGuideLink = document.createElement('a');

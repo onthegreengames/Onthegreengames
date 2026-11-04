@@ -174,7 +174,7 @@ nav{
   opacity:1;
 }
 
-.nav-links a.current{
+.nav-links a.current:not(.mega-item){
   opacity:1;
   border-bottom:1.5px solid var(--gold);
   padding-bottom:3px;
@@ -259,9 +259,16 @@ nav{
   transition:background .15s;
 }
 
-.mega-item:hover,
-.mega-item.current{
+/* Only actual mouse hover gets the tile background. No persistent "current" fill. */
+@media (hover:hover) and (pointer:fine){
+  .mega-item:hover{
+    background:rgba(30,71,52,0.07);
+  }
+}
+.mega-item:focus-visible{
   background:rgba(30,71,52,0.07);
+  outline:2px solid var(--green-mid);
+  outline-offset:-2px;
 }
 
 .mega-item-title{
