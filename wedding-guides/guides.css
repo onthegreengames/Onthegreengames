@@ -23,11 +23,10 @@
 
 
 /* Simple table of contents rail, independent of the site's full-width header navigation. */
-.guide-toc-wrap{min-width:0}
+.guide-toc-wrap{min-width:0;position:sticky;top:98px;align-self:start}
 .guide-toc{
   display:block;
-  position:sticky;
-  top:98px;
+  position:relative;
   max-height:calc(100vh - 128px);
   overflow-y:auto;
   scrollbar-width:thin;
