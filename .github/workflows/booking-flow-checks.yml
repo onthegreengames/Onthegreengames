@@ -34,6 +34,8 @@ jobs:
         run: NODE_PATH="$RUNNER_TEMP/otgg-test-deps/node_modules" node tests/birdie30-campaign.cjs
       - name: Validate returning-offer API syntax
         run: node --check netlify/functions/track-returning-offer.js
+      - name: Test returning-offer tracking endpoint
+        run: node tests/returning-offer-tracking.cjs
       - name: Test unified booking analytics and consent
         run: NODE_PATH="$RUNNER_TEMP/otgg-test-deps/node_modules" node tests/site-analytics-v2.cjs
       - name: Test booking endpoint transport
