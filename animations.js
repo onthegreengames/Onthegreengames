@@ -338,15 +338,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 (function () {
-  if (document.querySelector('script[data-otgg-return-offer]')) return;
-  var script = document.createElement('script');
-  script.src = '/returning-offer.js';
-  script.async = true;
-  script.setAttribute('data-otgg-return-offer', '');
-  document.head.appendChild(script);
-})();
-
-(function () {
   if (document.querySelector('script[data-otgg-returning-help]')) return;
   var script = document.createElement('script');
   script.src = '/returning-help.js';
