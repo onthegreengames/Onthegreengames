@@ -367,3 +367,14 @@ document.querySelectorAll('a[href^="/booking"]').forEach(link => {
  const href = link.getAttribute("href");
  link.setAttribute("href", "/booking" + href.substring("/booking".length));
 });
+
+// Load the BIRDIE30 visitor tracker across the whole site, including booking.html.
+// Its own campaign start guard prevents November popup impressions.
+(function () {
+  if (document.querySelector('script[data-otgg-return-offer]')) return;
+  var script = document.createElement('script');
+  script.src = '/returning-offer.js';
+  script.async = true;
+  script.setAttribute('data-otgg-return-offer', '');
+  document.head.appendChild(script);
+})();
