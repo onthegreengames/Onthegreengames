@@ -388,11 +388,8 @@
   }
 
   function startForConsent() {
-    // Resume this offer only after the November promotions end, 1 December UK time.
-    if (Date.now() < CAMPAIGN_START) {
-      removeOpenOffer();
-      return;
-    }
+    // Record consented visits in November for December return detection.
+    // The separate offerAllowedHere() guard blocks all popup display before 1 December.
     if (!personalisationAllowed()) {
       clearOfferStorage();
       removeOpenOffer();
