@@ -66,6 +66,13 @@ async function page(path, jar = {}, at = DECEMBER) {
   };
   assert.equal((await page('/packages', preLaunch, NOVEMBER)).visible, false);
 
+  // A November first visit is recorded but cannot see the offer until December.
+  const novemberVisitor = {};
+  assert.equal((await page('/packages', novemberVisitor, NOVEMBER)).visible, false);
+  assert.ok(novemberVisitor.otgg_first_seen_v1, 'Pre-launch visits must be remembered');
+  assert.equal((await page('/packages', novemberVisitor, DECEMBER)).visible, true,
+    'A November visitor coming back in December qualifies as returning');
+
   // A browsing-only first visitor never qualifies, even after 8 page views.
   const browsing = {};
   for (const path of ['/', '/packages', '/mini-golf', '/giant-games', '/about-us', '/contact', '/wedding-guides', '/areas-we-cover']) {
