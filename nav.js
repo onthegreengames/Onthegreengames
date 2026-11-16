@@ -247,6 +247,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     guidesPanel.appendChild(menuGuides);
   }
+  // Make the events hire page discoverable from Explore on all site pages.
+  if (guidesPanel && !guidesPanel.querySelector('a[href="/corporate-events"]')) {
+    var eventStyles = document.createElement('style');
+    eventStyles.id = 'otgg-events-menu-style';
+    eventStyles.textContent = '.mega-item--events{grid-column:1 / -1;border-top:1px solid var(--green-line);margin-top:4px;}';
+    if (!document.getElementById(eventStyles.id)) document.head.appendChild(eventStyles);
+    var eventMenuLink = document.createElement('a');
+    eventMenuLink.href = '/corporate-events';
+    eventMenuLink.className = 'mega-item mega-item--events';
+    eventMenuLink.innerHTML = '<div class="mega-item-title">Corporate &amp; Events Hire</div>' +
+      '<div class="mega-item-desc">Mini golf and giant games for company parties, shows and other events.</div>';
+    guidesPanel.appendChild(eventMenuLink);
+  }
   // Shared templates can carry a stale .current on Areas We Cover.
   // Keep page-current metadata accurate, but do not use it as persistent hover styling.
   if (guidesPanel) {
@@ -270,6 +283,17 @@ document.addEventListener('DOMContentLoaded', function () {
     var faqGuideAnchor = footerGuideLinks.querySelector('a[href="/booking-info"]');
     if (faqGuideAnchor) faqGuideAnchor.insertAdjacentElement('beforebegin', footerGuideLink);
     else footerGuideLinks.appendChild(footerGuideLink);
+  }
+
+  // Show corporate hire in the shared footer as well as Explore.
+  var footerEventsLinks = document.querySelector('footer .foot-links');
+  if (footerEventsLinks && !footerEventsLinks.querySelector('a[href="/corporate-events"]')) {
+    var footerEventsLink = document.createElement('a');
+    footerEventsLink.href = '/corporate-events';
+    footerEventsLink.textContent = 'Corporate & Events';
+    var footerFaqLink = footerEventsLinks.querySelector('a[href="/booking-info"]');
+    if (footerFaqLink) footerFaqLink.insertAdjacentElement('beforebegin', footerEventsLink);
+    else footerEventsLinks.appendChild(footerEventsLink);
   }
 
   // Footer-only Contact Us link, consistently placed on every standard page.
@@ -371,6 +395,8 @@ document.querySelectorAll('a[href^="/booking"]').forEach(link => {
 // Load the BIRDIE30 visitor tracker across the whole site, including booking.html.
 // Its own campaign start guard prevents November popup impressions.
 (function () {
+  // Wedding discount popups do not apply to corporate/event enquiries.
+  if (window.location.pathname.replace(/\.html$/, '').replace(/\/$/, '') === '/corporate-events') return;
   if (document.querySelector('script[data-otgg-return-offer]')) return;
   var script = document.createElement('script');
   script.src = '/returning-offer.js';
