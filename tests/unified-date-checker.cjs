@@ -6,6 +6,8 @@ const { JSDOM } = require("jsdom");
 const html = fs.readFileSync("booking.html", "utf8");
 const booking = fs.readFileSync("booking.js", "utf8");
 const dateChecker = fs.readFileSync("booking-date.js", "utf8");
+const now = new Date();
+const todayString = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, "0"), String(now.getDate()).padStart(2, "0")].join("-");
 const dom = new JSDOM(html, {
   url: "https://example.test/booking",
   runScripts: "outside-only",
@@ -19,7 +21,7 @@ const requests = [];
 w.fetch = async (url, options = {}) => {
   requests.push(String(url));
   if (String(url).includes("get_earliest_bookable_date")) {
-    return { ok: true, json: async () => "2027-03-01" };
+    return { ok: true, json: async () => todayString };
   }
   if (String(url).includes("get_blocked_booking_dates")) {
     return { ok: true, json: async () => [{ event_date: "2027-08-17" }] };
@@ -76,6 +78,31 @@ async function waitFor(predicate, description) {
   $("next0").click();
   assert(w.document.querySelector('[data-mode="extra"][data-game="cornhole"]').checked);
   assert(requests.filter(url => url.includes("/postcode_districts")).some(url => url.includes("L1")));
+
+  // On a fresh visit the calendar must open on the current month, with today selectable.
+  const freshDom = new JSDOM(html, {
+    url: "https://example.test/booking",
+    runScripts: "outside-only",
+    pretendToBeVisual: true
+  });
+  const fresh = freshDom.window;
+  fresh.HTMLElement.prototype.scrollIntoView = function () {};
+  fresh.matchMedia = w.matchMedia;
+  fresh.fetch = w.fetch;
+  fresh.eval(booking);
+  fresh.eval(dateChecker);
+  const freshElement = id => fresh.document.getElementById(id);
+  const expectedMonth = now.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+  await waitFor(() => freshElement("calTitle").textContent === expectedMonth, "calendar to open on the current month");
+  assert.equal(freshElement("bookingOpenNote").style.display, "none", "The old opening restriction notice must be hidden");
+  const todayCell = [...freshElement("calGrid").querySelectorAll(".cal-day")].find(cell => cell.textContent === String(now.getDate()));
+  assert(todayCell && !todayCell.disabled, "Today's date must be selectable");
+  assert.equal(freshElement("calPrev").disabled, true, "The calendar must not navigate into past months");
+  if (now.getDate() > 1) {
+    const yesterdayCell = [...freshElement("calGrid").querySelectorAll(".cal-day")].find(cell => cell.textContent === String(now.getDate() - 1));
+    assert(yesterdayCell && yesterdayCell.disabled, "Past days must stay disabled");
+  }
+  freshDom.window.close();
   dom.window.close();
   console.log("PASS: real date checker, blocked-date RPC, saved-date verification, inline edit, latest travel fee and retained extras");
 })().catch(error => {

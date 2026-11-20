@@ -782,18 +782,19 @@ Please fill in venue name, postcode and your wedding date first.
 
 
   /*
-    Safety fallback only.
-
-    The real date comes from:
-    public.get_earliest_bookable_date()
-
-    If Supabase temporarily cannot be reached, we fail safe and
-    continue blocking dates before 1 March 2027 rather than
-    accidentally opening them.
+    The normal opening date comes from public.get_earliest_bookable_date().
+    If that request fails, start from the visitor's current local date.
+    Availability requests still fail closed if blocked dates cannot be loaded.
   */
 
-  const FALLBACK_EARLIEST_BOOKABLE_DATE =
-    '2027-03-01';
+  const FALLBACK_EARLIEST_BOOKABLE_DATE = (() => {
+    const today = new Date();
+    return [
+      today.getFullYear(),
+      String(today.getMonth() + 1).padStart(2, '0'),
+      String(today.getDate()).padStart(2, '0')
+    ].join('-');
+  })();
 
 
   /* ============================================================
