@@ -40,3 +40,6 @@ jobs:
         run: NODE_PATH="$RUNNER_TEMP/otgg-test-deps/node_modules" node tests/site-analytics-v2.cjs
       - name: Test booking endpoint transport
         run: node tests/booking-endpoints.cjs
+
+      - name: Test interactive homepage, mini golf and giant games pages
+        run: NODE_PATH="$RUNNER_TEMP/otgg-test-deps/node_modules" node tests/interactive-pages.cjs
