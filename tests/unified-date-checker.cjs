@@ -46,6 +46,7 @@ async function waitFor(predicate, description) {
   throw new Error("Timed out waiting for " + description);
 }
 (async () => {
+  w.eval(fs.readFileSync("selection-pricing.js","utf8"));
   w.eval(booking);
   assert.equal($("stepDate").hidden, false, "The date step must show while context is unverified");
   w.eval(dateChecker);
@@ -57,9 +58,10 @@ async function waitFor(predicate, description) {
   assert(requests.some(url => url.includes("get_blocked_booking_dates")));
   assert(requests.some(url => url.includes("get_earliest_bookable_date")));
 
-  w.document.querySelector('[data-package="mini_golf_3"]').click();
+  w.document.querySelector('[data-package="mini_golf_hire"]').click();
   $("next0").click();
-  const extra = w.document.querySelector('[data-mode="extra"][data-game="cornhole"]');
+  $("golfRange").value="3"; $("golfRange").dispatchEvent(new w.Event("input",{bubbles:true}));
+  const extra = w.document.querySelector('[data-mode="custom"][data-game="cornhole"]');
   extra.checked = true;
   extra.dispatchEvent(new w.Event("change", { bubbles: true }));
   assert.equal($("totalPrice").textContent, "£440");
@@ -76,7 +78,7 @@ async function waitFor(predicate, description) {
   assert.equal($("totalPrice").textContent, "£480");
   assert($("accordionSummaryDate").textContent.includes("L1 1AA"));
   $("next0").click();
-  assert(w.document.querySelector('[data-mode="extra"][data-game="cornhole"]').checked);
+  assert(w.document.querySelector('[data-mode="custom"][data-game="cornhole"]').checked);
   assert(requests.filter(url => url.includes("/postcode_districts")).some(url => url.includes("L1")));
 
   // On a fresh visit the calendar must open on the current month, with today selectable.
@@ -89,6 +91,7 @@ async function waitFor(predicate, description) {
   fresh.HTMLElement.prototype.scrollIntoView = function () {};
   fresh.matchMedia = w.matchMedia;
   fresh.fetch = w.fetch;
+  fresh.eval(fs.readFileSync("selection-pricing.js","utf8"));
   fresh.eval(booking);
   fresh.eval(dateChecker);
   const freshElement = id => fresh.document.getElementById(id);
