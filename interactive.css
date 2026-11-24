@@ -1,0 +1,13 @@
+/* Interactive site components – shared OTGG design tokens. */
+.otgg-timeline-block{grid-template-columns:1fr 1fr;gap:24px;position:relative}
+.otgg-timeline-block .timeline-controls{align-self:center;min-width:0}
+.timeline-controls p,.timeline-footer p{color:var(--cream-card);font-size:14px;line-height:1.5;margin:0 0 12px}
+.timeline-controls input[type=range]{display:block;width:100%;height:44px;accent-color:var(--gold-soft);cursor:pointer;margin:0;padding:0;touch-action:pan-y}
+.timeline-ticks{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.timeline-ticks button{font:inherit;font-size:11px;color:var(--cream-card);background:none;border:0;border-bottom:2px solid transparent;padding:8px 2px;min-height:44px;cursor:pointer;overflow-wrap:anywhere}
+.timeline-ticks button[aria-pressed=true]{color:var(--gold-soft);border-color:var(--gold-soft);font-weight:700}
+.timeline-stage{grid-column:1/-1;background:var(--cream-card);color:var(--ink);border-radius:12px;padding:22px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;min-height:145px}
+.timeline-stage .eyebrow{color:var(--green-mid);margin-bottom:8px}.timeline-stage h3{font-size:clamp(21px,2.5vw,28px);color:var(--green-deep)}.timeline-stage p{font-size:14px;margin:8px 0 0;color:#53665a;line-height:1.6}.timeline-stage #timelineTime{font-size:13px;color:var(--green-mid);white-space:nowrap}
+.timeline-footer{grid-column:1/-1;display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}.timeline-footer p{font-size:12px;margin:0}.timeline-footer .btn{margin:0}
+.timeline-ticks button:focus-visible,.timeline-controls input:focus-visible{outline:2px solid var(--gold-soft);outline-offset:3px}
+@media(max-width:760px){.otgg-timeline-block{grid-template-columns:1fr;gap:15px}.timeline-stage{grid-template-columns:1fr;gap:8px;padding:16px;min-height:170px}.timeline-ticks button{font-size:10px}.timeline-footer{align-items:flex-start;flex-direction:column}}
