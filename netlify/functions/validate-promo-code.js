@@ -130,6 +130,9 @@ function normaliseInput(body) {
     throw new Error('Check your wedding date before applying a promo code.');
   }
 
+  if (packageCode === 'mini_golf_3') {
+    throw new Error('Please refresh the booking page and choose Mini Golf Hire.');
+  }
   const gameCodes = body.gameCodes ?? body.game_codes ?? [];
   if (!Array.isArray(gameCodes) || gameCodes.length > 20) {
     throw new Error('The selected games are not valid.');

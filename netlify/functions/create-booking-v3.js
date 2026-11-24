@@ -302,6 +302,10 @@ function normaliseInput(body) {
     throw new Error('A package must be selected.');
   }
 
+  if (packageCode === 'mini_golf_3') {
+    throw new Error('Please refresh the booking page and choose Mini Golf Hire.');
+  }
+
   const requestedGameCodes = firstDefined(
     booking.game_codes,
     booking.gameCodes,
