@@ -53,6 +53,7 @@ const change = selector => {
 };
 (async () => {
   w.eval(tracking);
+  w.eval(fs.readFileSync("selection-pricing.js","utf8"));
   w.eval(booking + "\nwindow.testApi = { checkout, applyPromo };");
   w.document.dispatchEvent(new w.Event('DOMContentLoaded'));
   assert.equal(eventCount("page_view"), 1);
@@ -64,11 +65,12 @@ const change = selector => {
     venuePostcode: "L1 1AA", travelFee: 40
   }, false);
   assert.equal(eventCount("check_date_continue"), 1);
-  click('[data-package="mini_golf_3"]');
+  click('[data-package="mini_golf_hire"]');
   click("#next0");
+  $("golfRange").value="3"; $("golfRange").dispatchEvent(new w.Event("input",{bubbles:true}));
   assert.equal(eventCount("package_selected"), 1);
-  assert.equal(events.find(e=>e.eventName==="package_selected").eventDetail,"mini_golf_3");
-  change('[data-mode="extra"][data-game="cornhole"]');
+  assert.equal(events.find(e=>e.eventName==="package_selected").eventDetail,"mini_golf_hire");
+  change('[data-mode="custom"][data-game="cornhole"]');
   assert.equal(eventCount("extra_game_added"), 1);
   click("#next1");
   assert.equal(eventCount("extras_completed"), 1);
