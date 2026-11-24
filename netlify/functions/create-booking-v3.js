@@ -201,8 +201,8 @@ function parseGolfHoleCount(value) {
     throw new Error('mini_golf_holes must be a whole number.');
   }
 
-  if (number < 0 || number > 3) {
-    throw new Error('mini_golf_holes must be between 0 and 3.');
+  if (number < 0 || number > 5) {
+    throw new Error('mini_golf_holes must be between 0 and 5.');
   }
 
   return number;
