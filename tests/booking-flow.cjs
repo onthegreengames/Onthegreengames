@@ -44,6 +44,7 @@ function boot(saved = {}, route = "/booking") {
             : { error: "Test checkout outage" },
     };
   };
+  w.eval(fs.readFileSync("selection-pricing.js","utf8"));
   w.eval(js + "\nwindow.testApi={checkout,applyPromo,isApprovedCheckoutUrl};");
   // The real date checker calls this only after validating Supabase availability and fee.
   if (!w.sessionStorage.getItem("oggPendingBookingId")) {
@@ -62,6 +63,7 @@ const $ = (id) => w.document.getElementById(id),
     e.checked = true;
     e.dispatchEvent(new w.Event("change", { bubbles: true }));
   },
+  setGolf = n => { const slider=$("golfRange"); slider.value=String(n); slider.dispatchEvent(new w.Event("input",{bubbles:true})); },
   fill = (id, v) => {
     $(id).value = v;
   };
@@ -71,13 +73,13 @@ const $ = (id) => w.document.getElementById(id),
   assert.equal(w.document.querySelector("#packageCards .pack").dataset.package, "the_mix");
   assert.equal(w.document.querySelector('[data-package="the_mix"]').getAttribute("aria-pressed"), "true");
   assert(w.document.querySelector('[data-package="the_mix"]').classList.contains("featured-pack"));
-  assert(!w.document.querySelector('[data-package="mini_golf_3"]').classList.contains("featured-pack"));
+  assert(!w.document.querySelector('[data-package="mini_golf_hire"]').classList.contains("featured-pack"));
   boot({}, "/booking?selection=games");
   assert.equal(w.document.querySelector('[data-package="the_mix"]').getAttribute("aria-pressed"), "true");
   boot({}, "/booking?selection=minigolf");
-  assert.equal(w.document.querySelector('[data-package="mini_golf_3"]').getAttribute("aria-pressed"), "true");
+  assert.equal(w.document.querySelector('[data-package="mini_golf_hire"]').getAttribute("aria-pressed"), "true");
   boot({}, "/booking?package=mini_golf_3");
-  assert.equal(w.document.querySelector('[data-package="mini_golf_3"]').getAttribute("aria-pressed"), "true");
+  assert.equal(w.document.querySelector('[data-package="mini_golf_hire"]').getAttribute("aria-pressed"), "true");
   boot();
   // General links on the mini golf page do not request golf preselection.
   const golfPage = fs.readFileSync("mini-golf.html", "utf8");
@@ -99,10 +101,11 @@ const $ = (id) => w.document.getElementById(id),
     "javascript:alert(1)",
     "not a URL",
   ]) assert.equal(w.testApi.isApprovedCheckoutUrl(invalid), false, invalid);
-  click("[data-package=mini_golf_3]");
+  click("[data-package=mini_golf_hire]");
   click("#next0");
-  change("[data-mode=extra][data-game=cornhole]");
-  change("[data-mode=extra][data-game=limbo]");
+  setGolf(3);
+  change("[data-mode=custom][data-game=cornhole]");
+  change("[data-mode=custom][data-game=limbo]");
   assert.equal($("totalPrice").textContent, "£490");
   click("#next1");
   fill("promoInput", "OCT50");
@@ -120,7 +123,9 @@ const $ = (id) => w.document.getElementById(id),
   $("termsAgreed").checked = true;
   await w.testApi.checkout();
   let create = posts.find((p) => p.url.includes("create-booking-v3"));
-  assert.deepEqual(create.data.booking.extra_game_codes, ["cornhole", "limbo"]);
+  assert.deepEqual(create.data.booking.game_codes, ["cornhole", "limbo"]);
+  assert.equal(create.data.booking.selection_type,"build_your_own");
+  assert.deepEqual(create.data.booking.extra_game_codes,[]);
   assert.equal(create.data.booking.promo_code, "OCT50");
   assert.equal(create.data.customer.first_name, "Test");
   assert($("bookingLayout").hidden);
@@ -140,7 +145,7 @@ const $ = (id) => w.document.getElementById(id),
   for (const code of ["cornhole", "giant_connect_4", "limbo", "giant_jenga"])
     change(`[data-mode=included][data-game=${code}]`);
   change("[data-mode=extra][data-game=giant_dominoes]");
-  change('[name=golf][value="1"]');
+  setGolf(1);
   assert.equal($("totalPrice").textContent, "£515");
   click("#next1");
   assert(!$("step2").hidden);
@@ -151,20 +156,22 @@ const $ = (id) => w.document.getElementById(id),
   click("#next1");
   assert($("error1").textContent.includes("£300"));
   boot();
-  click("[data-package=mini_golf_3]");
+  click("[data-package=mini_golf_hire]");
   click("#next0");
-  change("[data-mode=extra][data-game=cornhole]");
-  change("[data-mode=extra][data-game=limbo]");
+  setGolf(3);
+  change("[data-mode=custom][data-game=cornhole]");
+  change("[data-mode=custom][data-game=limbo]");
   fill("promoInput", "OCT50");
   await w.testApi.applyPromo();
-  change("[data-mode=extra][data-game=giant_jenga]");
+  change("[data-mode=custom][data-game=giant_jenga]");
   assert($("discountLine").hidden);
   assert($("promoFeedback").textContent.includes("changed"));
   // Moving back to the date step must preserve chosen extras and invalidate the old context.
   boot();
-  click("[data-package=mini_golf_3]");
+  click("[data-package=mini_golf_hire]");
   click("#next0");
-  change("[data-mode=extra][data-game=cornhole]");
+  setGolf(3);
+  change("[data-mode=custom][data-game=cornhole]");
   click("#accordionHeaderDate");
   assert(!$("stepDate").hidden);
   w.OTGGDateDirty();
@@ -177,13 +184,14 @@ const $ = (id) => w.document.getElementById(id),
   assert($("accordionSummaryDate").textContent.includes("Changed Venue"));
   assert.equal($("totalPrice").textContent, "£480");
   click("#next0");
-  assert(w.document.querySelector("[data-mode=extra][data-game=cornhole]").checked);
+  assert(w.document.querySelector("[data-mode=custom][data-game=cornhole]").checked);
   assert.equal($("accordionHeader0").disabled, false);
   // Successful checkout should take the customer directly to Stripe,
   // without displaying the pending-booking recovery panel first.
   boot();
-  click("[data-package=mini_golf_3]");
+  click("[data-package=mini_golf_hire]");
   click("#next0");
+  setGolf(4);
   click("#next1");
   fill("firstName", "Test");
   fill("lastName", "DirectCheckout");
@@ -205,21 +213,28 @@ const $ = (id) => w.document.getElementById(id),
   boot();
   click("[data-package=classic_collection]");
   click("#next0");
-  change('[name=golf][value="1"]');
+  setGolf(1);
   assert.equal($("totalPrice").textContent, "£340");
-  change('[name=golf][value="2"]');
+  setGolf(2);
   assert.equal($("totalPrice").textContent, "£440");
-  change('[name=golf][value="3"]');
+  setGolf(3);
   assert.equal($("totalPrice").textContent, "£515");
   boot();
   click("#byoCard");
   click("#next0");
   change("[data-mode=custom][data-game=cornhole]");
-  change('[name=golf][value="2"]');
+  setGolf(2);
   assert.equal($("totalPrice").textContent, "£365");
-  change('[name=golf][value="3"]');
+  setGolf(3);
   assert.equal($("totalPrice").textContent, "£440");
-  console.log("PASS: mini golf 1/2/3-hole add-ons and Build Your Own");
+  setGolf(4); assert.equal($("totalPrice").textContent,"£515");
+  setGolf(5); assert.equal($("totalPrice").textContent,"£565");
+  boot({}, "/booking?selection=minigolf&holes=2");
+  click("#next0"); assert.equal($("golfRange").value,"2"); click("#next1"); assert.match($("error1").textContent,/£300/);
+  boot({}, "/booking?selection=byo&games=cornhole,giant_connect_4,limbo,giant_jenga&holes=4");
+  click("#next0"); assert.match($("recommendation").textContent,/Switch to The Mix and save £25/); click("#useDeal"); assert.equal($("golfRange").value,"4");
+  for (const id of ["cornhole","giant_connect_4","limbo","giant_jenga"]) assert(w.document.querySelector('[data-mode=included][data-game="'+id+'"]').checked);
+  console.log("PASS: all five golf prices, minimum spend, preselected games and single collection recommendation");
   console.log(
     "PASS: four-step date gate, retained game extras, changed venue/travel, promotion invalidation, package rules, mobile summary, payload and saved checkout recovery"
   );
