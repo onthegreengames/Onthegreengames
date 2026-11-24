@@ -66,12 +66,12 @@
       const addon=document.querySelector('.mini-addon-table tbody');
       if(addon){
         const rows=addon.querySelectorAll('tr');
-        [['£100','FREE'],['£200','£100'],['£275','£175']].forEach(function(v,i){if(rows[i]?.lastElementChild)rows[i].lastElementChild.innerHTML='<s>'+v[0]+'</s> <strong>'+v[1]+'</strong>';});
+        [['£100','FREE'],['£200','£100'],['£275','£175'],['£350','£250'],['£400','£300']].forEach(function(v,i){if(rows[i]?.lastElementChild)rows[i].lastElementChild.innerHTML='<s>'+v[0]+'</s> <strong>'+v[1]+'</strong>';});
         const head=document.querySelector('.mini-addon-copy .section-head');
         if(head)head.insertAdjacentHTML('afterend','<p class="november-note"><strong>November offer:</strong> Your first mini golf hole is free with garden games, including qualifying Build Your Own bookings. Prices below include the £100 saving.</p>');
       }
       const golf=document.querySelector('.online-booking-note');
-      if(golf)golf.insertAdjacentHTML('beforebegin','<div class="online-booking-note november-note"><strong>November offer:</strong> Add mini golf to a qualifying giant garden games booking and your first hole is FREE. Applied automatically when booking. Standalone 3-hole hire remains £275.</div>');
+      if(golf)golf.insertAdjacentHTML('beforebegin','<div class="online-booking-note november-note"><strong>November offer:</strong> Add mini golf to a qualifying giant garden games booking and your first hole is FREE. Applied automatically when booking. Golf-only bookings do not qualify; custom bookings must meet the £300 minimum after the saving.</div>');
     }catch{
       // Outside November, restore the standard TEEOFF25 banner if the offer lookup fails.
       const month = new Intl.DateTimeFormat('en-GB',{month:'2-digit',timeZone:'Europe/London'}).format(new Date());
