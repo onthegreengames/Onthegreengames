@@ -13,7 +13,7 @@ assert.match(nav, /FREE mini golf with games bookings this November/);
 assert(!nav.includes('Free hole ends 30 November.'));
 assert.match(booking, /FREE mini golf<\/strong> with games bookings this November/);
 assert(!booking.includes('Free hole ends 30 November.'));
-assert.match(html, /Build Your Own requires a £300 minimum after the free-hole saving/);
+assert.match(html, /Mini Golf Hire and Build Your Own require a £300 minimum after the free-hole saving/);
 
 assert.match(popup, /CAMPAIGN_START = Date\.parse\('2026-12-01T00:00:00\+00:00'\)/);
 assert.match(popup, /FIRST_VISIT_MIN_PAGE_VIEWS = 7/);
