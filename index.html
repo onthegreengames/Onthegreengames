@@ -28,6 +28,7 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="/styles.css" rel="stylesheet"/>
+<link href="/interactive.css" rel="stylesheet"/>
 
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","@id":"https://onthegreengames.co.uk/#website","url":"https://onthegreengames.co.uk/","name":"On The Green Games","alternateName":"On The Green Games Ltd","publisher":{"@id":"https://onthegreengames.co.uk/#business"}}</script>
 </head>
@@ -52,7 +53,7 @@
 <div class="mega-panel" id="explorePanel">
 <a class="mega-item" href="/mini-golf">
 <div class="mega-item-title">Mini Golf</div>
-<div class="mega-item-desc">3-hole wedding mini golf, delivered and set up for you.</div>
+<div class="mega-item-desc">Wedding mini golf, delivered and set up for you.</div>
 </a>
 <a class="mega-item" href="/giant-games">
 <div class="mega-item-title">Giant Games</div>
@@ -74,7 +75,7 @@
 <div data-reveal="" style="--reveal-delay:0ms">
 <div class="eyebrow">Wedding Games &amp; Mini Golf Hire · North West</div>
 <h1>Wedding Mini Golf &amp; Giant Garden Games Hire</h1>
-<p class="lede">Build your own package from £200. Clear pricing, no amendment fees, delivered straight to your venue.</p>
+<p class="lede">Garden games collections from £200. Clear pricing, no amendment fees, delivered straight to your venue.</p>
 <div class="hero-actions">
 <a class="btn gold" href="/booking">Check Your Date →</a>
 <a class="btn outline" href="/packages">See Packages &amp; Prices</a>
@@ -139,22 +140,29 @@ srcset="/assets/images/mini-golf-split-gateway-640.webp 640w,
 </style>
 <section class="compact-section">
 <div class="wrap">
-<div class="course-block">
+<div class="course-block otgg-timeline-block" id="weddingTimeline">
 <div>
-<div class="eyebrow on-dark">Know what you're comparing</div>
+<div class="eyebrow on-dark">All-day hire, as standard</div>
 <h2>Most hire ends after a few hours. Yours doesn't.</h2>
-<p class="lede">Plenty of games and golf hire is booked in fixed slots, often 3 or 4 hours, with extension fees if your day runs on. Every On The Green Games package runs for the whole wedding day instead.</p>
-<a class="btn gold dark-block-btn" href="/packages">See Packages &amp; Prices →</a>
+<p class="lede">From your first guests arriving to the evening celebrations, your games are there whenever you want them.</p>
 </div>
-<div class="stat-card">
-<div class="top-line"><span>What’s included</span><span class="par">All day</span></div>
-<div class="stat-row"><span class="check"></span> Delivered & collected on the day, as late or early as you need</div>
-<div class="stat-row"><span class="check"></span> No extension fees, ever</div>
-<div class="stat-row"><span class="check"></span> Professional setup and collection</div>
-<div class="stat-row"><span class="check"></span> Change your selection before the day, no amendment fees</div>
+<div class="timeline-controls">
+<p>Explore a typical wedding day. Drag the slider or tap a moment below.</p>
+<label class="sr-only" for="weddingTime">Wedding day moment</label>
+<input id="weddingTime" type="range" min="0" max="4" step="1" value="1" aria-valuetext="Drinks reception">
+<div class="timeline-ticks" id="timelineTicks">
+<button type="button" data-stage="0" aria-pressed="false">Arrival</button>
+<button type="button" data-stage="1" aria-pressed="true">Drinks reception</button>
+<button type="button" data-stage="2" aria-pressed="false">Wedding breakfast</button>
+<button type="button" data-stage="3" aria-pressed="false">Evening guests</button>
+<button type="button" data-stage="4" aria-pressed="false">Evening celebrations</button>
+</div></div>
+<div class="timeline-stage" aria-live="polite">
+<div><div class="eyebrow" id="timelineLabel">Drinks reception</div><h3 id="timelineTitle">A little friendly competition</h3><p id="timelineCopy">Keep guests entertained while you have your photographs taken.</p></div>
+<span id="timelineTime">Example: 2pm</span>
 </div>
-</div>
-</div>
+<div class="timeline-footer"><p>Illustrative timings only. Delivery and collection are agreed with you. No extension fees.</p><a class="btn gold dark-block-btn" href="/packages">See Packages &amp; Prices →</a></div>
+</div></div>
 </section>
 <section class="compact-section">
 <div class="wrap">
@@ -170,9 +178,9 @@ srcset="/assets/images/mini-golf-split-gateway-640.webp 640w,
 <a class="text-link" href="/giant-games">Explore Giant Games →</a>
 </article>
 <article class="choice-card" data-reveal="" style="--reveal-delay:90ms"><div class="choice-art"><img alt="Portable mini golf hole on a lawn" class="photo-fill" decoding="async" height="900" loading="lazy" sizes="(max-width: 760px) 88vw, (max-width: 1240px) 46vw, 30vw" src="/assets/images/mini-golf-gateway-obstacle-640.webp" srcset="/assets/images/mini-golf-gateway-obstacle-640.webp 640w, /assets/images/mini-golf-gateway-obstacle-1200.webp 1200w" width="1200"/></div>
-<div class="choice-kicker">3-Hole Mini Golf</div>
+<div class="choice-kicker">Mini Golf Hire</div>
 <h3>Portable wedding mini golf</h3>
-<p>Delivered and set up for indoor or outdoor venues. From £275.</p>
+<p>Delivered and set up for indoor or outdoor venues. Choose your course.</p>
 <a class="text-link" href="/mini-golf">Explore Mini Golf →</a>
 </article>
 <article class="choice-card choice-card-dark" data-reveal="" style="--reveal-delay:180ms"><div class="choice-art"><div class="package-photo-collage package-photo-collage--premium" role="img" aria-label="Premium giant garden games arranged on a lawn"><img height="1402" width="1122" alt="" decoding="async" loading="lazy" sizes="(max-width: 760px) 40vw, (max-width: 1240px) 24vw, 15vw" src="/assets/images/game-noughts-crosses-640.webp" srcset="/assets/images/game-noughts-crosses-640.webp 640w, /assets/images/game-noughts-crosses-1200.webp 1122w"/><img height="1402" width="1122" alt="" decoding="async" loading="lazy" sizes="(max-width: 760px) 40vw, (max-width: 1240px) 24vw, 15vw" src="/assets/images/game-connect-4-640.webp" srcset="/assets/images/game-connect-4-640.webp 640w, /assets/images/game-connect-4-1200.webp 1122w"/><img height="1402" width="1122" alt="" decoding="async" loading="lazy" sizes="(max-width: 760px) 40vw, (max-width: 1240px) 24vw, 15vw" src="/assets/images/game-cornhole-640.webp" srcset="/assets/images/game-cornhole-640.webp 640w, /assets/images/game-cornhole-1200.webp 1122w"/></div></div>
@@ -232,6 +240,7 @@ srcset="/assets/images/mini-golf-split-gateway-640.webp 640w,
 <div class="foot-note">© On The Green Games Ltd. Wedding games hire across the North West, North Wales &amp; the South Lakes. Wider UK coverage available.</div>
 </div>
 </footer>
+<script src="/wedding-timeline.js" defer></script>
 <script src="/nav.js"></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LocalBusiness", "@id": "https://onthegreengames.co.uk/#business", "name": "On The Green Games", "legalName": "On The Green Games Ltd", "url": "https://onthegreengames.co.uk/", "logo": "https://onthegreengames.co.uk/favicon.png", "image": "https://onthegreengames.co.uk/assets/images/home-wedding-games-mini-golf-1200.webp", "email": "bookings@onthegreengames.co.uk", "description": "Wedding games and mini golf hire for the whole day across the North West, North Wales, the South Lakes and wider UK locations.", "priceRange": "££", "areaServed": ["Cheshire", "Greater Manchester", "Merseyside", "Lancashire", "North Wales", "South Lake District", "West Midlands"], "knowsAbout": ["Wedding mini golf hire", "Crazy golf hire", "Giant garden games hire", "Wedding lawn games"]}</script>
 </body>

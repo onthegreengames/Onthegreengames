@@ -1,77 +1,7 @@
 "use strict";
-const G = [
-  {
-    id: "giant_connect_4",
-    name: "Giant Connect 4",
-    tier: "premium",
-    price: 125,
-  },
-  {
-    id: "giant_noughts_and_crosses",
-    name: "Giant Noughts & Crosses",
-    tier: "premium",
-    price: 125,
-  },
-  { id: "cornhole", name: "Cornhole", tier: "premium", price: 125 },
-  { id: "giant_jenga", name: "Giant Jenga", tier: "classic", price: 50 },
-  {
-    id: "wooden_ring_toss",
-    name: "Wooden Ring Toss",
-    tier: "classic",
-    price: 50,
-  },
-  { id: "giant_dominoes", name: "Giant Dominoes", tier: "classic", price: 50 },
-  { id: "limbo", name: "Limbo", tier: "classic", price: 50 },
-];
-const P = [
-  {
-    id: "mini_golf_3",
-    name: "3-Hole Mini Golf",
-    price: 275,
-    p: 0,
-    c: 0,
-    golf: 3,
-    desc: "Three holes. Endless friendly competition.",
-    kind: "THE WEDDING CROWD-PLEASER",
-  },
-  {
-    id: "classic_collection",
-    name: "Classic Collection",
-    price: 200,
-    p: 0,
-    c: 4,
-    desc: "All 4 Classic games.",
-    kind: "LAID-BACK LAWN FAVOURITES",
-  },
-  {
-    id: "the_mix",
-    name: "The Mix",
-    price: 325,
-    p: 2,
-    c: 2,
-    desc: "Choose 2 Premium + 2 Classic games.",
-    kind: "A LITTLE OF EVERYTHING",
-  },
-  {
-    id: "premium_collection",
-    name: "Premium Collection",
-    price: 350,
-    p: 3,
-    c: 0,
-    desc: "All 3 Premium games.",
-    kind: "BIG GAMES. BIG COMPETITION.",
-  },
-  {
-    id: "complete_collection",
-    name: "Complete Collection",
-    price: 475,
-    p: 3,
-    c: 4,
-    desc: "All 7 giant garden games.",
-    kind: "THE WHOLE COLLECTION",
-  },
-];
-const golfPrices = [0, 100, 200, 275];
+const {G,P,golfPrices,candidates,best} = window.OTGGSelection;
+const customRoute = () => state.choice === "byo" || state.choice === "mini_golf_hire";
+const routeName = () => state.choice === "mini_golf_hire" ? "Mini Golf Hire" : "Build Your Own";
 const $ = (id) => document.getElementById(id),
   money = (n) =>
     new Intl.NumberFormat("en-GB", {
@@ -126,7 +56,7 @@ let latestQuote = null;
 let automaticOffer = {active:false,discountAmount:0};
 function offerAvailableForGames(){
   if(!automaticOffer.active || Date.now() >= Date.parse("2026-12-01T00:00:00Z")) return false;
-  return state.choice === "byo" ? state.custom.length > 0 : !!(state.choice && state.choice !== "mini_golf_3");
+  return customRoute() ? state.custom.length > 0 : !!state.choice;
 }
 function automaticOfferSaving(){
   return offerAvailableForGames() && (state.golf || 0) > 0
@@ -157,7 +87,7 @@ function pkg() {
   return P.find((p) => p.id === state.choice);
 }
 function selectedIds() {
-  return state.choice === "byo"
+  return customRoute()
     ? state.custom
     : [...state.included, ...state.extras];
 }
@@ -169,10 +99,10 @@ function quote() {
   const gameCost = (ids) =>
     ids.reduce((n, id) => n + G.find((g) => g.id === id).price, 0);
   let base = p ? p.price : 0;
-  const extras = gameCost(state.choice === "byo" ? state.custom : state.extras);
+  const extras = gameCost(customRoute() ? state.custom : state.extras);
   const golf = p?.golf
     ? 0
-    : state.choice === "byo"
+    : customRoute()
       ? golfPrices[state.golf || 0]
       : golfPrices[state.golf || 0];
   const grossSub = base + extras + golf,
@@ -212,15 +142,11 @@ function dueDate() {
   return dateText(iso(d));
 }
 function renderCards() {
-  const featured = P.find((p) => p.id === "the_mix");
-  const others = P.filter((p) => p.id !== "the_mix" && p.id !== "mini_golf_3");
-  const miniGolf = P.find((p) => p.id === "mini_golf_3");
-  const cards = [featured, ...others, miniGolf];
-  $("packageCards").innerHTML = cards.map((p) =>
-    `<button class="pack ${p.id === "the_mix" ? "featured-pack" : ""} ${state.choice === p.id ? "selected" : ""}" type="button" data-package="${p.id}" aria-pressed="${state.choice === p.id}"><div><h3>${p.name}</h3><p>${p.desc}</p></div><div class="price">${money(p.price)} <small>/ all day</small></div></button>`,
-  ).join("");
-  $("byoCard").classList.toggle("selected", state.choice === "byo");
-  $("byoCard").setAttribute("aria-pressed", state.choice === "byo");
+  const featured=P.find(p=>p.id==="the_mix");
+  const cards=[featured,...P.filter(p=>p.id!=="the_mix"),{id:"mini_golf_hire",name:"Mini Golf Hire",desc:"Choose your course and add garden games if you wish.",price:300}];
+  $("packageCards").innerHTML=cards.map(p=>`<button class="pack ${p.id==="the_mix"?"featured-pack":""} ${state.choice===p.id?"selected":""}" type="button" data-package="${p.id}" aria-pressed="${state.choice===p.id}"><div><h3>${p.name}</h3><p>${p.desc}</p></div><div class="price">${p.id==="mini_golf_hire"?"From £300":money(p.price)} <small>/ all day</small></div></button>`).join("");
+  $("byoCard").classList.toggle("selected",state.choice==="byo");
+  $("byoCard").setAttribute("aria-pressed",state.choice==="byo");
 }
 function choose(id, preserve) {
   if (pending || busy) return;
@@ -235,8 +161,9 @@ function choose(id, preserve) {
   const p = pkg(),
     old = memories[id];
   if (preserve) {
-    state.included = preserve.included;
-    state.extras = preserve.extras;
+    state.included = preserve.included || [];
+    state.extras = preserve.extras || [];
+    state.custom = preserve.custom || [];
     state.golf = preserve.golf;
   } else if (old) {
     Object.assign(state, old);
@@ -248,7 +175,7 @@ function choose(id, preserve) {
           )
         : [];
     state.extras = [];
-    state.golf = p?.golf ? 3 : id === "byo" ? 0 : null;
+    state.golf = id === "mini_golf_hire" ? 1 : 0;
     state.custom = [];
   }
   renderCards();
@@ -276,18 +203,19 @@ function gamesMarkup(games, mode) {
     })
     .join("");
 }
-function golfMarkup(custom = false) {
-  const offer=offerAvailableForGames();
-  const description=offer
-    ? "Your first mini golf hole is FREE with these giant garden games this November. Choose up to 3 holes."
-    : custom
-      ? "Choose 1 or 2 holes at £100 each, or all 3 for £275. Add a giant garden game to qualify for the November free-hole offer."
-      : "Make more of your day with 1, 2 or all 3 holes.";
-  return `<div class="block"><div class="block-top"><h3>${custom ? "Choose your mini golf" : "Add mini golf"}</h3><span class="tag gold">${offer ? "NOVEMBER OFFER" : "OPTIONAL"}</span></div><p class="section-lead">${description}</p><div class="golf-options">${[0,1,2,3].map(n=>{
-    const usual=golfPrices[n],price=offer&&n>0?Math.max(0,usual-automaticOffer.discountAmount):usual;
-    const label=offer&&n>0?`<s>${money(usual)}</s> ${price?"+"+money(price):"FREE"}`:n===0?"£0":"+"+money(usual);
-    return `<label class="golf-option"><input type="radio" name="golf" value="${n}" ${state.golf===n?"checked":""}><strong>${n===0?"No mini golf":n+" "+(n===1?"hole":"holes")}</strong><small>${label}</small></label>`;
-  }).join("")}</div></div>`;
+function golfMarkup(custom=false) {
+  const min=state.choice==="mini_golf_hire"?1:0,offer=offerAvailableForGames(),n=state.golf??min;
+  return `<div class="block"><div class="block-top"><h3>${custom?"Choose your mini golf":"Add mini golf"}</h3><span class="tag gold">${offer?"NOVEMBER OFFER":min?"ALL-DAY HIRE":"OPTIONAL"}</span></div><p class="section-lead">${offer?"Your first mini golf hole is free with qualifying games bookings this November.":"Choose the amount of mini golf you would like for your day."}</p><div class="otgg-golf-slider"><div class="otgg-golf-current" aria-live="polite"><strong id="golfCount"></strong><strong id="golfPrice"></strong></div><label class="sr-only" for="golfRange">Number of mini golf holes</label><input type="range" id="golfRange" name="golf" min="${min}" max="5" step="1" value="${n}"><div class="otgg-golf-ticks" style="--tick-count:${6-min}">${Array.from({length:6-min},(_,i)=>i+min).map(i=>`<button type="button" data-hole="${i}" aria-label="${i?i+" mini golf "+(i===1?"hole":"holes"):"No mini golf"}">${i||"None"}</button>`).join("")}</div></div></div>`;
+}
+function updateGolfDisplay(){
+  const input=$("golfRange");
+  if(!input)return;
+  const n=state.golf??Number(input.min),usual=golfPrices[n],discount=offerAvailableForGames()&&n?Math.min(usual,automaticOffer.discountAmount):0;
+  input.value=n;
+  input.setAttribute("aria-valuetext",n?n+" "+(n===1?"hole":"holes"):"No mini golf");
+  $("golfCount").textContent=n?n+" "+(n===1?"hole":"holes"):"No mini golf";
+  $("golfPrice").innerHTML=discount?`<s>${money(usual)}</s> ${usual===discount?"FREE":money(usual-discount)}`:money(usual);
+  document.querySelectorAll("[data-hole]").forEach(b=>{b.classList.toggle("active",+b.dataset.hole===n);b.setAttribute("aria-pressed",String(+b.dataset.hole===n));});
 }
 function renderCustom() {
   const p = pkg();
@@ -296,14 +224,13 @@ function renderCustom() {
     return;
   }
   $("customSubtitle").textContent =
-    state.choice === "byo"
-      ? "Choose exactly what you want. £300 minimum hire before discounts and travel."
+    customRoute()
+      ? (routeName()+" · £300 minimum hire after automatic offers, before promo codes and travel.")
       : p.name + " · " + money(p.price) + " · All-day hire";
   let html = "";
-  if (state.choice === "byo") {
-    html =
-      `<div class="block"><h3>Pick your games</h3><p class="section-lead">Add as many as you like, one of each game.</p><div class="game-grid">${gamesMarkup(G, "custom")}</div></div>` +
-      golfMarkup(true);
+  if (customRoute()) {
+    const games = `<div class="block"><h3>${state.choice==="mini_golf_hire"?"Add garden games":"Pick your games"}</h3><p class="section-lead">Add as many as you like, one of each game.</p><div class="game-grid">${gamesMarkup(G, "custom")}</div></div>`;
+    html = state.choice==="mini_golf_hire" ? golfMarkup(true)+games : games+golfMarkup(true);
   } else {
     if (state.choice === "the_mix") {
       html = `<div class="block"><div class="block-top"><h3>Choose your included games</h3><span class="tag">IN YOUR PACKAGE</span></div><p class="section-lead">Pick 2 Premium and 2 Classic games. You'll find the rest in extras.</p>${[
@@ -330,6 +257,7 @@ function renderCustom() {
     if (!p.golf) html += golfMarkup();
   }
   $("customControls").innerHTML = html;
+  updateGolfDisplay();
 }
 function selectionError() {
   if (!state.choice)
@@ -345,8 +273,8 @@ function selectionError() {
     return "Choose 2 Premium and 2 Classic games for The Mix.";
   if (pkg() && !pkg().golf && state.golf === null)
     return "Please choose a mini golf option, including “No mini golf” if you don’t want to add it.";
-  if (state.choice === "byo" && quote().sub < 300)
-    return `Add ${money(300 - quote().sub)} more to reach the £300 Build Your Own minimum after the free-hole offer, before promo codes and travel.`;
+  if (customRoute() && quote().sub < 300)
+    return `Add ${money(300 - quote().sub)} more to reach the £300 ${routeName()} minimum after automatic offers, before promo codes and travel.`;
   return "";
 }
 function showError(step, message) {
@@ -359,10 +287,10 @@ function accordionSummary() {
   const p = pkg(),
     q = quote();
   $("accordionSummary0").textContent = state.choice
-    ? (p?.name || "Build Your Own") + " · " + money(p?.price || q.sub)
+    ? (p?.name || routeName()) + " · " + money(p?.price || q.sub)
     : "Start with a package or build your own";
   let parts = [];
-  if (state.choice === "byo") {
+  if (customRoute()) {
     parts.push(
       state.custom.length +
         " giant " +
@@ -444,7 +372,7 @@ function go(step, shouldScroll = true) {
   if (step === 2 && previousStep !== 2) {
     trackBookingEvent("extras_completed", {
       detail: state.choice + "|games:" +
-        (state.choice === "byo" ? state.custom.length : state.extras.length) +
+        (customRoute() ? state.custom.length : state.extras.length) +
         "|holes:" + (state.golf || 0),
     });
     trackBookingEvent("details_reached");
@@ -461,46 +389,34 @@ function go(step, shouldScroll = true) {
     });
 }
 
-function bestDeal() {
-  if (!state.choice || state.golf === null) return null;
-  const ids = selectedIds(),
-    pcount = ids.filter(
-      (id) => G.find((g) => g.id === id).tier === "premium",
-    ).length,
-    ccount = ids.length - pcount;
-  const holes = state.golf || 0;
-  let best = null;
-  for (const p of P) {
-    if (p.golf ? holes !== 3 : pcount < p.p || ccount < p.c) continue;
-    let included = [];
-    if (!p.golf) {
-      included = [
-        ...ids
-          .filter((id) => G.find((g) => g.id === id).tier === "premium")
-          .slice(0, p.p),
-        ...ids
-          .filter((id) => G.find((g) => g.id === id).tier === "classic")
-          .slice(0, p.c),
-      ];
-    }
-    const extras = ids.filter((id) => !included.includes(id));
-    const cost =
-      p.price +
-      extras.reduce((n, id) => n + G.find((g) => g.id === id).price, 0) +
-      (p.golf ? 0 : golfPrices[holes]) -
-      (offerAvailableForGames() && !p.golf && holes>0 ? Math.min(automaticOffer.discountAmount,golfPrices[holes]) : 0);
-    if (cost < quote().sub && (!best || cost < best.cost))
-      best = {
-        p,
-        included,
-        extras,
-        golf: holes,
-        cost,
-        saving: quote().sub - cost,
-      };
-  }
-  return best;
+let shownDeal=null,dealKey=null;
+function recommendationSignature(){return JSON.stringify([selection(),state.promo?.code||null,state.promo?.discountAmount||0,automaticOffer.active,automaticOffer.discountAmount]);}
+function paintDeal(deal){
+  shownDeal=deal;
+  $("recommendation").hidden=!deal;
+  if(!deal)return;
+  const more=deal.added.length?("Get "+deal.added.length+" more "+(deal.added.length===1?"game":"games")+" and keep your existing selection."):"Keep exactly the games and mini golf you have selected.";
+  const title=deal.delta<0?`Switch to ${deal.p.name} and save ${money(-deal.delta)}`:deal.delta===0?`Upgrade to ${deal.p.name} for the same price`:`Upgrade to ${deal.p.name} for just ${money(deal.delta)} more`;
+  $("recommendation").innerHTML=`<strong>${title}</strong><br>${more}<br><button type="button" class="text-button" id="useDeal">${deal.delta<0?"Switch &amp; save":deal.delta===0?"Switch for the same price":"Upgrade for "+money(deal.delta)} →</button>`;
 }
+function renderRecommendation(){
+  const key=recommendationSignature();
+  if(key===dealKey)return;
+  dealKey=key;paintDeal(null);
+  if(!state.choice||state.golf===null||(state.choice==="the_mix"&&state.included.length!==4))return;
+  const automaticDiscount=automaticOffer.active&&Date.now()<Date.parse("2026-12-01T00:00:00Z")?automaticOffer.discountAmount:0;
+  const options=candidates({ids:selectedIds(),choice:state.choice,holes:state.golf,automaticDiscount});
+  if(!state.promo){paintDeal(best(options,quote().sub));return;}
+  const code=state.promo.code,current=quote().sub-quote().discount;
+  Promise.all(options.map(async d=>{
+    try{
+      const result=await post("validate-promo-code",{code,selectionType:"package",packageCode:d.p.id,gameCodes:d.included,extraGameCodes:d.extras,miniGolfHoles:d.golf,eventDate:state.date});
+      if(!result.valid||!Number.isFinite(Number(result.discountAmount)))return null;
+      return {...d,cost:d.cost-Number(result.discountAmount),promo:result};
+    }catch{return null;}
+  })).then(results=>{if(dealKey===key&&recommendationSignature()===key)paintDeal(best(results.filter(Boolean),current));});
+}
+
 const mobileLayout = window.matchMedia("(max-width: 740px)");
 let summaryWasMobile = null,
   desktopPromoOpen = false;
@@ -533,7 +449,7 @@ mobileLayout.addEventListener("change", () => {
   render();
 });
 function extrasCta() {
-  return ["the_mix", "byo"].includes(state.choice)
+  return ["the_mix", "byo", "mini_golf_hire"].includes(state.choice)
     ? "Choose games & add extras"
     : "Add extras";
 }
@@ -554,10 +470,10 @@ function render() {
     lines += `<div class="sum-description">${p.golf ? "3 mini golf holes included" : state.included.length ? state.included.map((id) => esc(G.find((g) => g.id === id).name)).join(" · ") : "Choose your included games"}</div>`;
   } else
     lines =
-      '<div class="sum-row"><strong>Build Your Own</strong><span></span></div>';
-  for (const id of state.choice === "byo" ? state.custom : state.extras) {
+      `<div class="sum-row"><strong>${routeName()}</strong><span></span></div>`;
+  for (const id of customRoute() ? state.custom : state.extras) {
     const g = G.find((g) => g.id === id);
-    lines += `<div class="sum-row"><span>${state.choice === "byo" ? "" : "+ "}${esc(g.name)}</span><span>${money(g.price)}</span></div>`;
+    lines += `<div class="sum-row"><span>${customRoute() ? "" : "+ "}${esc(g.name)}</span><span>${money(g.price)}</span></div>`;
   }
   if (q.golf)
     lines += `<div class="sum-row"><span>+ ${state.golf} mini golf ${state.golf === 1 ? "hole" : "holes"}</span><span>${money(q.golf)}</span></div>`;
@@ -619,15 +535,12 @@ function render() {
       " applied. You save " +
       money(q.discount) +
       " on hire. Travel is excluded.";
-  if (state.choice === "byo" && q.sub < 300) {
+  if (customRoute() && q.sub < 300) {
     $("error1").textContent = selectionError();
     $("error1").hidden = false;
   } else if (!selectionError()) $("error1").hidden = true;
-  const deal = bestDeal();
-  $("recommendation").hidden = !deal;
-  if (deal)
-    $("recommendation").innerHTML =
-      `<strong>The same games, for ${money(deal.saving)} less${state.promo ? " before your promo discount" : ""}.</strong><br>Switch to ${deal.p.name}${deal.extras.length ? " with extras" : ""} and keep your selection.<button type="button" class="text-button" id="useDeal">Switch & save →</button>`;
+  updateGolfDisplay();
+  renderRecommendation();
 }
 function field(id, label, type = "text", full = false, auto = "off") {
   return `<label class="input-field ${full ? "full" : ""}">${label}<input id="${id}" name="${id}" type="${type}" ${type === "number" ? 'min="0" step="1"' : ""} autocomplete="${auto}"></label>`;
@@ -695,10 +608,10 @@ function optionalFields() {
 // Only these codes are sent; all prices, availability and discounts are checked by the server.
 function selection() {
   return {
-    selectionType: state.choice === "byo" ? "build_your_own" : "package",
+    selectionType: customRoute() ? "build_your_own" : "package",
     packageCode: pkg()?.id || null,
-    gameCodes: state.choice === "byo" ? [...state.custom] : [...state.included],
-    extraGameCodes: state.choice === "byo" ? [] : [...state.extras],
+    gameCodes: customRoute() ? [...state.custom] : [...state.included],
+    extraGameCodes: customRoute() ? [] : [...state.extras],
     miniGolfHoles: state.golf || 0,
     eventDate: state.date,
   };
@@ -1034,7 +947,7 @@ function restoreSelection() {
     );
     if (
       !saved ||
-      (!P.some((p) => p.id === saved.choice) && saved.choice !== "byo")
+      (!P.some((p) => p.id === saved.choice) && !["byo","mini_golf_hire","mini_golf_3"].includes(saved.choice))
     )
       return;
     const valid = (ids) =>
@@ -1043,14 +956,16 @@ function restoreSelection() {
       new Set(ids).size === ids.length;
     if (
       !["included", "extras", "custom"].every((k) => valid(saved[k])) ||
-      ![null, 0, 1, 2, 3].includes(saved.golf)
+      ![null, 0, 1, 2, 3, 4, 5].includes(saved.golf)
     )
       return;
+    if(saved.choice==="mini_golf_3"){saved.choice="mini_golf_hire";saved.custom=[...new Set([...saved.custom,...saved.extras])];saved.extras=[];saved.golf=3;}
     choose(saved.choice);
     state.custom = saved.custom;
     if (saved.choice === "the_mix") state.included = saved.included;
     state.extras = saved.extras.filter((id) => !state.included.includes(id));
-    state.golf = pkg()?.golf || saved.golf;
+    state.golf = saved.golf ?? (state.choice==="mini_golf_hire"?1:0);
+    if(state.choice==="mini_golf_hire"&&state.golf<1)state.golf=1;
     renderCustom();
     render();
   } catch {}
@@ -1072,10 +987,16 @@ document.addEventListener("click", (e) => {
   if (b.dataset.accordion !== undefined) go(+b.dataset.accordion);
   if (b.dataset.package) choose(b.dataset.package);
   if (b.dataset.go !== undefined) go(+b.dataset.go);
+  if (b.dataset.hole !== undefined && $("golfRange")) {
+    const n=Number(b.dataset.hole);
+    if(Number.isInteger(n)&&n>=Number($("golfRange").min)&&n<=5){state.golf=n;render();}
+  }
   if (b.id === "useDeal") {
-    const d = bestDeal();
-    if (d) {
+    const d = shownDeal;
+    if (d && dealKey===recommendationSignature()) {
+      state.promo=false;
       choose(d.p.id, { included: d.included, extras: d.extras, golf: d.golf });
+      if(d.promo)state.promo={...d.promo,signature:signature()};
       renderCustom();
       render();
     }
@@ -1104,6 +1025,7 @@ $("customControls").addEventListener("change", (e) => {
   render();
   saveSelection();
 });
+$("customControls").addEventListener("input", e=>{if(!busy&&!pending&&e.target.id==="golfRange"){state.golf=Number(e.target.value);render();saveSelection();}});
 $("byoCard").onclick = () => choose("byo");
 $("next0").onclick = () => go(1);
 $("next1").onclick = () => go(2);
@@ -1164,17 +1086,24 @@ $("bookingForm").addEventListener("input", accordionSummary);
 optionalFields();
 renderCards();
 placeSummary();
-const requested = new URLSearchParams(location.search);
-const requestedPackage = requested.get("package");
-if (P.some(p => p.id === requestedPackage)) choose(requestedPackage);
-else if (requested.get("selection") === "minigolf") choose("mini_golf_3");
-else if (requested.get("selection") === "games") choose("the_mix");
-else {
-  // Honour an in-progress selection. Otherwise feature The Mix, including
-  // visitors who came from the Mini Golf page's general "Check Your Date" links.
-  restoreSelection();
-  if (!state.choice) choose("the_mix");
-}
+const requested=new URLSearchParams(location.search);
+const requestedPackage=requested.get("package"),requestedSelection=requested.get("selection");
+const validIds=value=>{const ids=value?value.split(","):[];return ids.length<=7&&new Set(ids).size===ids.length&&ids.every(id=>G.some(g=>g.id===id))?ids:null;};
+const requestedHoles=requested.has("holes")?Number(requested.get("holes")):null;
+const validHoles=Number.isInteger(requestedHoles)&&requestedHoles>=0&&requestedHoles<=5;
+if(requestedPackage==="mini_golf_3"||requestedSelection==="minigolf"){
+  choose("mini_golf_hire",{custom:validIds(requested.get("games"))||[],golf:validHoles&&requestedHoles>0?requestedHoles:requestedPackage==="mini_golf_3"?3:1});
+}else if(requestedSelection==="byo"){
+  choose("byo",{custom:validIds(requested.get("games"))||[],golf:validHoles?requestedHoles:0});
+}else if(P.some(p=>p.id===requestedPackage)){
+  const p=P.find(p=>p.id===requestedPackage),included=validIds(requested.get("included")),extras=validIds(requested.get("extras"));
+  if(included&&extras&&included.length===p.p+p.c&&included.filter(id=>G.find(g=>g.id===id).tier==="premium").length===p.p&&included.every(id=>!extras.includes(id))){
+    choose(p.id,{included,extras,golf:validHoles?requestedHoles:0});
+  }else choose(p.id);
+}else if(requestedSelection==="games") choose("the_mix");
+else{restoreSelection();if(!state.choice)choose("the_mix");}
+if(requestedPackage||requestedSelection){saveSelection();try{const url=new URL(location.href);["package","selection","holes","games","included","extras"].forEach(k=>url.searchParams.delete(k));history.replaceState(null,"",url.pathname+url.search+url.hash);}catch{}}
+
 render();
 go(-1, false);
 loadAutomaticOffer();

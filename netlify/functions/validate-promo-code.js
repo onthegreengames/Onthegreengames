@@ -130,6 +130,9 @@ function normaliseInput(body) {
     throw new Error('Check your wedding date before applying a promo code.');
   }
 
+  if (packageCode === 'mini_golf_3') {
+    throw new Error('Please refresh the booking page and choose Mini Golf Hire.');
+  }
   const gameCodes = body.gameCodes ?? body.game_codes ?? [];
   if (!Array.isArray(gameCodes) || gameCodes.length > 20) {
     throw new Error('The selected games are not valid.');
@@ -140,7 +143,7 @@ function normaliseInput(body) {
   const extraGameCodes = extras.map(value => text(value, 100)?.toLowerCase()).filter(Boolean);
   const cleanGameCodes = gameCodes.map(value => text(value, 100)?.toLowerCase()).filter(Boolean);
   const miniGolfHoles = Number(body.miniGolfHoles ?? body.mini_golf_holes ?? 0);
-  if (!Number.isInteger(miniGolfHoles) || miniGolfHoles < 0 || miniGolfHoles > 3) {
+  if (!Number.isInteger(miniGolfHoles) || miniGolfHoles < 0 || miniGolfHoles > 5) {
     throw new Error('The mini golf selection is not valid.');
   }
 

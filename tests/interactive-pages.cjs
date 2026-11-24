@@ -1,0 +1,18 @@
+const assert=require("node:assert/strict"),fs=require("node:fs"),{JSDOM}=require("jsdom");
+const read=p=>fs.readFileSync(p,"utf8");
+function open(page,route){const dom=new JSDOM(read(page),{url:"https://example.test"+route,runScripts:"outside-only",pretendToBeVisual:true});const w=dom.window;w.HTMLElement.prototype.scrollIntoView=function(){};w.matchMedia=q=>({matches:q.includes("740"),addEventListener(){}});w.fetch=async()=>({ok:true,json:async()=>({active:false})});return dom;}
+const get=(w,id)=>w.document.getElementById(id),evalFile=(w,p)=>w.eval(read(p));
+const home=open("index.html","/");let w=home.window;evalFile(w,"wedding-timeline.js");for(let n=0;n<5;n++){w.document.querySelector('[data-stage="'+n+'"]').click();assert.equal(get(w,"weddingTime").value,String(n));assert.equal(w.document.querySelectorAll("#timelineTicks [aria-pressed=true]").length,1);assert(get(w,"timelineTitle").textContent);}
+get(w,"weddingTime").value="2";get(w,"weddingTime").dispatchEvent(new w.Event("input"));assert.equal(get(w,"timelineLabel").textContent,"Wedding breakfast");home.window.close();
+const golf=open("mini-golf.html","/mini-golf");w=golf.window;evalFile(w,"selection-pricing.js");evalFile(w,"mini-golf-builder.js");for(let n=1;n<=5;n++){w.document.querySelector('[data-course="'+n+'"]').click();assert.equal(get(w,"coursePrice").textContent,"£"+[0,100,200,275,350,400][n]);assert.equal(new URL(get(w,"courseBook").href).searchParams.get("holes"),String(n));}w.document.querySelector('[data-course="2"]').click();const golfRoute=new URL(get(w,"courseBook").href).search;assert.match(get(w,"courseGuidance").textContent,/£100/);golf.window.close();
+const game=open("giant-games.html","/giant-games");w=game.window;evalFile(w,"selection-pricing.js");evalFile(w,"giant-games-builder.js");
+const wanted=["cornhole","giant_connect_4","limbo","giant_jenga"];for(const id of wanted)w.document.querySelector('[data-game-choice="'+id+'"]').click();assert.equal(get(w,"gameSelectionTotal").textContent,"£350");assert.match(get(w,"gameBuilderDeal").textContent,/Switch to The Mix and save £25/);assert.equal(get(w,"gameBuilderDeal").querySelectorAll("button").length,1);
+const customRoute=new URL(get(w,"gameContinue").href).search;get(w,"gameBuilderDeal").querySelector("button").click();assert.equal(get(w,"gameSelectionTotal").textContent,"£325");const mixRoute=new URL(get(w,"gameContinue").href).search;
+assert.equal(new URLSearchParams(mixRoute).get("package"),"the_mix");assert.deepEqual(new URLSearchParams(mixRoute).get("included").split(",").sort(),wanted.slice().sort());
+w.document.querySelector('[data-game-choice="limbo"]').click();assert.equal(new URL(get(w,"gameContinue").href).searchParams.get("selection"),"byo");game.window.close();
+for(const [route,kind] of [[golfRoute,"golf"],[customRoute,"byo"],[mixRoute,"mix"]]){
+ const booking=open("booking.html","/booking"+route);w=booking.window;evalFile(w,"selection-pricing.js");evalFile(w,"booking.js");w.OTGGDateVerified({weddingDate:"2027-08-14",venueName:"Test venue",venuePostcode:"CH1 1AA",travelFee:0},true);get(w,"next0").click();
+ if(kind==="golf"){assert.equal(get(w,"golfRange").value,"2");assert.match(get(w,"error1").textContent,/£300/);}else{for(const id of wanted)assert(w.document.querySelector('[data-mode="'+(kind==="byo"?"custom":"included")+'"][data-game="'+id+'"]').checked,id);assert.equal(get(w,"totalPrice").textContent,kind==="byo"?"£350":"£325");}
+ booking.window.close();
+}
+console.log("PASS: five timeline stages, all five golf prices, game picker, single recommendation, accepted collection and exact booking handoff");
