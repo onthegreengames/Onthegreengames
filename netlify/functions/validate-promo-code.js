@@ -140,7 +140,7 @@ function normaliseInput(body) {
   const extraGameCodes = extras.map(value => text(value, 100)?.toLowerCase()).filter(Boolean);
   const cleanGameCodes = gameCodes.map(value => text(value, 100)?.toLowerCase()).filter(Boolean);
   const miniGolfHoles = Number(body.miniGolfHoles ?? body.mini_golf_holes ?? 0);
-  if (!Number.isInteger(miniGolfHoles) || miniGolfHoles < 0 || miniGolfHoles > 3) {
+  if (!Number.isInteger(miniGolfHoles) || miniGolfHoles < 0 || miniGolfHoles > 5) {
     throw new Error('The mini golf selection is not valid.');
   }
 
